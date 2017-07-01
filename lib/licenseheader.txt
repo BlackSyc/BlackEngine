@@ -1,0 +1,10 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Project: Beams
+${licensePrefix}Phase: ALPHA
+${licensePrefix}Property of: Blackened Studio
+${licensePrefix}Contact: blackenedstudio@gmail.com
+<#if licenseLast??>
+${licenseLast}
+</#if>
