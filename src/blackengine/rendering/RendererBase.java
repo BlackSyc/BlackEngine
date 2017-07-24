@@ -1,0 +1,216 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package blackengine.rendering;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.util.vector.Matrix4f;
+
+/**
+ *
+ * @author Blackened
+ */
+public abstract class RendererBase {
+
+    //<editor-fold defaultstate="collapsed" desc="Properties">
+    /**
+     * The ID of the shader program.
+     */
+    private int programID;
+
+    /**
+     * The ID of the vertex shader.
+     */
+    private int vertexShaderID;
+
+    /**
+     * The ID of the fragment shader.
+     */
+    private int fragmentShaderID;
+
+    /**
+     * A map of all single (e.g. no arrays) uniform variable locations mapped to
+     * their name.
+     */
+    private Map<String, Integer> uniformLocations = new HashMap<>();
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Constructors">
+    /**
+     * Default constructor for creating a new instance of RenderBase. Loads the
+     * vertex shader and fragment shader to OpenGL, binds the attributes and
+     * retrieves uniform variable locations.
+     *
+     * @param vertexFile
+     * @param fragmentFile
+     */
+    public RendererBase(String vertexFile, String fragmentFile) {
+        this.load(vertexFile, fragmentFile);
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Public Methods">
+    /**
+     * Destroys the shader program and all its shaders.
+     */
+    public void destroy() {
+        GL20.glDetachShader(programID, vertexShaderID);
+        GL20.glDetachShader(programID, fragmentShaderID);
+        GL20.glDeleteShader(vertexShaderID);
+        GL20.glDeleteShader(fragmentShaderID);
+        GL20.glDeleteProgram(programID);
+    }
+
+
+
+    /**
+     * Bind all attributes of the shaders.
+     */
+    public abstract void bindAttributes();
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Protected Methods">
+    /**
+     * Will take in the number of the attribute list in the VAO and bind it to
+     * the variable name in the shader.
+     *
+     * @param attribute The number of the attribute list in the VAO.
+     * @param variableName The name of the variable in the shader.
+     */
+    protected void bindAttribute(int attribute, String variableName) {
+        GL20.glBindAttribLocation(programID, attribute, variableName);
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Private Methods">
+    /**
+     * Loads the shader program with its shaders to OpenGL, and calls the
+     * bindAttributes method.
+     */
+    private void load(String vertexFile, String fragmentFile) {
+        List<String> uniformVariables = new ArrayList<>();
+        uniformVariables.addAll(this.loadShader(vertexFile, GL20.GL_VERTEX_SHADER));
+        uniformVariables.addAll(this.loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER));
+
+        this.programID = GL20.glCreateProgram();
+        GL20.glAttachShader(programID, vertexShaderID);
+        GL20.glAttachShader(programID, fragmentShaderID);
+
+        bindAttributes();
+        GL20.glLinkProgram(programID);
+        GL20.glValidateProgram(programID);
+
+        GL20.glUseProgram(programID);
+        this.loadUniformLocations(uniformVariables);
+        GL20.glUseProgram(0);
+
+        //DEBUG ONLY
+        this.uniformLocations.forEach((x, y) -> {
+            System.out.println("Uniform '" + x + "' is at location: " + y);
+        });
+    }
+
+    /**
+     * Retrieves all uniform locations.
+     *
+     * @param uniforms
+     */
+    private void loadUniformLocations(List<String> uniformVariables) {
+
+        uniformVariables.forEach(x -> {
+            if (x.contains("[")) {
+                this.loadUniformArrayLocations(x);
+            } else {
+                this.uniformLocations.put(x, this.getUniformLocation(x));
+            }
+        });
+
+    }
+
+    /**
+     * Retrieves the uniform locations for all elements of the array variable.
+     *
+     * @param uniformArrayVariable
+     */
+    private void loadUniformArrayLocations(String uniformArrayVariable) {
+        int arraySize = Integer.valueOf(uniformArrayVariable
+                .substring(uniformArrayVariable.indexOf("[") + 1,
+                        uniformArrayVariable.indexOf("]")));
+        String rawVariableName = uniformArrayVariable.substring(0, uniformArrayVariable.indexOf("["));
+        String specifiedVariableName = "";
+        for (int i = 0; i < arraySize; i++) {
+            specifiedVariableName = rawVariableName + "[" + i + "]";
+            this.uniformLocations.put(specifiedVariableName, this.getUniformLocation(specifiedVariableName));
+        }
+    }
+
+    /**
+     * Get the location for a uniform variable.
+     *
+     * @param uniformName The name of the uniform variable for which the
+     * location will be returned.
+     * @return The location of a uniform variable specified by the name.
+     */
+    private int getUniformLocation(String uniformName) {
+        return GL20.glGetUniformLocation(programID, uniformName);
+    }
+    //</editor-fold>
+
+    /**
+     * Loads a shader to OpenGL and retrieves its uniform variables.
+     *
+     * @param shaderFile
+     * @return
+     */
+    private List<String> loadShader(String shaderFile, int shaderType) {
+
+        List<String> uniformVariables = new ArrayList<>();
+        StringBuilder shaderSource = new StringBuilder();
+
+        try (InputStream is = Class.class.getResourceAsStream(shaderFile)) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                shaderSource.append(line).append("\n");
+                if (line.startsWith("uniform")) {
+                    String[] uniformInformation = line.split(" ");
+                    uniformVariables.add(uniformInformation[2].replace(";", ""));
+                }
+            }
+            reader.close();
+        } catch (IOException ex) {
+            Logger.getLogger(RendererBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        int shaderID = GL20.glCreateShader(shaderType);
+        GL20.glShaderSource(shaderID, shaderSource);
+        GL20.glCompileShader(shaderID);
+        if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            System.out.println("Shader '" + shaderFile + "' did not compile! Compile Status: " + GL20.GL_COMPILE_STATUS);
+        }
+        switch (shaderType) {
+            case GL20.GL_VERTEX_SHADER:
+                this.vertexShaderID = shaderID;
+                break;
+            case GL20.GL_FRAGMENT_SHADER:
+                this.fragmentShaderID = shaderID;
+                break;
+            default:
+                System.out.println("Shadertype is not implemented yet!");
+                break;
+        }
+        return uniformVariables;
+    }
+}

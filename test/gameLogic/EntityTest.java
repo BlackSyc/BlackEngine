@@ -6,7 +6,9 @@ package gameLogic;
  * and open the template in the editor.
  */
 
-import gameLogic.components.prefab.HealthComponent;
+import blackengine.gameLogic.Entity;
+import blackengine.gameLogic.ComponentEngine;
+import blackengine.gameLogic.components.prefab.HealthComponent;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,41 +44,9 @@ public class EntityTest {
         this.testEntity = null;
     }
     
-    @Test
-    public void testAddComponent(){
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
-        
-        HealthComponent testComponent = new HealthComponent();
-        this.testEntity.addComponent(testComponent);
-        
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
-        
-        HealthComponent retrievedComponent = this.testEntity.getComponent(HealthComponent.class);
-        
-        assertNotNull(retrievedComponent);
-        
-        assertEquals(testComponent, retrievedComponent);
-        
-    }
-    
-    @Test
-    public void testRemoveComponent(){
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
-        
-        HealthComponent testComponent = new HealthComponent();
-        this.testEntity.addComponent(testComponent);
-        
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
-        
-        this.testEntity.removeComponent(HealthComponent.class);
-        
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
-        
-        assertNull(this.testEntity.getComponent(HealthComponent.class));
-    }
-    
-    @Test
+        @Test
     public void testAddChild(){
+        assertFalse(this.testEntity.containsChild("testChild"));
         assertNull(this.testEntity.getChild("testChild"));
         
         Vector3f position = new Vector3f(1,1,1);
@@ -93,6 +63,7 @@ public class EntityTest {
         assertEquals(position, testChild.getRelativePosition());
         assertNotEquals(position, testChild.getAbsolutePosition());
         assertEquals(new Vector3f(2,2,2), testChild.getAbsolutePosition());
+        assertTrue(this.testEntity.containsChild("testChild"));
         
         Entity retrievedChild = this.testEntity.getChild("testChild");
         
@@ -100,7 +71,8 @@ public class EntityTest {
     }
     
     @Test
-    public void testRemoveChild(){
+    public void testDetachChild(){
+        assertFalse(this.testEntity.containsChild("testChild"));
         assertNull(this.testEntity.getChild("testChild"));
         
         Vector3f position = new Vector3f(1,1,1);
@@ -108,51 +80,103 @@ public class EntityTest {
         
         this.testEntity.addChild(testChild);
         
+        assertTrue(this.testEntity.containsChild("testChild"));
         assertNotNull(this.testEntity.getChild("testChild"));
         assertEquals(position, testChild.getRelativePosition());
         assertNotEquals(position, testChild.getAbsolutePosition());
         assertEquals(new Vector3f(2,2,2), testChild.getAbsolutePosition());
         
-        Entity removedChild = this.testEntity.removeChild("testChild");
+        Entity detachedChild = this.testEntity.detachChild("testChild");
         
-        assertEquals(testChild, removedChild);
+        assertEquals(testChild, detachedChild);
         assertEquals(position, testChild.getRelativePosition());
         assertEquals(position, testChild.getAbsolutePosition());
         
+        assertFalse(this.testEntity.containsChild("testChild"));
         assertNull(this.testEntity.getChild("testChild"));
     }
     
     @Test
-    public void testChildDestruction(){
+    public void testDestroyChild(){
         assertNull(this.testEntity.getChild("testChild"));
         
         Entity testChild = new Entity("testChild", new Vector3f(), new Vector3f());
         
         this.testEntity.addChild(testChild);
         
+        assertTrue(this.testEntity.containsChild("testChild"));
         assertNotNull(this.testEntity.getChild("testChild"));
         
         // Indirect destruction
         this.testEntity.getChild("testChild").destroy();
         
+        assertTrue(this.testEntity.containsChild("testChild"));
         assertNotNull(this.testEntity.getChild("testChild"));
         
         this.testEntity.update();
         
+        assertFalse(this.testEntity.containsChild("testChild"));
         assertNull(this.testEntity.getChild("testChild"));
         
         // Direct destruction
         this.testEntity.addChild(new Entity("testChild", new Vector3f(), new Vector3f()));
         
+        assertTrue(this.testEntity.containsChild("testChild"));
         assertNotNull(this.testEntity.getChild("testChild"));
         
         this.testEntity.destroyChild("testChild");
         
+        assertFalse(this.testEntity.containsChild("testChild"));
         assertNull(this.testEntity.getChild("testChild"));
     }
     
     @Test
-    public void testComponentDestruction(){
+    public void testAddComponent(){
+        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        
+        HealthComponent testComponent = new HealthComponent();
+        assertNull(testComponent.getParent());
+        
+        this.testEntity.addComponent(testComponent);
+        
+        assertNotNull(testComponent.getParent());
+        assertEquals(this.testEntity, testComponent.getParent());
+        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        
+        HealthComponent retrievedComponent = this.testEntity.getComponent(HealthComponent.class);
+        
+        assertNotNull(retrievedComponent);
+        
+        assertEquals(testComponent, retrievedComponent);
+        
+    }
+    
+    @Test
+    public void testDetachComponent(){
+        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        
+        HealthComponent testComponent = new HealthComponent();
+        assertNull(testComponent.getParent());
+        
+        this.testEntity.addComponent(testComponent);
+        
+        assertNotNull(testComponent.getParent());
+        assertEquals(this.testEntity, testComponent.getParent());
+        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        
+        HealthComponent detachedComponent = this.testEntity.detachComponent(HealthComponent.class);
+        
+        assertNull(testComponent.getParent());
+        assertEquals(testComponent, detachedComponent);
+        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        
+        assertNull(this.testEntity.getComponent(HealthComponent.class));
+    }
+    
+    @Test
+    public void testDestroyComponent(){
+        ComponentEngine.registerComponent(HealthComponent.class, 1f);
+        
         this.testEntity.update();
         assertFalse(this.testEntity.containsComponent(HealthComponent.class));
         
@@ -181,7 +205,7 @@ public class EntityTest {
     }
     
     @Test
-    public void testEntityDestruction(){
+    public void testDestroyEntity(){
         this.testEntity.addChild(new Entity("testChild", new Vector3f(), new Vector3f()));
         this.testEntity.addComponent(new HealthComponent());
         
@@ -196,6 +220,7 @@ public class EntityTest {
         this.testEntity.destroy();
         
         assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsChild("testChild"));
         assertNull(this.testEntity.getChild("testChild"));
         assertTrue(this.testEntity.isDestroyed());
     }
