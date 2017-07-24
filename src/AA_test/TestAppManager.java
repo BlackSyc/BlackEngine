@@ -15,7 +15,7 @@ import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.Game;
 import blackengine.gameLogic.Scene;
 import blackengine.gameLogic.components.prefab.CameraComponent;
-import blackengine.gameLogic.components.prefab.TestMeshRenderComponent;
+import blackengine.gameLogic.components.prefab.TestMeshComponent;
 import blackengine.openGL.texture.Texture;
 import blackengine.openGL.texture.TextureLoader;
 import blackengine.openGL.vao.Vao;
@@ -81,12 +81,10 @@ public class TestAppManager extends ApplicationManager {
         Entity testEntity = new Entity("testEntity", new Vector3f(5, -3, -12), new Vector3f());
         
         MeshDataObject meshData = MeshLoader.getInstance().loadFromFile("/testRes/", "cube.obj");
-        ImageDataObject imageData = ImageLoader.getInstance().loadFromFile("/testRes/", "testTexture.png");
 
         Vao meshVao = VaoLoader.loadVAO(meshData);
-        Texture imageTexture = TextureLoader.createTexture(imageData);
 
-        TestMeshRenderComponent meshComponent = new TestMeshRenderComponent(meshVao, imageTexture, super.getDisplayManager().getMasterRenderer().getPOVRenderer(TestMeshComponentRenderer.class));
+        TestMeshComponent meshComponent = new TestMeshComponent(meshVao, super.getDisplayManager().getMasterRenderer().getPOVRenderer(TestMeshComponentRenderer.class));
         testEntity.addComponent(meshComponent);
         
         return testEntity;

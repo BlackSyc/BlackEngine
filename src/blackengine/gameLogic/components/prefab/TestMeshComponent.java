@@ -14,25 +14,19 @@ import blackengine.rendering.prefab.TestMeshComponentRenderer;
  *
  * @author Blackened
  */
-public class TestMeshRenderComponent extends RenderComponentBase<TestMeshComponentRenderer>{
+public class TestMeshComponent extends RenderComponentBase<TestMeshComponentRenderer>{
     
     private Vao vao;
     
-    private Texture texture;
 
     public Vao getVao() {
         return vao;
     }
-
-    public Texture getTexture() {
-        return texture;
-    }
     
-    public TestMeshRenderComponent(Vao vao, Texture texture, TestMeshComponentRenderer renderer) {
+    public TestMeshComponent(Vao vao, TestMeshComponentRenderer renderer) {
         super(renderer);
         
         this.vao = vao;
-        this.texture = texture;
         
         this.enableRendering();
     }
