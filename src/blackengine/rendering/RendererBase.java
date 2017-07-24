@@ -9,12 +9,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
@@ -64,6 +66,20 @@ public abstract class RendererBase {
 
     //<editor-fold defaultstate="collapsed" desc="Public Methods">
     /**
+     * Starts the program.
+     */
+    public final void start() {
+        GL20.glUseProgram(programID);
+    }
+
+    /**
+     * Stops the program.
+     */
+    public final void stop() {
+        GL20.glUseProgram(0);
+    }
+
+    /**
      * Destroys the shader program and all its shaders.
      */
     public void destroy() {
@@ -74,7 +90,9 @@ public abstract class RendererBase {
         GL20.glDeleteProgram(programID);
     }
 
+    public void initialize() {
 
+    }
 
     /**
      * Bind all attributes of the shaders.
@@ -92,6 +110,23 @@ public abstract class RendererBase {
      */
     protected void bindAttribute(int attribute, String variableName) {
         GL20.glBindAttribLocation(programID, attribute, variableName);
+    }
+
+    /**
+     * Loads a matrix to the uniform variable in the specified location by
+     * converting it to a float buffer first.
+     *
+     * @param uniformName The name of the uniform variable the matrix will be
+     * loaded into.
+     * @param matrix The matrix that needs to be loaded into the uniform
+     * variable.
+     */
+    protected void loadUniformMatrix(String uniformName, Matrix4f matrix) {
+        int uniformLocation = this.getUniformLocation(uniformName);
+        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+        matrix.store(matrixBuffer);
+        matrixBuffer.flip();
+        GL20.glUniformMatrix4(uniformLocation, false, matrixBuffer);
     }
     //</editor-fold>
 
@@ -113,9 +148,9 @@ public abstract class RendererBase {
         GL20.glLinkProgram(programID);
         GL20.glValidateProgram(programID);
 
-        GL20.glUseProgram(programID);
+        this.start();
         this.loadUniformLocations(uniformVariables);
-        GL20.glUseProgram(0);
+        this.stop();
 
         //DEBUG ONLY
         this.uniformLocations.forEach((x, y) -> {
@@ -167,7 +202,6 @@ public abstract class RendererBase {
     private int getUniformLocation(String uniformName) {
         return GL20.glGetUniformLocation(programID, uniformName);
     }
-    //</editor-fold>
 
     /**
      * Loads a shader to OpenGL and retrieves its uniform variables.
@@ -213,4 +247,6 @@ public abstract class RendererBase {
         }
         return uniformVariables;
     }
+    //</editor-fold>
+
 }

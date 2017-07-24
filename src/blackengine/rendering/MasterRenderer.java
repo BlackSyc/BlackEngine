@@ -8,6 +8,8 @@ package blackengine.rendering;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix4f;
 
 /**
  * An instance of this class will deal with all rendering logic by coordinating
@@ -33,6 +35,11 @@ public class MasterRenderer {
      * The camera that will be used to render the elements of the scene.
      */
     private Camera camera;
+
+    /**
+     * The projection matrix used in this MasterRenderer.
+     */
+    private Matrix4f projectionMatrix;
 
     /**
      * Retrieves a POV renderer of the specified class if it is present in this
@@ -94,6 +101,8 @@ public class MasterRenderer {
             this.getPOVRenderer(renderer.getClass()).destroy();
         }
         this.povRenderers.put(renderer.getClass(), renderer);
+        renderer.setProjectionMatrix(this.projectionMatrix);
+        renderer.initialize();
     }
 
     public void addFlatRenderer(FlatRendererBase renderer) {
@@ -130,9 +139,35 @@ public class MasterRenderer {
      * Calls the render method on all renderers present in this master renderer.
      */
     public void render() {
+        this.prepareForRendering();
         this.renderPOV();
         this.renderFlat();
 
+    }
+
+    /**
+     * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
+     * NEAR_PLANE and display size.
+     *
+     * @param displayWidth
+     * @param displayHeight
+     * @param fieldOfView
+     * @param nearPlane
+     * @param farPlane
+     */
+    public void createProjectionMatrix(float displayWidth, float displayHeight, float fieldOfView, float farPlane, float nearPlane) {
+        float aspectRatio = displayWidth / displayHeight;
+        float y_scale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio;
+        float x_scale = y_scale / aspectRatio;
+        float frustum_length = farPlane - nearPlane;
+
+        this.projectionMatrix = new Matrix4f();
+        this.projectionMatrix.m00 = x_scale;
+        this.projectionMatrix.m11 = y_scale;
+        this.projectionMatrix.m22 = -((farPlane + nearPlane) / frustum_length);
+        this.projectionMatrix.m23 = -1;
+        this.projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
+        this.projectionMatrix.m33 = 0;
     }
 
     /**
@@ -177,6 +212,12 @@ public class MasterRenderer {
                 this.getFlatRenderer(rendererClass).render();
             }
         }
+    }
+
+    private void prepareForRendering() {
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glClearColor(0, 0, 0, 1);
+
     }
 
 }

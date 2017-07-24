@@ -11,12 +11,22 @@ import org.lwjgl.util.vector.Matrix4f;
  *
  * @author Blackened
  */
-public abstract class POVRendererBase extends RendererBase{
+public abstract class POVRendererBase extends RendererBase {
+
+    private Matrix4f projectionMatrix;
+
+    public Matrix4f getProjectionMatrix() {
+        return projectionMatrix;
+    }
+
+    public void setProjectionMatrix(Matrix4f projectionMatrix) {
+        this.projectionMatrix = projectionMatrix;
+    }
 
     public POVRendererBase(String vertexFile, String fragmentFile) {
         super(vertexFile, fragmentFile);
     }
-    
+
     /**
      * Render the targets.
      *
@@ -24,5 +34,5 @@ public abstract class POVRendererBase extends RendererBase{
      * of 3d elements on screen.
      */
     public abstract void render(Matrix4f viewMatrix);
-    
+
 }

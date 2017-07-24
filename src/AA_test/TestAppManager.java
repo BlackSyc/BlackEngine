@@ -10,17 +10,19 @@ import blackengine.dataAccess.dataObjects.ImageDataObject;
 import blackengine.dataAccess.dataObjects.MeshDataObject;
 import blackengine.dataAccess.fileLoaders.ImageLoader;
 import blackengine.dataAccess.fileLoaders.MeshLoader;
+import blackengine.gameLogic.ComponentEngine;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.Game;
 import blackengine.gameLogic.Scene;
-import blackengine.gameLogic.components.prefab.SimpleMeshRenderComponent;
+import blackengine.gameLogic.components.prefab.CameraComponent;
+import blackengine.gameLogic.components.prefab.TestMeshRenderComponent;
 import blackengine.openGL.texture.Texture;
 import blackengine.openGL.texture.TextureLoader;
 import blackengine.openGL.vao.Vao;
 import blackengine.openGL.vao.VaoLoader;
 import blackengine.rendering.DisplayManager;
 import blackengine.rendering.RenderEngine;
-import blackengine.rendering.prefab.SimpleMeshComponentRenderer;
+import blackengine.rendering.prefab.TestMeshComponentRenderer;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -33,35 +35,50 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class TestAppManager extends ApplicationManager {
 
-    private Game game;
-
     @Override
     public void setUp() {
         super.setDisplayManager(new DisplayManager(60));
         super.getDisplayManager().createDisplay(800, 600, "testDisplay", false);
         this.createTestRenderer();
 
+        Entity testPlayer = null;
         Entity testEntity = null;
         try {
+            testPlayer = this.createTestPlayer();
             testEntity = this.createTestEntity();
+            
         } catch (IOException ex) {
             Logger.getLogger(TestAppManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        this.game = new Game();
-        this.game.setActiveScene(new Scene("testScene"));
-        this.game.getActiveScene().addEntity(testEntity);
+        Game game = new Game();
+        game.setActiveScene(new Scene("testScene"));
+        game.getActiveScene().addEntity(testPlayer);
+        game.getActiveScene().addEntity(testEntity);
+
+        super.setGame(game);
 
     }
 
     private void createTestRenderer() {
-        SimpleMeshComponentRenderer testRenderer = new SimpleMeshComponentRenderer();
+        TestMeshComponentRenderer testRenderer = new TestMeshComponentRenderer();
         super.getDisplayManager().getMasterRenderer().addPOVRenderer(testRenderer);
-        RenderEngine.registerPOVRenderer(SimpleMeshComponentRenderer.class, 1f);
+        RenderEngine.registerPOVRenderer(TestMeshComponentRenderer.class, 1f);
+    }
+
+    private Entity createTestPlayer(){
+        ComponentEngine.registerComponent(CameraComponent.class, 1f);
+        Entity testPlayer = new Entity("testPlayer", new Vector3f(), new Vector3f());
+
+        CameraComponent cameraComponent = new CameraComponent(super.getDisplayManager().getMasterRenderer());
+        cameraComponent.activate();
+        testPlayer.addComponent(cameraComponent);
+
+        return testPlayer;
     }
 
     private Entity createTestEntity() throws IOException {
-        Entity testEntity = new Entity("testEntity", new Vector3f(), new Vector3f());
+        Entity testEntity = new Entity("testEntity", new Vector3f(5, -3, -12), new Vector3f());
         
         MeshDataObject meshData = MeshLoader.getInstance().loadFromFile("/testRes/", "cube.obj");
         ImageDataObject imageData = ImageLoader.getInstance().loadFromFile("/testRes/", "testTexture.png");
@@ -69,9 +86,9 @@ public class TestAppManager extends ApplicationManager {
         Vao meshVao = VaoLoader.loadVAO(meshData);
         Texture imageTexture = TextureLoader.createTexture(imageData);
 
-        SimpleMeshRenderComponent meshComponent = new SimpleMeshRenderComponent(meshVao, imageTexture, super.getDisplayManager().getMasterRenderer().getPOVRenderer(SimpleMeshComponentRenderer.class));
+        TestMeshRenderComponent meshComponent = new TestMeshRenderComponent(meshVao, imageTexture, super.getDisplayManager().getMasterRenderer().getPOVRenderer(TestMeshComponentRenderer.class));
         testEntity.addComponent(meshComponent);
-
+        
         return testEntity;
     }
 

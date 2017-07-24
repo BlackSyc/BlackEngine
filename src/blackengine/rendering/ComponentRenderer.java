@@ -6,6 +6,7 @@
 package blackengine.rendering;
 
 import blackengine.gameLogic.components.base.RenderComponentBase;
+import org.lwjgl.util.vector.Matrix4f;
 
 /**
  *

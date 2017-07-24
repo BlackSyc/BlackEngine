@@ -40,6 +40,16 @@ public abstract class ApplicationManager {
         this.displayManager = displayManager;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+    
+    
+
     public ApplicationManager() {
         this.displayManager = new DisplayManager(60);
     }

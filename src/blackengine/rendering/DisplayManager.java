@@ -34,6 +34,7 @@ public class DisplayManager {
     public DisplayManager(int fpsCap) {
         this.fpsCap = fpsCap;
         this.masterRenderer = new MasterRenderer();
+        
     }
 
     public void render() {
@@ -78,6 +79,8 @@ public class DisplayManager {
         }
 
         GL11.glViewport(0, 0, width, height);
+        
+        this.masterRenderer.createProjectionMatrix(width, height, 70f, 0.1f, 500f);
     }
 
     public void destroyDisplay() {

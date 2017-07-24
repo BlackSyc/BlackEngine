@@ -8,13 +8,13 @@ package blackengine.gameLogic.components.prefab;
 import blackengine.gameLogic.components.base.RenderComponentBase;
 import blackengine.openGL.texture.Texture;
 import blackengine.openGL.vao.Vao;
-import blackengine.rendering.prefab.SimpleMeshComponentRenderer;
+import blackengine.rendering.prefab.TestMeshComponentRenderer;
 
 /**
  *
  * @author Blackened
  */
-public class SimpleMeshRenderComponent extends RenderComponentBase<SimpleMeshComponentRenderer>{
+public class TestMeshRenderComponent extends RenderComponentBase<TestMeshComponentRenderer>{
     
     private Vao vao;
     
@@ -28,7 +28,7 @@ public class SimpleMeshRenderComponent extends RenderComponentBase<SimpleMeshCom
         return texture;
     }
     
-    public SimpleMeshRenderComponent(Vao vao, Texture texture, SimpleMeshComponentRenderer renderer) {
+    public TestMeshRenderComponent(Vao vao, Texture texture, TestMeshComponentRenderer renderer) {
         super(renderer);
         
         this.vao = vao;
