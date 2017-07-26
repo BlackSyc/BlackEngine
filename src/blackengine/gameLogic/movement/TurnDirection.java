@@ -16,16 +16,16 @@ public enum TurnDirection {
     
     LEFT {
         @Override
-        protected Vector3f calculateRotation(float amount) {
-            return new Vector3f(0, amount, 0);
+        public Vector3f calculateRotation(float amount) {
+            return new Vector3f(0,  amount, 0);
         }
     },
     RIGHT {
         @Override
-        protected Vector3f calculateRotation(float amount) {
+        public Vector3f calculateRotation(float amount) {
             return new Vector3f(0, -1 * amount, 0);
         }
     };
-    protected abstract Vector3f calculateRotation(float amount);
+    public abstract Vector3f calculateRotation(float amount);
     
 }

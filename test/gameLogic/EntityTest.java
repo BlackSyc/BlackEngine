@@ -7,7 +7,7 @@ package gameLogic;
  */
 
 import blackengine.gameLogic.Entity;
-import blackengine.gameLogic.ComponentEngine;
+import blackengine.gameLogic.LogicEngine;
 import blackengine.gameLogic.components.prefab.HealthComponent;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -175,7 +175,7 @@ public class EntityTest {
     
     @Test
     public void testDestroyComponent(){
-        ComponentEngine.registerComponent(HealthComponent.class, 1f);
+        LogicEngine.registerComponent(HealthComponent.class, 1f);
         
         this.testEntity.update();
         assertFalse(this.testEntity.containsComponent(HealthComponent.class));

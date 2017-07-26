@@ -7,40 +7,39 @@ package blackengine.gameLogic.components.prefab;
 
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
-import java.util.List;
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Action2;
 import rx.functions.Func1;
-import blackengine.userInput.InputAction;
 
 /**
  *
  * @author Blackened
+ * @param <T>
  */
-public class ActionListenerComponent extends ComponentBase {
+public class ActionListenerComponent<T extends Object> extends ComponentBase {
 
-    private final Observable<InputAction> inputActionSubject;
+    private Func1<T, Boolean> filter;
+    private Action2<T, Entity> action;
 
-    private final Action2<Entity, InputAction> action;
+    private Subscription subscription;
 
-    private final Func1<InputAction, Boolean> inputActionFilterPredicate;
-
-    private final List<InputAction> inputActionFilter;
-
-    public ActionListenerComponent(
-            Observable<InputAction> inputActionSubject,
-            List<InputAction> inputActionFilter,
-            Action2<Entity, InputAction> action) {
-
-        this.inputActionSubject = inputActionSubject;
-        this.inputActionFilter = inputActionFilter;
-        this.inputActionFilterPredicate = x -> this.inputActionFilter.contains(x);
+    public ActionListenerComponent(Observable actionSubject, Func1<T, Boolean> filter, Action2<T, Entity> action) {
+        this.filter = filter;
         this.action = action;
-        this.inputActionSubject.filter(this.inputActionFilterPredicate).subscribe(x -> this.handleInput(x));
+
+        this.subscription = this.castObservable(actionSubject)
+                .filter(filter)
+                .subscribe(x -> this.handleInput(x));
     }
 
-    private void handleInput(InputAction inputAction) {
-        this.action.call(super.getParent(), inputAction);
+    @SuppressWarnings("unchecked")
+    private Observable<T> castObservable(Observable obs) {
+        return (Observable<T>) obs;
+    }
+
+    private void handleInput(T input) {
+        this.action.call(input, this.getParent());
     }
 
     @Override

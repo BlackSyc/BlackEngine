@@ -138,7 +138,7 @@ public class MasterRenderer {
     /**
      * Calls the render method on all renderers present in this master renderer.
      */
-    public void render() {
+    protected void render() {
         this.prepareForRendering();
         this.renderPOV();
         this.renderFlat();
@@ -187,7 +187,7 @@ public class MasterRenderer {
      */
     private void renderPOV() {
         if (this.camera != null) {
-            Iterator<Class<? extends POVRendererBase>> iter = RenderEngine.getPOVRendererIterator();
+            Iterator<Class<? extends POVRendererBase>> iter = RenderEngine.getInstance().getPOVRendererIterator();
 
             while (iter.hasNext()) {
                 Class<? extends POVRendererBase> rendererClass = iter.next();
@@ -204,7 +204,7 @@ public class MasterRenderer {
      * RenderEngine.
      */
     private void renderFlat() {
-        Iterator<Class<? extends FlatRendererBase>> iter = RenderEngine.getFlatRendererIterator();
+        Iterator<Class<? extends FlatRendererBase>> iter = RenderEngine.getInstance().getFlatRendererIterator();
 
         while (iter.hasNext()) {
             Class<? extends FlatRendererBase> rendererClass = iter.next();

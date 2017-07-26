@@ -21,25 +21,15 @@ import org.lwjgl.opengl.PixelFormat;
  */
 public class DisplayManager {
 
-    private MasterRenderer masterRenderer;
-
-    private int fpsCap;
-
-    public MasterRenderer getMasterRenderer() {
-        return masterRenderer;
-    }
-    
-    
+    private final int fpsCap;
 
     public DisplayManager(int fpsCap) {
         this.fpsCap = fpsCap;
-        this.masterRenderer = new MasterRenderer();
-        
     }
 
     public void render() {
 
-        this.masterRenderer.render();
+        RenderEngine.getInstance().getMasterRenderer().render();
 
         this.updateDisplay();
     }
@@ -55,9 +45,12 @@ public class DisplayManager {
         Display.update();
 
     }
+    
+    public void createEngine(){
+        RenderEngine.create();
+    }
 
     public void createDisplay(int width, int height, String title, boolean fullScreen) {
-
         ContextAttribs attribs = new ContextAttribs(3, 2)
                 .withForwardCompatible(true)
                 .withProfileCore(true);
@@ -79,8 +72,8 @@ public class DisplayManager {
         }
 
         GL11.glViewport(0, 0, width, height);
-        
-        this.masterRenderer.createProjectionMatrix(width, height, 70f, 0.1f, 500f);
+
+        RenderEngine.getInstance().getMasterRenderer().createProjectionMatrix(width, height, 70f, 0.1f, 500f);
     }
 
     public void destroyDisplay() {

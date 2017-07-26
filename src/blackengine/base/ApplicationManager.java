@@ -5,7 +5,8 @@
  */
 package blackengine.base;
 
-import blackengine.gameLogic.Game;
+import blackengine.gameLogic.GameManager;
+import blackengine.gameLogic.LogicEngine;
 import org.lwjgl.opengl.Display;
 import blackengine.rendering.DisplayManager;
 import blackengine.userInput.InputManager;
@@ -18,19 +19,11 @@ public abstract class ApplicationManager {
 
     private boolean isRunning;
 
-    private InputManager inputManager;
-
-    private Game game;
+    private GameManager gameManager;
 
     private DisplayManager displayManager;
 
-    public InputManager getInputManager() {
-        return inputManager;
-    }
-
-    public void setInputManager(InputManager inputManager) {
-        this.inputManager = inputManager;
-    }
+    private InputManager inputManager;
 
     public DisplayManager getDisplayManager() {
         return displayManager;
@@ -40,15 +33,21 @@ public abstract class ApplicationManager {
         this.displayManager = displayManager;
     }
 
-    public Game getGame() {
-        return game;
+    public GameManager getGameManager() {
+        return gameManager;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
     }
-    
-    
+
+    public InputManager getInputManager() {
+        return inputManager;
+    }
+
+    public void setInputManager(InputManager inputManager) {
+        this.inputManager = inputManager;
+    }
 
     public ApplicationManager() {
         this.displayManager = new DisplayManager(60);
@@ -59,17 +58,18 @@ public abstract class ApplicationManager {
         setUp();
 
         while (!Display.isCloseRequested() && isRunning) {
-
-            if (this.inputManager != null) {
+            
+            if(this.inputManager != null){
                 this.inputManager.handleInput();
             }
 
-            if (this.game != null) {
-                this.game.updateActiveScene();
-                this.game.updateActiveUI();
+            if (this.gameManager != null) {
+                this.gameManager.updateActiveScene();
+                this.gameManager.updateActiveUI();
             }
 
             this.displayManager.render();
+            LogicEngine.getInstance().getTimer().registerFrame();
 
         }
 

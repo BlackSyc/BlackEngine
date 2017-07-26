@@ -31,12 +31,26 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     public double getYaw() {
-        return yaw;
+        return - this.getParent().getRotation().y;
     }
 
     public double getRoll() {
         return roll;
     }
+
+    public void setPitch(double pitch) {
+        this.pitch = pitch;
+    }
+
+    public void setYaw(double yaw) {
+        this.yaw = yaw;
+    }
+
+    public void setRoll(double roll) {
+        this.roll = roll;
+    }
+    
+    
 
     
     public boolean isActive() {
@@ -65,7 +79,7 @@ public class CameraComponent extends ComponentBase implements Camera {
         this.viewMatrix = new Matrix4f();
         this.viewMatrix.setIdentity();
         Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) this.getYaw(), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
         Vector3f cameraPos = super.getParent().getAbsolutePosition();
         Vector3f negativeCameraPos = new Vector3f(-cameraPos.x, -cameraPos.y, -cameraPos.z);

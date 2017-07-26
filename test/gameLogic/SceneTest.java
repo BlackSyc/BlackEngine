@@ -5,6 +5,7 @@
  */
 package gameLogic;
 
+import blackengine.gameLogic.GameManager;
 import blackengine.gameLogic.Scene;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.prefab.HealthComponent;
@@ -37,7 +38,8 @@ public class SceneTest {
 
     @Before
     public void setUp() {
-        this.testScene = new Scene("testScene");
+        GameManager game = new GameManager();
+        this.testScene = new Scene("testScene", game);
     }
 
     @After

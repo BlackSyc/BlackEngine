@@ -5,27 +5,41 @@
  */
 package blackengine.gameLogic;
 
-import blackengine.uiLogic.UserInterface;
+import blackengine.base.GameElement;
+
+
 
 /**
  *
  * @author Blackened
  */
-public class Game {
+public class GameManager {
 
-    private Scene activeScene;
+    private GameElement activeScene;
 
-    private UserInterface activeUserInterface;
+    private GameElement activeUserInterface;
 
-    public Scene getActiveScene() {
+    public GameElement getActiveScene() {
         return activeScene;
     }
 
-    public void setActiveScene(Scene activeScene) {
+    public void setActiveScene(GameElement activeScene) {
         this.activeScene = activeScene;
     }
 
-    public Game() {
+    public GameElement getActiveUserInterface() {
+        return activeUserInterface;
+    }
+
+    public void setActiveUserInterface(GameElement activeUserInterface) {
+        this.activeUserInterface = activeUserInterface;
+    }    
+    
+    public void createEngine(){
+        LogicEngine.create();
+    }
+
+    public GameManager() {
     }
 
     public void updateActiveScene() {

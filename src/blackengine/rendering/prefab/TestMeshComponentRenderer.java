@@ -85,7 +85,6 @@ public class TestMeshComponentRenderer extends ComponentRenderer<TestMeshCompone
         });
         this.renderTargets = new HashSet<>();
         super.destroy();
-        System.out.println(this.getClass().getSimpleName() + " destroyed!");
     }
 
     private void initializeRendering(Matrix4f viewMatrix) {

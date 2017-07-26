@@ -6,6 +6,7 @@
  */
 package blackengine.gameLogic.components.prefab;
 
+import blackengine.gameLogic.LogicEngine;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.gameLogic.movement.MoveDirection;
 import blackengine.gameLogic.movement.TurnDirection;
@@ -59,28 +60,29 @@ public class MovementComponent extends ComponentBase {
         this.upwardsSpeed += increase;
     }
 
-    /**
-     * Moves its parent in the specified direction. Frame-time is taken into
-     * account for this calculation.
-     *
-     * @param direction
-     */
     public void move(MoveDirection direction) {
+        Vector3f currentRotation = this.getParent().getRotation();
+        Vector3f translation = direction.calculateTranslation(this.movementSpeed * LogicEngine.getInstance().getTimer().getDelta(), currentRotation);
+        this.moveAbsolute(translation);
     }
 
-    public void moveAbsolute(MoveDirection direction) {
+    public void moveAbsolute(Vector3f translation) {
+        Vector3f currentPosition = this.getParent().getAbsolutePosition();
+        Vector3f newPosition = currentPosition.translate(translation.x, translation.y, translation.z);
+        this.getParent().setAbsolutePosition(newPosition);
     }
 
     public void turn(TurnDirection direction) {
+        Vector3f translation = direction.calculateRotation(this.rotationSpeed * LogicEngine.getInstance().getTimer().getDelta());
+        this.translateParentRotation(translation);
     }
 
     public void turnAbsolute(float amount) {
     }
 
-    private void translateParentPosition(Vector3f translation) {
-    }
 
     private void translateParentRotation(Vector3f translation) {
+        this.getParent().getRotation().translate(translation.x, translation.y, translation.z);
     }
 
     public void jump() {

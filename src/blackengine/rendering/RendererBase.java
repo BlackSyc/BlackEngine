@@ -151,11 +151,6 @@ public abstract class RendererBase {
         this.start();
         this.loadUniformLocations(uniformVariables);
         this.stop();
-
-        //DEBUG ONLY
-        this.uniformLocations.forEach((x, y) -> {
-            System.out.println("Uniform '" + x + "' is at location: " + y);
-        });
     }
 
     /**

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.lwjgl.util.vector.Vector3f;
-import blackengine.gameLogic.components.prefab.ComponentFabricator;
 
 /**
  * An instance of this class represents an entity in 3D space. This entity can
@@ -132,13 +131,29 @@ public class Entity {
     }
 
     /**
-     * Setter for the 3D position of this entity.
+     * Setter for the relative 3D position of this entity.
      *
-     * @param position An instance of Vector3f containing the new position for
-     * this entity in 3D space.
+     * @param position An instance of Vector3f containing the new relative
+     * position for this entity in 3D space.
      */
-    public void setPosition(Vector3f position) {
-        this.position = position;
+    public void setRelativePosition(Vector3f position) {
+        this.position = new Vector3f(position);
+    }
+
+    /**
+     * Setter for the absolute 3D position of this entity.
+     *
+     * @param newPosition An instance of Vector3f containing the new absolute
+     * position for this entity in 3D space.
+     */
+    public void setAbsolutePosition(Vector3f newPosition) {
+        if (this.getParent() != null) {
+            this.position = new Vector3f(newPosition.x - this.getParent().getAbsolutePosition().x,
+                    newPosition.y - this.getParent().getAbsolutePosition().y,
+                    newPosition.z - this.getParent().getAbsolutePosition().z);
+        } else {
+            this.position = new Vector3f(newPosition);
+        }
     }
 
     /**
@@ -200,11 +215,14 @@ public class Entity {
      * @param child An entity that will be added to this entity as a child.
      */
     public void addChild(Entity child) {
-        if (this.containsChild(child.getName())) {
-            this.destroyChild(child.getName());
+        if (child != null) {
+
+            if (this.containsChild(child.getName())) {
+                this.destroyChild(child.getName());
+            }
+            this.children.put(child.getName(), child);
+            child.setParent(this);
         }
-        this.children.put(child.getName(), child);
-        child.setParent(this);
     }
 
     /**
@@ -268,22 +286,13 @@ public class Entity {
      * @param component The component to be added to this entity.
      */
     public void addComponent(ComponentBase component) {
-        if (this.containsComponent(component.getMapping())) {
-            this.getComponent(component.getMapping()).destroy();
+        if (component != null) {
+            if (this.containsComponent(component.getMapping())) {
+                this.getComponent(component.getMapping()).destroy();
+            }
+            component.setParent(this);
+            this.components.put(component.getMapping(), component);
         }
-        component.setParent(this);
-        this.components.put(component.getMapping(), component);
-    }
-
-    /**
-     * Lets the fabricator create a component and adds it to this entity using
-     * the addComponent(ComponentBase component) method.
-     *
-     * @param fabricator The fabricator needed to construct the component.
-     */
-    public void addComponent(ComponentFabricator<? extends ComponentBase> fabricator) {
-        ComponentBase newComponent = fabricator.create();
-        this.addComponent(newComponent);
     }
 
     /**
@@ -323,7 +332,7 @@ public class Entity {
         // Update all components that are present in the order presented by the
         // order iterator. Removes the components if they are flagged for 
         // destruction.
-        Iterator<Class<? extends ComponentBase>> iter = ComponentEngine.getComponentIterator();
+        Iterator<Class<? extends ComponentBase>> iter = LogicEngine.getInstance().getComponentIterator();
 
         while (iter.hasNext()) {
             Class<? extends ComponentBase> componentClass = iter.next();
@@ -362,11 +371,10 @@ public class Entity {
      * Removes all components from this entity that are flagged for destruction.
      */
     private void removeComponentsFlaggedForDestruction() {
-        Iterator<ComponentBase> componentIterator = this.components.values().iterator();
-        while (componentIterator.hasNext()) {
-            ComponentBase component = componentIterator.next();
-            if (component.isDestroyed()) {
-                this.components.remove(component.getMapping());
+        Iterator<Map.Entry<Class<? extends ComponentBase>, ComponentBase>> iter = this.components.entrySet().iterator();
+        while (iter.hasNext()) {
+            if (iter.next().getValue().isDestroyed()) {
+                iter.remove();
             }
         }
     }
@@ -375,11 +383,10 @@ public class Entity {
      * Removes all children from this entity that are flagged for destruction.
      */
     private void removeChildrenFlaggedForDestruction() {
-        Iterator<Entity> childrenIterator = this.children.values().iterator();
+        Iterator<Map.Entry<String, Entity>> childrenIterator = this.children.entrySet().iterator();
         while (childrenIterator.hasNext()) {
-            Entity child = childrenIterator.next();
-            if (child.isDestroyed()) {
-                this.children.remove(child.getName());
+            if (childrenIterator.next().getValue().isDestroyed()) {
+                childrenIterator.remove();
             }
         }
     }

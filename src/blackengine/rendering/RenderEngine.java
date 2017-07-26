@@ -17,11 +17,45 @@ import java.util.TreeSet;
  */
 public class RenderEngine {
     
-    private static boolean anisotropicFilteringEnabled = true;
+    //<editor-fold defaultstate="collapsed" desc="Instance">
     
-    private static HashMap<Class<? extends POVRendererBase>, Float> povPriorityMap = new HashMap<>();
+    private static RenderEngine INSTANCE;
 
-    private static final SortedSet<Class<? extends POVRendererBase>> POV_RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends POVRendererBase>>() {
+    public static RenderEngine getInstance() {
+        return INSTANCE;
+    }
+    
+    protected static void create(){
+        INSTANCE = new RenderEngine();
+    }
+
+    private RenderEngine() {
+        this.masterRenderer = new MasterRenderer();
+    }
+    
+    //</editor-fold>
+    
+    
+    //<editor-fold defaultstate="collapsed" desc="Master Renderer">
+    private MasterRenderer masterRenderer;
+
+    public MasterRenderer getMasterRenderer() {
+        return this.masterRenderer;
+    }
+    //</editor-fold>
+
+    //<editor-fold  defaultstate="collapsed" desc="Settings">
+    private boolean anisotropicFilteringEnabled = true;
+
+    public boolean isAnisotropicFilteringEnabled() {
+        return this.anisotropicFilteringEnabled;
+    }
+    //</editor-fold>
+
+    // <editor-fold  defaultstate="collapsed" desc="Renderer registration">
+    private HashMap<Class<? extends POVRendererBase>, Float> povPriorityMap = new HashMap<>();
+
+    private final SortedSet<Class<? extends POVRendererBase>> POV_RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends POVRendererBase>>() {
 
         @Override
         public int compare(Class<? extends POVRendererBase> o1, Class<? extends POVRendererBase> o2) {
@@ -29,10 +63,10 @@ public class RenderEngine {
                     .compareTo(povPriorityMap.get(o2));
         }
     });
-    
-    private static HashMap<Class<? extends FlatRendererBase>, Float> flatPriorityMap = new HashMap<>();
 
-    private static final SortedSet<Class<? extends FlatRendererBase>> FLAT_RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends FlatRendererBase>>() {
+    private HashMap<Class<? extends FlatRendererBase>, Float> flatPriorityMap = new HashMap<>();
+
+    private final SortedSet<Class<? extends FlatRendererBase>> FLAT_RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends FlatRendererBase>>() {
 
         @Override
         public int compare(Class<? extends FlatRendererBase> o1, Class<? extends FlatRendererBase> o2) {
@@ -41,44 +75,43 @@ public class RenderEngine {
         }
     });
 
-    public static boolean isAnisotropicFilteringEnabled() {
-        return anisotropicFilteringEnabled;
-    }
-    
-    public static HashMap<Class<? extends POVRendererBase>, Float> getPOVPriorityMap() {
-        return povPriorityMap;
-    }
-    
-    public static HashMap<Class<? extends FlatRendererBase>, Float> getFlatPriorityMap(){
-        return flatPriorityMap;
+    public HashMap<Class<? extends POVRendererBase>, Float> getPOVPriorityMap() {
+        return this.povPriorityMap;
     }
 
-    public static void registerPOVRenderer(Class<? extends POVRendererBase> clazz, Float priority) {
-        povPriorityMap.put(clazz, priority);
-        POV_RENDERER_ORDER.add(clazz);
-    }
-    
-    public static void registerFlatRenderer(Class<? extends FlatRendererBase> clazz, Float priority){
-        flatPriorityMap.put(clazz, priority);
-        FLAT_RENDERER_ORDER.add(clazz);
+    public HashMap<Class<? extends FlatRendererBase>, Float> getFlatPriorityMap() {
+        return this.flatPriorityMap;
     }
 
-    public static void unregisterPOVRenderer(Class<? extends POVRendererBase> clazz) {
-        povPriorityMap.remove(clazz);
-        POV_RENDERER_ORDER.remove(clazz);
-    }
-    
-    public static void unregisterFlatRenderer(Class<? extends FlatRendererBase> clazz){
-        flatPriorityMap.remove(clazz);
-        FLAT_RENDERER_ORDER.remove(clazz);
+    public void registerPOVRenderer(Class<? extends POVRendererBase> clazz, Float priority) {
+        this.povPriorityMap.put(clazz, priority);
+        this.POV_RENDERER_ORDER.add(clazz);
     }
 
-    public static Iterator<Class<? extends POVRendererBase>> getPOVRendererIterator() {
-        return POV_RENDERER_ORDER.iterator();
+    public void registerFlatRenderer(Class<? extends FlatRendererBase> clazz, Float priority) {
+        this.flatPriorityMap.put(clazz, priority);
+        this.FLAT_RENDERER_ORDER.add(clazz);
     }
+
+    public void unregisterPOVRenderer(Class<? extends POVRendererBase> clazz) {
+        this.povPriorityMap.remove(clazz);
+        this.POV_RENDERER_ORDER.remove(clazz);
+    }
+
+    public void unregisterFlatRenderer(Class<? extends FlatRendererBase> clazz) {
+        this.flatPriorityMap.remove(clazz);
+        this.FLAT_RENDERER_ORDER.remove(clazz);
+    }
+
+    public Iterator<Class<? extends POVRendererBase>> getPOVRendererIterator() {
+        return this.POV_RENDERER_ORDER.iterator();
+    }
+
+    public Iterator<Class<? extends FlatRendererBase>> getFlatRendererIterator() {
+        return this.FLAT_RENDERER_ORDER.iterator();
+    }
+    //</editor-fold>
     
-    public static Iterator<Class<? extends FlatRendererBase>> getFlatRendererIterator(){
-        return FLAT_RENDERER_ORDER.iterator();
-    }
+    
 
 }

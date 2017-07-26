@@ -5,6 +5,7 @@
  */
 package blackengine.gameLogic;
 
+import blackengine.base.GameElement;
 import blackengine.gameLogic.terrain.Terrain;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ import java.util.Map;
  *
  * @author Blackened
  */
-public class Scene {
+public class Scene extends GameElement {
 
     //<editor-fold defaultstate="collapsed" desc="Properties">
     /**
@@ -106,10 +107,12 @@ public class Scene {
      * @param entity The entity that will be added to this scene.
      */
     public void addEntity(Entity entity) {
-        if (this.containsEntity(entity.getName())) {
-            this.destroyEntity(entity.getName());
+        if (entity != null) {
+            if (this.containsEntity(entity.getName())) {
+                this.destroyEntity(entity.getName());
+            }
+            this.entities.put(entity.getName(), entity);
         }
-        this.entities.put(entity.getName(), entity);
     }
 
     /**
@@ -141,6 +144,7 @@ public class Scene {
      * Calls the update method for all entities present in this scene, and
      * destroys all entities flagged for destruction.
      */
+    @Override
     public void update() {
         this.entities.values().forEach(x -> x.update());
 
@@ -150,6 +154,7 @@ public class Scene {
     /**
      * Destroys this scene and all its entities and flags for destruction.
      */
+    @Override
     public void destroy() {
         this.entities.values().forEach(x -> x.destroy());
         this.removeEntitiesFlaggedForDestruction();
@@ -162,11 +167,10 @@ public class Scene {
      * Removes all entities from this scene that are flagged for destruction.
      */
     private void removeEntitiesFlaggedForDestruction() {
-        Iterator<Entity> entityIterator = this.entities.values().iterator();
+        Iterator<Map.Entry<String, Entity>> entityIterator = this.entities.entrySet().iterator();
         while (entityIterator.hasNext()) {
-            Entity entity = entityIterator.next();
-            if (entity.isDestroyed()) {
-                this.entities.remove(entity.getName());
+            if (entityIterator.next().getValue().isDestroyed()) {
+                entityIterator.remove();
             }
         }
     }

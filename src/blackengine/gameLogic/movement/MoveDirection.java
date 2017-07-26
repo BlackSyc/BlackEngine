@@ -17,7 +17,7 @@ public enum MoveDirection {
     FORWARD {
 
         @Override
-        protected Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             float dx = (float) (amount * Math.sin(currentRotation.getY()));
             float dz = (float) (amount * Math.cos(currentRotation.getY()));
             return new Vector3f(dx, 0, dz);
@@ -25,7 +25,7 @@ public enum MoveDirection {
     },
     BACKWARD {
         @Override
-        protected Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             float dx = (float) (amount * Math.sin(currentRotation.getY()));
             float dz = (float) (amount * Math.cos(currentRotation.getY()));
             return new Vector3f(-dx, 0, -dz);
@@ -33,7 +33,7 @@ public enum MoveDirection {
     },
     LEFT {
         @Override
-        protected Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             float dx = (float) (amount * Math.sin(currentRotation.getY() - 0.5 * Math.PI));
             float dz = (float) (amount * Math.cos(currentRotation.getY() - 0.5 * Math.PI));
             return new Vector3f(-dx, 0, -dz);
@@ -41,7 +41,7 @@ public enum MoveDirection {
     },
     RIGHT {
         @Override
-        protected Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             float dx = (float) (amount * Math.sin(currentRotation.getY() - 0.5 * Math.PI));
             float dz = (float) (amount * Math.cos(currentRotation.getY() - 0.5 * Math.PI));
             return new Vector3f(dx, 0, dz);
@@ -49,17 +49,17 @@ public enum MoveDirection {
     },
     UP {
         @Override
-        protected Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             return new Vector3f(0, amount, 0);
         }
     },
     DOWN {
         @Override
-        protected Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             return new Vector3f(0, -amount, 0);
         }
     };
 
-    protected abstract Vector3f calculateTranslation(float amount, Vector3f currentRotation);
+    public abstract Vector3f calculateTranslation(float amount, Vector3f currentRotation);
 
 }
