@@ -5,10 +5,6 @@
  */
 package blackengine.gameLogic;
 
-import blackengine.base.GameElement;
-
-
-
 /**
  *
  * @author Blackened
@@ -33,10 +29,21 @@ public class GameManager {
 
     public void setActiveUserInterface(GameElement activeUserInterface) {
         this.activeUserInterface = activeUserInterface;
-    }    
-    
-    public void createEngine(){
+    }
+
+    public void createEngine() {
         LogicEngine.create();
+    }
+
+    public void destroyGameElements() {
+        if (this.activeScene != null) {
+            this.activeScene.destroy();
+        }
+        if (this.activeUserInterface != null) {
+            this.activeUserInterface.destroy();
+        }
+        this.activeScene = null;
+        this.activeUserInterface = null;
     }
 
     public GameManager() {

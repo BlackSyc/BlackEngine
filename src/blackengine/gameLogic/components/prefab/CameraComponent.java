@@ -7,7 +7,7 @@ package blackengine.gameLogic.components.prefab;
 
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.rendering.Camera;
-import blackengine.rendering.MasterRenderer;
+import blackengine.rendering.RenderEngine;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -21,10 +21,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     private double yaw = 0;
     private double roll = 0;
     
-    
-
-    private MasterRenderer masterRenderer;
-    private Matrix4f viewMatrix;
+    private Matrix4f viewMatrix = new Matrix4f();
 
     public double getPitch() {
         return pitch;
@@ -54,15 +51,14 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     
     public boolean isActive() {
-        return this.masterRenderer.getCamera() == this;
+        return RenderEngine.getInstance().getMasterRenderer().getCamera() == this;
     }
 
-    public CameraComponent(MasterRenderer masterRenderer) {
-        this.masterRenderer = masterRenderer;
+    public CameraComponent() {
     }
 
     public void activate() {
-        this.masterRenderer.setCamera(this);
+        RenderEngine.getInstance().getMasterRenderer().setCamera(this);
     }
 
     @Override

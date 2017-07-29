@@ -8,7 +8,6 @@ package gameLogic;
 import blackengine.gameLogic.GameManager;
 import blackengine.gameLogic.Scene;
 import blackengine.gameLogic.Entity;
-import blackengine.gameLogic.components.prefab.HealthComponent;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,7 +38,8 @@ public class SceneTest {
     @Before
     public void setUp() {
         GameManager game = new GameManager();
-        this.testScene = new Scene("testScene", game);
+        game.createEngine();
+        this.testScene = new Scene("testScene");
     }
 
     @After

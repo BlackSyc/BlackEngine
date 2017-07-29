@@ -7,6 +7,7 @@ package gameLogic;
  */
 
 import blackengine.gameLogic.Entity;
+import blackengine.gameLogic.GameManager;
 import blackengine.gameLogic.LogicEngine;
 import blackengine.gameLogic.components.prefab.HealthComponent;
 import org.junit.After;
@@ -35,6 +36,8 @@ public class EntityTest {
     
     @Before
     public void setUp() {
+        GameManager gameManager = new GameManager();
+        gameManager.createEngine();
         this.testEntity = new Entity("testEntity", new Vector3f(1,1,1), new Vector3f(0,0,0));
     }
     
@@ -175,7 +178,7 @@ public class EntityTest {
     
     @Test
     public void testDestroyComponent(){
-        LogicEngine.registerComponent(HealthComponent.class, 1f);
+        LogicEngine.getInstance().registerComponent(HealthComponent.class, 1f);
         
         this.testEntity.update();
         assertFalse(this.testEntity.containsComponent(HealthComponent.class));

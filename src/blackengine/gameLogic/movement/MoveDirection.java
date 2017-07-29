@@ -20,7 +20,7 @@ public enum MoveDirection {
         public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             float dx = (float) (amount * Math.sin(currentRotation.getY()));
             float dz = (float) (amount * Math.cos(currentRotation.getY()));
-            return new Vector3f(dx, 0, dz);
+            return new Vector3f(-dx, 0, -dz);
         }
     },
     BACKWARD {
@@ -28,7 +28,7 @@ public enum MoveDirection {
         public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
             float dx = (float) (amount * Math.sin(currentRotation.getY()));
             float dz = (float) (amount * Math.cos(currentRotation.getY()));
-            return new Vector3f(-dx, 0, -dz);
+            return new Vector3f(dx, 0, dz);
         }
     },
     LEFT {

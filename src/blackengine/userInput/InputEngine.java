@@ -5,6 +5,12 @@
  */
 package blackengine.userInput;
 
+import blackengine.userInput.exceptions.InputEngineNotCreatedException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import rx.Observable;
 
 /**
@@ -15,30 +21,41 @@ import rx.Observable;
 public class InputEngine<T extends Object> {
 
     //<editor-fold defaultstate="collapsed" desc="Instance">
-    
     private static InputEngine<? extends Object> INSTANCE;
 
     public static InputEngine<? extends Object> getInstance() {
-        return INSTANCE;
+        if (INSTANCE != null) {
+            return INSTANCE;
+        }
+        throw new InputEngineNotCreatedException();
     }
 
     private InputEngine(Observable<T> actionObservable) {
         this.actionObservable = actionObservable;
     }
-    
-    protected static void create(Observable<? extends Object> actionObservable){
-        INSTANCE = new InputEngine<>(actionObservable);
-    }
-    
-    //</editor-fold>
-    
-    
 
+    protected static void create(Observable<? extends Object> actionObservable) {
+        INSTANCE = new InputEngine<>(actionObservable);
+        try {
+            Keyboard.create();
+            Mouse.create();
+        } catch (LWJGLException ex) {
+            Logger.getLogger(InputEngine.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void destroy() {
+        INSTANCE = null;
+        Keyboard.destroy();
+        Mouse.destroy();
+    }
+
+    //</editor-fold>
     private Observable<T> actionObservable;
 
     public Observable<T> getActionObservable() {
         return actionObservable;
     }
-    
-    
+
 }

@@ -76,6 +76,10 @@ public abstract class ApplicationManager {
         cleanUp();
         this.isRunning = false;
     }
+    
+    public void quit(){
+        this.isRunning = false;
+    }
 
     public abstract void setUp();
 

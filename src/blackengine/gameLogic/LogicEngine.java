@@ -6,6 +6,7 @@
 package blackengine.gameLogic;
 
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.gameLogic.exceptions.LogicEngineNotCreatedException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,24 +19,29 @@ import java.util.TreeSet;
  * @author Blackened
  */
 public class LogicEngine {
-    
+
     //<editor-fold> defaultstate="collapsed" desc"Instance">
-    
     private static LogicEngine INSTANCE;
 
     public static LogicEngine getInstance() {
-        return INSTANCE;
+        if (INSTANCE != null) {
+            return INSTANCE;
+        }
+        throw new LogicEngineNotCreatedException();
     }
 
     private LogicEngine() {
     }
-    
-    protected static void create(){
+
+    protected static void create() {
         INSTANCE = new LogicEngine();
     }
-    
-    //</editor-fold>
 
+    public void destroy() {
+        INSTANCE = null;
+    }
+
+    //</editor-fold>
     private HashMap<Class<? extends ComponentBase>, Float> priorityMap = new HashMap<>();
 
     private final SortedSet<Class<? extends ComponentBase>> COMPONENT_ORDER = new TreeSet<>(new Comparator<Class<? extends ComponentBase>>() {

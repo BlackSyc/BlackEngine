@@ -5,7 +5,6 @@
  */
 package blackengine.gameLogic;
 
-import blackengine.base.GameElement;
 import blackengine.gameLogic.terrain.Terrain;
 import java.util.HashMap;
 import java.util.Iterator;

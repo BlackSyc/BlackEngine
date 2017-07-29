@@ -5,6 +5,7 @@
  */
 package blackengine.rendering;
 
+import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,16 +17,18 @@ import java.util.TreeSet;
  * @author Blackened
  */
 public class RenderEngine {
-    
+
     //<editor-fold defaultstate="collapsed" desc="Instance">
-    
     private static RenderEngine INSTANCE;
 
     public static RenderEngine getInstance() {
-        return INSTANCE;
+        if (INSTANCE != null) {
+            return INSTANCE;
+        }
+        throw new RenderEngineNotCreatedException();
     }
-    
-    protected static void create(){
+
+    protected static void create() {
         INSTANCE = new RenderEngine();
     }
 
@@ -33,9 +36,12 @@ public class RenderEngine {
         this.masterRenderer = new MasterRenderer();
     }
     
+    public void destroy(){
+        this.masterRenderer.destroy();
+        INSTANCE = null;
+    }
+
     //</editor-fold>
-    
-    
     //<editor-fold defaultstate="collapsed" desc="Master Renderer">
     private MasterRenderer masterRenderer;
 
@@ -111,7 +117,5 @@ public class RenderEngine {
         return this.FLAT_RENDERER_ORDER.iterator();
     }
     //</editor-fold>
-    
-    
 
 }

@@ -36,6 +36,10 @@ public class InputManager<T> {
     public void createEngine() {
         InputEngine.create(this.actionSubject);
     }
+    
+    public void destroySubjects(){
+        actionSubject = null;
+    }
 
     public void handleInput() {
         this.handleSingleKeys();

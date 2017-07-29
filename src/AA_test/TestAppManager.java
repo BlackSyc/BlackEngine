@@ -29,12 +29,10 @@ import blackengine.userInput.InputManager;
 import blackengine.userInput.KeyActionMapper;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.lwjgl.input.Keyboard.*;
 import org.lwjgl.util.vector.Vector3f;
-import rx.Observable;
 
 /**
  *
@@ -56,14 +54,13 @@ public class TestAppManager extends ApplicationManager {
         InputManager<InputAction> inputManager = new InputManager<>(this.createKeyActionMapper());
         inputManager.createEngine();
         super.setInputManager(inputManager);
-        
+
         this.createGame();
 
     }
 
     private void createGame() {
         this.createTestRenderer();
-
 
         Scene testScene = this.createScene();
         super.getGameManager().setActiveScene(testScene);
@@ -97,13 +94,12 @@ public class TestAppManager extends ApplicationManager {
         LogicEngine.getInstance().registerComponent(CameraComponent.class, 1f);
         Entity testPlayer = new Entity("testPlayer", new Vector3f(), new Vector3f());
 
-        CameraComponent cameraComponent = new CameraComponent(RenderEngine.getInstance().getMasterRenderer());
+        CameraComponent cameraComponent = new CameraComponent();
         cameraComponent.activate();
         testPlayer.addComponent(cameraComponent);
 
         MovementComponent movementComponent = new MovementComponent(30f, 2f, 2f, true);
         testPlayer.addComponent(movementComponent);
-        
 
         ActionListenerComponent<InputAction> actionComponent = new ActionListenerComponent<>(InputEngine.getInstance().getActionObservable(),
                 x -> true,
@@ -112,10 +108,10 @@ public class TestAppManager extends ApplicationManager {
                         MovementComponent movComp = y.getComponent(MovementComponent.class);
                         switch (x) {
                             case MOVE_BACKWARD:
-                                movComp.move(MoveDirection.FORWARD);
+                                movComp.move(MoveDirection.BACKWARD);
                                 return;
                             case MOVE_FORWARD:
-                                movComp.move(MoveDirection.BACKWARD);
+                                movComp.move(MoveDirection.FORWARD);
                                 return;
                             case TURN_LEFT:
                                 movComp.turn(TurnDirection.LEFT);
@@ -164,9 +160,13 @@ public class TestAppManager extends ApplicationManager {
 
     @Override
     public void cleanUp() {
-        super.getGameManager().getActiveScene().destroy();
-        RenderEngine.getInstance().getMasterRenderer().destroy();
+        RenderEngine.getInstance().destroy();
+        LogicEngine.getInstance().destroy();
+        InputEngine.getInstance().destroy();
+
         super.getDisplayManager().destroyDisplay();
+        super.getGameManager().destroyGameElements();
+        super.getInputManager().destroySubjects();
 
     }
 

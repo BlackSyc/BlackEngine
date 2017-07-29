@@ -6,7 +6,6 @@
 package blackengine.rendering;
 
 import blackengine.gameLogic.components.base.RenderComponentBase;
-import org.lwjgl.util.vector.Matrix4f;
 
 /**
  *
@@ -15,14 +14,32 @@ import org.lwjgl.util.vector.Matrix4f;
  */
 public abstract class ComponentRenderer<T extends RenderComponentBase> extends POVRendererBase {
     
+    /**
+     * 
+     * @param vertexFile
+     * @param fragmentFile 
+     */
     public ComponentRenderer(String vertexFile, String fragmentFile) {
         super(vertexFile, fragmentFile);
     }
     
+    /**
+     * 
+     * @param renderComponent 
+     */
     public abstract void addRenderTarget(T renderComponent);
     
+    /**
+     * 
+     * @param renderComponent 
+     */
     public abstract void removeRenderTarget(T renderComponent);
     
+    /**
+     * 
+     * @param renderComponent
+     * @return 
+     */
     public abstract boolean containsRenderTarget(T renderComponent);
     
     
