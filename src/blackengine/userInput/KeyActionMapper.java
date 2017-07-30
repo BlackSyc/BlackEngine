@@ -7,6 +7,8 @@ package blackengine.userInput;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 
 /**
  *
@@ -14,13 +16,13 @@ import java.util.Iterator;
  */
 public class KeyActionMapper<T> {
     
-    private HashMap<Integer, T> keyActionMap;
+    private HashMap<BooleanSupplier, T> keyActionMap;
 
-    public KeyActionMapper(HashMap<Integer, T> keyActionMap) {
+    public KeyActionMapper(HashMap<BooleanSupplier, T> keyActionMap) {
         this.keyActionMap = keyActionMap;
     }
     
-    public Iterator<Integer> getMappedKeyIterator(){
+    public Iterator<BooleanSupplier> getMappedKeyIterator(){
         return this.keyActionMap.keySet().iterator();
     }
     
@@ -28,7 +30,7 @@ public class KeyActionMapper<T> {
         return this.keyActionMap.values().iterator();
     }
     
-    public T getAction(Integer key){
+    public T getAction(BooleanSupplier key){
         return this.keyActionMap.get(key);
     }
     

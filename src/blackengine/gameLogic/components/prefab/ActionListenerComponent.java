@@ -21,16 +21,14 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
 
     private Func1<T, Boolean> filter;
     private Action2<T, Entity> action;
+    private Observable<T> actionSubject;
 
     private Subscription subscription;
 
     public ActionListenerComponent(Observable actionSubject, Func1<T, Boolean> filter, Action2<T, Entity> action) {
         this.filter = filter;
         this.action = action;
-
-        this.subscription = this.castObservable(actionSubject)
-                .filter(filter)
-                .subscribe(x -> this.handleInput(x));
+        this.actionSubject = this.castObservable(actionSubject);
     }
 
     @SuppressWarnings("unchecked")
@@ -40,6 +38,20 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
 
     private void handleInput(T input) {
         this.action.call(input, this.getParent());
+    }
+
+    @Override
+    public void activate() {
+        this.subscription = actionSubject
+                .filter(filter)
+                .subscribe(x -> this.handleInput(x));
+        super.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        this.subscription.unsubscribe();
+        super.deactivate();
     }
 
     @Override

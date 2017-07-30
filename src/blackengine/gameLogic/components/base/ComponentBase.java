@@ -20,6 +20,8 @@ public abstract class ComponentBase{
      * Whether this component is flagged for destruction or not.
      */
     private boolean destroyed = false;
+    
+    private boolean active = false;
 
     /**
      * Getter for whether this component is flagged for destruction or not.
@@ -39,6 +41,16 @@ public abstract class ComponentBase{
         this.parent = parent;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
+    
+
     /**
      * Handles all logic necessary for destroying this component.
      */
@@ -48,6 +60,14 @@ public abstract class ComponentBase{
     }
 
     public abstract void update();
+    
+    public void activate(){
+        this.active = true;
+    }
+    
+    public void deactivate(){
+        this.active = false;
+    }
     
     public Class<? extends ComponentBase> getMapping(){
         return this.getClass();

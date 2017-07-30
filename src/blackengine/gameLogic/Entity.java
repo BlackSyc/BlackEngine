@@ -57,7 +57,9 @@ public class Entity {
      */
     private final Map<Class<? extends ComponentBase>, ComponentBase> components;
 
+    private boolean active = false;
     //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
     /**
      * Getter for the name of this entity.
@@ -165,8 +167,16 @@ public class Entity {
     public void setRotation(Vector3f rotation) {
         this.rotation = rotation;
     }
-    //</editor-fold>
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Default constructor for creating a new instance of the Entity class.
@@ -350,6 +360,18 @@ public class Entity {
 
         // Remove all children that are flagged for destruction.
         this.removeChildrenFlaggedForDestruction();
+    }
+
+    public void activate() {
+        this.children.values().forEach(x -> x.activate());
+        this.components.values().forEach(x -> x.activate());
+        this.active = true;
+    }
+    
+    public void deactivate(){
+        this.children.values().forEach(x -> x.deactivate());
+        this.components.values().forEach(x -> x.deactivate());
+        this.active = false;
     }
 
     /**

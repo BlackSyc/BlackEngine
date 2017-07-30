@@ -28,10 +28,6 @@ public abstract class RenderComponentBase<T extends ComponentRenderer> extends C
         this.renderer = renderer;
     }
     
-    public abstract void enableRendering();
-    
-    public abstract void disableRendering();
-    
     public abstract boolean isRendered();
     
     @Override

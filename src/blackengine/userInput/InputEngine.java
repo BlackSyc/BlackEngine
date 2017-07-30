@@ -30,12 +30,13 @@ public class InputEngine<T extends Object> {
         throw new InputEngineNotCreatedException();
     }
 
-    private InputEngine(Observable<T> actionObservable) {
+    private InputEngine(Observable<T> actionObservable, Observable<MouseEvent> mouseObservable) {
         this.actionObservable = actionObservable;
+        this.mouseObservable = mouseObservable;
     }
 
-    protected static void create(Observable<? extends Object> actionObservable) {
-        INSTANCE = new InputEngine<>(actionObservable);
+    protected static void create(Observable<? extends Object> actionObservable, Observable<MouseEvent> mouseObservable) {
+        INSTANCE = new InputEngine<>(actionObservable, mouseObservable);
         try {
             Keyboard.create();
             Mouse.create();
@@ -50,12 +51,18 @@ public class InputEngine<T extends Object> {
         Keyboard.destroy();
         Mouse.destroy();
     }
-
     //</editor-fold>
+    
     private Observable<T> actionObservable;
+    
+    private Observable<MouseEvent> mouseObservable;
 
     public Observable<T> getActionObservable() {
         return actionObservable;
+    }
+
+    public Observable<MouseEvent> getMouseObservable() {
+        return mouseObservable;
     }
 
 }

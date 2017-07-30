@@ -20,7 +20,13 @@ public class GameManager {
     }
 
     public void setActiveScene(GameElement activeScene) {
+        if(this.activeScene != null){
+            this.activeScene.deactivate();
+            this.activeScene.destroy();
+        }
         this.activeScene = activeScene;
+        this.activeScene.activate();
+        
     }
 
     public GameElement getActiveUserInterface() {

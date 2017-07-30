@@ -27,10 +27,13 @@ import blackengine.rendering.prefab.TestMeshComponentRenderer;
 import blackengine.userInput.InputEngine;
 import blackengine.userInput.InputManager;
 import blackengine.userInput.KeyActionMapper;
+import blackengine.userInput.MouseEvent;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.input.Keyboard;
 import static org.lwjgl.input.Keyboard.*;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -56,6 +59,27 @@ public class TestAppManager extends ApplicationManager {
         super.setInputManager(inputManager);
 
         this.createGame();
+
+        //TEST
+        InputEngine.getInstance().getMouseObservable()
+                .filter(x -> x == MouseEvent.MOUSEDOWN)
+                .subscribe(x -> {
+                    System.out.println("Mouse down with button: " + x.getButton() + " at: " + x.getX() + "," + x.getY());
+                });
+        
+        InputEngine.getInstance().getMouseObservable()
+                .filter(x -> x == MouseEvent.MOUSEUP)
+                .subscribe(x -> {
+                    System.out.println("Mouse up with button: " + x.getButton() + " at: " + x.getX() + "," + x.getY());
+                });
+        
+        InputEngine.getInstance().getMouseObservable()
+                .filter(x -> x == MouseEvent.HOVER)
+                .subscribe(x -> {
+                    System.out.println("HOVER at: " + x.getX() + "," + x.getY());
+                });
+        
+        
 
     }
 
@@ -140,20 +164,16 @@ public class TestAppManager extends ApplicationManager {
     }
 
     private KeyActionMapper<InputAction> createKeyActionMapper() {
-        HashMap<Integer, InputAction> inputMap = new HashMap<>();
-        inputMap.put(KEY_SPACE, JUMP);
-        inputMap.put(KEY_W, MOVE_FORWARD);
-        inputMap.put(KEY_S, MOVE_BACKWARD);
-        inputMap.put(KEY_A, TURN_LEFT);
-        inputMap.put(KEY_D, TURN_RIGHT);
-        inputMap.put(KEY_Q, STRAFE_LEFT);
-        inputMap.put(KEY_E, STRAFE_RIGHT);
-        inputMap.put(KEY_LSHIFT, CAMERA_FOCUS);
-        inputMap.put(KEY_1, CAST_SPELL1);
-        inputMap.put(KEY_2, CAST_SPELL2);
-        inputMap.put(KEY_3, CAST_SPELL3);
-        inputMap.put(KEY_ESCAPE, UI_QUIT);
-        inputMap.put(KEY_RETURN, UI_RETURN);
+        HashMap<BooleanSupplier, InputAction> inputMap = new HashMap<>();
+        BooleanSupplier bs = () -> {
+            return false; //To change body of generated lambdas, choose Tools | Templates.
+        };
+        inputMap.put(() -> Keyboard.isKeyDown(KEY_SPACE), JUMP);
+        inputMap.put(() -> Keyboard.isKeyDown(KEY_W), MOVE_FORWARD);
+        inputMap.put(() -> Keyboard.isKeyDown(KEY_W) && Keyboard.isKeyDown(KEY_LSHIFT), MOVE_FORWARD);
+        inputMap.put(() -> Keyboard.isKeyDown(KEY_S), MOVE_BACKWARD);
+        inputMap.put(() -> Keyboard.isKeyDown(KEY_A), TURN_LEFT);
+        inputMap.put(() -> Keyboard.isKeyDown(KEY_D), TURN_RIGHT);
         KeyActionMapper<InputAction> keyActionMapper = new KeyActionMapper<>(inputMap);
         return keyActionMapper;
     }

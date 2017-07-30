@@ -40,6 +40,8 @@ public class Scene extends GameElement {
      * Whether this instance is flagged for destruction or not.
      */
     private boolean destroyed = false;
+    
+    private boolean active = false;
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
@@ -59,6 +61,10 @@ public class Scene extends GameElement {
      */
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    public boolean isActive() {
+        return active;
     }
     //</editor-fold>
 
@@ -148,6 +154,23 @@ public class Scene extends GameElement {
         this.entities.values().forEach(x -> x.update());
 
         this.removeEntitiesFlaggedForDestruction();
+    }
+    
+    /**
+     * Activates this scene, and all its entities and their components.
+     */
+    public void activate(){
+        this.active = true;
+        this.entities.values().forEach(x -> {
+            x.activate();
+        });
+    }
+    
+    public void deactivate(){
+        this.entities.values().forEach(x -> {
+            x.deactivate();
+        });
+        this.active = false;
     }
 
     /**

@@ -6,7 +6,6 @@
 package blackengine.gameLogic.components.prefab;
 
 import blackengine.gameLogic.components.base.RenderComponentBase;
-import blackengine.openGL.texture.Texture;
 import blackengine.openGL.vao.Vao;
 import blackengine.rendering.prefab.TestMeshComponentRenderer;
 
@@ -27,20 +26,8 @@ public class TestMeshComponent extends RenderComponentBase<TestMeshComponentRend
         super(renderer);
         
         this.vao = vao;
-        
-        this.enableRendering();
     }
         
-
-    @Override
-    public void enableRendering() {
-        super.getRenderer().addRenderTarget(this);
-    }
-
-    @Override
-    public void disableRendering() {
-        super.getRenderer().removeRenderTarget(this);
-    }
 
     @Override
     public boolean isRendered() {
@@ -48,6 +35,18 @@ public class TestMeshComponent extends RenderComponentBase<TestMeshComponentRend
             super.getRenderer().containsRenderTarget(this);
         }
         return false;
+    }
+
+    @Override
+    public void activate() {
+        super.getRenderer().addRenderTarget(this);
+        super.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        super.getRenderer().removeRenderTarget(this);
+        super.activate();
     }
 
     

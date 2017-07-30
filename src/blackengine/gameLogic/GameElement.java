@@ -18,4 +18,8 @@ public abstract class GameElement {
     
     public abstract void update();
     
+    public abstract void activate();
+    
+    public abstract void deactivate();
+    
 }
