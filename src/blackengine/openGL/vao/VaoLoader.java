@@ -7,6 +7,7 @@
 package blackengine.openGL.vao;
 
 import blackengine.dataAccess.dataObjects.MeshDataObject;
+import blackengine.openGL.prefab.Quad;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import blackengine.openGL.vao.vbo.IndexVbo;
@@ -26,8 +27,8 @@ import org.lwjgl.opengl.GL30;
  */
 public class VaoLoader {
 
-    public static Vao loadVAO(MeshDataObject meshData){
-        
+    public static Vao loadVAO(MeshDataObject meshData) {
+
         //First we create all Vbos that are needed
         IndexVbo indexVbo = new IndexVbo(meshData.getIndices());
 
@@ -47,15 +48,36 @@ public class VaoLoader {
         // Now we create all Vbos on the graphics card, and add them to the Vao.
         attachIndexVbo(meshVao.getIndex());
         meshVao.getVbos().forEach(x -> attachVbo(x));
-        
+
         // Unbind the VAO
         GL30.glBindVertexArray(0);
-        
+
         return meshVao;
     }
-    
-    
-    
+
+    public static Vao loadVao(Quad quad) {
+
+        IndexVbo indexVbo = new IndexVbo(quad.getIndices());
+
+        VertexPositionVbo vertexPositionVbo = new VertexPositionVbo(quad.getVertexPositions());
+        TextureCoordVbo textureCoordVbo = new TextureCoordVbo(quad.getTextureCoords());
+
+        int vertexCount = indexVbo.getData().length;
+        Vao quadVao = new Vao(vertexCount, indexVbo, vertexPositionVbo, textureCoordVbo);
+
+        int vaoID = GL30.glGenVertexArrays();
+        quadVao.setVaoId(vaoID);
+        GL30.glBindVertexArray(quadVao.getVaoId());
+
+        attachIndexVbo(quadVao.getIndex());
+        quadVao.getVbos().forEach(x -> attachVbo(x));
+
+        GL30.glBindVertexArray(0);
+
+        return quadVao;
+
+    }
+
     /**
      * Creates the IndexVBO for the currently bound VAO.
      *
@@ -102,19 +124,18 @@ public class VaoLoader {
             // Specifies that this is for the Vertex Array.
             GL20.glVertexAttribPointer(vbo.getAttributeType(), vbo.getCoordinateSize(), GL11.GL_FLOAT, false, 0, 0);
         }
-        if(vbo.getData() instanceof int[]){
-            
+        if (vbo.getData() instanceof int[]) {
+
             IntBuffer buffer = toReadableIntBuffer((int[]) vbo.getData());
-            
-            throw new UnsupportedOperationException("loading int buffers is not yet implemented!");            
+
+            throw new UnsupportedOperationException("loading int buffers is not yet implemented!");
         }
 
         // Unbind the VBO. TODO: CHECK IF THIS IS NECESSARY:
         //GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        
         vbo.setVboId(vboID);
     }
-    
+
     private static FloatBuffer toReadableFloatBuffer(float[] data) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
         buffer.put(data);

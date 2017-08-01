@@ -15,6 +15,7 @@ import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.GameManager;
 import blackengine.gameLogic.Scene;
 import blackengine.gameLogic.components.prefab.CameraComponent;
+import blackengine.gameLogic.components.prefab.MouseListenerComponent;
 import blackengine.gameLogic.components.prefab.MovementComponent;
 import blackengine.gameLogic.components.prefab.TestMeshComponent;
 import blackengine.gameLogic.movement.MoveDirection;
@@ -59,28 +60,6 @@ public class TestAppManager extends ApplicationManager {
         super.setInputManager(inputManager);
 
         this.createGame();
-
-        //TEST
-        InputEngine.getInstance().getMouseObservable()
-                .filter(x -> x == MouseEvent.MOUSEDOWN)
-                .subscribe(x -> {
-                    System.out.println("Mouse down with button: " + x.getButton() + " at: " + x.getX() + "," + x.getY());
-                });
-        
-        InputEngine.getInstance().getMouseObservable()
-                .filter(x -> x == MouseEvent.MOUSEUP)
-                .subscribe(x -> {
-                    System.out.println("Mouse up with button: " + x.getButton() + " at: " + x.getX() + "," + x.getY());
-                });
-        
-        InputEngine.getInstance().getMouseObservable()
-                .filter(x -> x == MouseEvent.HOVER)
-                .subscribe(x -> {
-                    System.out.println("HOVER at: " + x.getX() + "," + x.getY());
-                });
-        
-        
-
     }
 
     private void createGame() {
@@ -138,15 +117,28 @@ public class TestAppManager extends ApplicationManager {
                                 movComp.move(MoveDirection.FORWARD);
                                 return;
                             case TURN_LEFT:
-                                movComp.turn(TurnDirection.LEFT);
+                                movComp.move(MoveDirection.LEFT);
                                 return;
                             case TURN_RIGHT:
-                                movComp.turn(TurnDirection.RIGHT);
+                                movComp.move(MoveDirection.RIGHT);
                         };
                     }
                 });
 
         testPlayer.addComponent(actionComponent);
+
+        MouseListenerComponent mlc = new MouseListenerComponent(InputEngine.getInstance().getMouseObservable(), x -> x == MouseEvent.DRAG_RMB, (x, y) -> {
+            if (y.containsComponent(MovementComponent.class)) {
+                y.getComponent(MovementComponent.class).turnAbsolute(new Vector3f(0, 0.5f * (float) Math.toRadians(-x.getDx()),0));
+            }
+            if(y.containsComponent(CameraComponent.class)){
+                double originalPitch = y.getComponent(CameraComponent.class).getPitch();
+                y.getComponent(CameraComponent.class).setPitch(originalPitch + 0.5 * Math.toRadians(-x.getDy()));
+            }
+        });
+
+        testPlayer.addComponent(mlc);
+
         return testPlayer;
     }
 

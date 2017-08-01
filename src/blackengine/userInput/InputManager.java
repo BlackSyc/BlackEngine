@@ -68,17 +68,28 @@ public class InputManager<T> {
     }
 
     private void handleMouseInput() {
+        int dx = Mouse.getDX();
+        int dy = Mouse.getDY();
         while (Mouse.next()) {
             if (Mouse.getEventButton() != -1) {
                 if (Mouse.getEventButtonState()) {
-                    this.mouseSubject.onNext(MOUSEDOWN.at(Mouse.getX(), Mouse.getY()).withButton(Mouse.getEventButton()));
+                    this.mouseSubject.onNext(MOUSEDOWN.at(Mouse.getX(), Mouse.getY()).withButton(Mouse.getEventButton()).withDelta(dx, dy));
                 }
                 else{
-                    this.mouseSubject.onNext(MOUSEUP.at(Mouse.getX(), Mouse.getY()).withButton(Mouse.getEventButton()));
+                    this.mouseSubject.onNext(MOUSEUP.at(Mouse.getX(), Mouse.getY()).withButton(Mouse.getEventButton()).withDelta(dx, dy));
                 }
             }
         }
-        this.mouseSubject.onNext(HOVER.at(Mouse.getX(), Mouse.getY()));
+        if(Mouse.isButtonDown(0) || Mouse.isButtonDown(1)){
+            if(Mouse.isButtonDown(0))
+                this.mouseSubject.onNext(DRAG_LMB.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+            if(Mouse.isButtonDown(1))
+                this.mouseSubject.onNext(DRAG_RMB.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+        }
+        else{
+            this.mouseSubject.onNext(HOVER.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+        }
+        
     }
 
 }

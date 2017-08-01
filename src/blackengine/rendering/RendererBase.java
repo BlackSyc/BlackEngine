@@ -205,7 +205,6 @@ public abstract class RendererBase {
      * @return
      */
     private List<String> loadShader(String shaderFile, int shaderType) {
-
         List<String> uniformVariables = new ArrayList<>();
         StringBuilder shaderSource = new StringBuilder();
 

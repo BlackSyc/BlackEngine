@@ -16,12 +16,24 @@ public enum MouseEvent {
      */
     HOVER,
     MOUSEDOWN,
-    MOUSEUP;
+    MOUSEUP,
+    DRAG_RMB(1),
+    DRAG_LMB(0);
 
     MouseEvent() {
         this.x = 0;
         this.y = 0;
+        this.dx = 0;
+        this.dy = 0;
         this.button = -1;
+    }
+    
+    MouseEvent(int button){
+        this.x = 0;
+        this.y = 0;
+        this.dx = 0;
+        this.dy = 0;
+        this.button = button;
     }
 
     public MouseEvent at(int x, int y) {
@@ -34,6 +46,12 @@ public enum MouseEvent {
         this.button = button;
         return this;
     }
+    
+    public MouseEvent withDelta(int dx, int dy){
+        this.dx = dx;
+        this.dy = dy;
+        return this;
+    }
 
     public int getX() {
         return this.x;
@@ -43,12 +61,22 @@ public enum MouseEvent {
         return this.y;
     }
 
+    public int getDx() {
+        return dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
     public int getButton() {
         return button;
     }
 
     private int x;
     private int y;
+    private int dx;
+    private int dy;
     private int button;
 
 }

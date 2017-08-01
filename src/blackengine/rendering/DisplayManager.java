@@ -72,8 +72,11 @@ public class DisplayManager {
         }
 
         GL11.glViewport(0, 0, width, height);
-
-        RenderEngine.getInstance().getMasterRenderer().createProjectionMatrix(width, height, 70f, 0.1f, 500f);
+        
+        RenderEngine.getInstance().getMasterRenderer().setWidth(width);
+        RenderEngine.getInstance().getMasterRenderer().setHeight(height);
+        
+        RenderEngine.getInstance().getMasterRenderer().createProjectionMatrix(70f, 500f, 0.1f);
     }
 
     public void destroyDisplay() {

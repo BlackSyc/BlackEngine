@@ -35,6 +35,26 @@ public class MasterRenderer {
      * The camera that will be used to render the elements of the scene.
      */
     private Camera camera;
+    
+    private float width = 0;
+    
+    private float height = 0;
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
 
     /**
      * The projection matrix used in this MasterRenderer.
@@ -106,7 +126,11 @@ public class MasterRenderer {
     }
 
     public void addFlatRenderer(FlatRendererBase renderer) {
-
+        if (this.containsFlatRendererByClass(renderer.getClass())) {
+            this.getFlatRenderer(renderer.getClass()).destroy();
+        }
+        this.flatRenderers.put(renderer.getClass(), renderer);
+        renderer.initialize();
     }
 
     /**
@@ -149,14 +173,12 @@ public class MasterRenderer {
      * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
      * NEAR_PLANE and display size.
      *
-     * @param displayWidth
-     * @param displayHeight
      * @param fieldOfView
      * @param nearPlane
      * @param farPlane
      */
-    public void createProjectionMatrix(float displayWidth, float displayHeight, float fieldOfView, float farPlane, float nearPlane) {
-        float aspectRatio = displayWidth / displayHeight;
+    public void createProjectionMatrix(float fieldOfView, float farPlane, float nearPlane) {
+        float aspectRatio = this.width / this.height;
         float y_scale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio;
         float x_scale = y_scale / aspectRatio;
         float frustum_length = farPlane - nearPlane;

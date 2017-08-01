@@ -21,18 +21,20 @@ public class CameraComponent extends ComponentBase implements Camera {
     private double yaw = 0;
     private double roll = 0;
     
-    private Matrix4f viewMatrix = new Matrix4f();
+    private Vector3f position;
+    
+    protected Matrix4f viewMatrix = new Matrix4f();
 
     public double getPitch() {
-        return pitch;
+        return this.pitch;
     }
 
     public double getYaw() {
-        return - this.getParent().getRotation().y;
+        return this.yaw;
     }
 
     public double getRoll() {
-        return roll;
+        return this.roll;
     }
 
     public void setPitch(double pitch) {
@@ -47,9 +49,7 @@ public class CameraComponent extends ComponentBase implements Camera {
         this.roll = roll;
     }
     
-    
-
-    
+    @Override
     public boolean isActive() {
         return RenderEngine.getInstance().getMasterRenderer().getCamera() == this;
     }
@@ -57,13 +57,24 @@ public class CameraComponent extends ComponentBase implements Camera {
     public CameraComponent() {
     }
 
+    @Override
     public void activate() {
         RenderEngine.getInstance().getMasterRenderer().setCamera(this);
     }
 
     @Override
     public void update() {
+        this.updateYawPitchRoll();
+        this.updatePosition();
         this.createViewMatrix();
+    }
+    
+    protected void updateYawPitchRoll(){
+        this.yaw = -super.getParent().getRotation().getY();
+    }
+    
+    protected void updatePosition(){
+        this.position = new Vector3f(super.getParent().getAbsolutePosition());
     }
 
     @Override
@@ -74,11 +85,10 @@ public class CameraComponent extends ComponentBase implements Camera {
     public void createViewMatrix() {
         this.viewMatrix = new Matrix4f();
         this.viewMatrix.setIdentity();
-        Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) this.getPitch(), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) this.getYaw(), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
-        Vector3f cameraPos = super.getParent().getAbsolutePosition();
-        Vector3f negativeCameraPos = new Vector3f(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+        Matrix4f.rotate((float) this.getRoll(), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
+        Vector3f negativeCameraPos = this.position.negate(null);
         Matrix4f.translate(negativeCameraPos, this.viewMatrix, this.viewMatrix);
     }
 

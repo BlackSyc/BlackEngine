@@ -159,6 +159,7 @@ public class Scene extends GameElement {
     /**
      * Activates this scene, and all its entities and their components.
      */
+    @Override
     public void activate(){
         this.active = true;
         this.entities.values().forEach(x -> {
@@ -166,6 +167,7 @@ public class Scene extends GameElement {
         });
     }
     
+    @Override
     public void deactivate(){
         this.entities.values().forEach(x -> {
             x.deactivate();

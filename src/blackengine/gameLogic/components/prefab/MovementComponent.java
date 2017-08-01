@@ -77,7 +77,9 @@ public class MovementComponent extends ComponentBase {
         this.translateParentRotation(translation);
     }
 
-    public void turnAbsolute(float amount) {
+    public void turnAbsolute(Vector3f rotation) {
+        Vector3f newRotation = super.getParent().getRotation().translate(rotation.x, rotation.y, rotation.z);
+        super.getParent().setRotation(newRotation);
     }
 
 

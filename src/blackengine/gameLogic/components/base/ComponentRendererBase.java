@@ -5,14 +5,14 @@
  */
 package blackengine.gameLogic.components.base;
 
-import blackengine.rendering.ComponentRenderer;
+import blackengine.rendering.TargetPOVRenderer;
 
 /**
  *
  * @author Blackened
  * @param <T>
  */
-public abstract class RenderComponentBase<T extends ComponentRenderer> extends ComponentBase {
+public abstract class ComponentRendererBase<T extends TargetPOVRenderer> extends ComponentBase {
 
     private T renderer;
 
@@ -24,7 +24,7 @@ public abstract class RenderComponentBase<T extends ComponentRenderer> extends C
         this.renderer = renderer;
     }
 
-    public RenderComponentBase(T renderer) {
+    public ComponentRendererBase(T renderer) {
         this.renderer = renderer;
     }
     

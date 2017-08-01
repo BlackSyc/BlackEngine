@@ -56,6 +56,16 @@ public class InputEngine<T extends Object> {
     private Observable<T> actionObservable;
     
     private Observable<MouseEvent> mouseObservable;
+    
+    private float mouseSensitivity = 1;
+
+    public float getMouseSensitivity() {
+        return mouseSensitivity;
+    }
+
+    public void setMouseSensitivity(float mouseSensitivity) {
+        this.mouseSensitivity = mouseSensitivity;
+    }
 
     public Observable<T> getActionObservable() {
         return actionObservable;

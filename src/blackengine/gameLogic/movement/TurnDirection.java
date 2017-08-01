@@ -23,7 +23,7 @@ public enum TurnDirection {
     RIGHT {
         @Override
         public Vector3f calculateRotation(float amount) {
-            return new Vector3f(0, -1 * amount, 0);
+            return new Vector3f(0, -amount, 0);
         }
     };
     public abstract Vector3f calculateRotation(float amount);

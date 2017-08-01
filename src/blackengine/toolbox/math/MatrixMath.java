@@ -55,4 +55,21 @@ public class MatrixMath {
         return matrix;
     }
 
+    /**
+     * Creates a matrix that contains the translation, rotation and scale
+     * properties.
+     *
+     * @param translation The position.
+     * @param width
+     * @param height
+     * @return A new transformation matrix.
+     */
+    public static Matrix4f createTransformationMatrix(Vector3f translation, float width, float height) {
+        Matrix4f matrix = new Matrix4f();
+        matrix.setIdentity();
+        Matrix4f.translate(translation, matrix, matrix);
+        Matrix4f.scale(new Vector3f(width, height, 1), matrix, matrix);
+        return matrix;
+    }
+
 }

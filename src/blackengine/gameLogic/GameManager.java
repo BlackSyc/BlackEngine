@@ -35,6 +35,7 @@ public class GameManager {
 
     public void setActiveUserInterface(GameElement activeUserInterface) {
         this.activeUserInterface = activeUserInterface;
+        this.activeUserInterface.activate();
     }
 
     public void createEngine() {

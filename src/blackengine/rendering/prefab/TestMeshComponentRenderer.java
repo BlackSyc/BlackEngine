@@ -6,26 +6,22 @@
 package blackengine.rendering.prefab;
 
 import blackengine.gameLogic.components.prefab.TestMeshComponent;
-import blackengine.openGL.texture.Texture;
 import static blackengine.openGL.vao.vbo.AttributeType.*;
-import blackengine.rendering.ComponentRenderer;
+import blackengine.rendering.TargetPOVRenderer;
 import blackengine.toolbox.math.MatrixMath;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import static org.lwjgl.opengl.GL11.GL_LINE;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
  *
  * @author Blackened
  */
-public class TestMeshComponentRenderer extends ComponentRenderer<TestMeshComponent> {
+public class TestMeshComponentRenderer extends TargetPOVRenderer<TestMeshComponent> {
 
     private Set<TestMeshComponent> renderTargets;
 
@@ -89,6 +85,7 @@ public class TestMeshComponentRenderer extends ComponentRenderer<TestMeshCompone
 
     private void initializeRendering(Matrix4f viewMatrix) {
         GL11.glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         this.start();
         this.loadUniformMatrix("viewMatrix", viewMatrix);
     }
@@ -96,6 +93,7 @@ public class TestMeshComponentRenderer extends ComponentRenderer<TestMeshCompone
     private void finalizeRendering() {
         this.stop();
         GL11.glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
     }
 
 }
