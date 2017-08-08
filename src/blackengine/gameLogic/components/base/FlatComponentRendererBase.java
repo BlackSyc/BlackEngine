@@ -5,33 +5,34 @@
  */
 package blackengine.gameLogic.components.base;
 
-import blackengine.rendering.TargetPOVRenderer;
+import blackengine.rendering.TargetFlatRenderer;
 
 /**
  *
  * @author Blackened
  * @param <T>
  */
-public abstract class ComponentRendererBase<T extends TargetPOVRenderer> extends ComponentBase {
+public abstract class FlatComponentRendererBase<T extends TargetFlatRenderer> extends ComponentBase {
 
     private T renderer;
 
     public T getRenderer() {
         return renderer;
     }
-    
-    public void setRenderer(T renderer){
+
+    public void setRenderer(T renderer) {
         this.renderer = renderer;
     }
 
-    public ComponentRendererBase(T renderer) {
+    public FlatComponentRendererBase(T renderer) {
         this.renderer = renderer;
     }
-    
+
     public abstract boolean isRendered();
-    
+
     @Override
-    public void update(){
-        
+    public void update() {
+
     }
+
 }

@@ -1,4 +1,4 @@
-package gameLogic;
+package gameLogic.entity;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -9,7 +9,6 @@ package gameLogic;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.GameManager;
 import blackengine.gameLogic.LogicEngine;
-import blackengine.gameLogic.components.prefab.HealthComponent;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -135,18 +134,18 @@ public class EntityTest {
     
     @Test
     public void testAddComponent(){
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsComponent(TestComponentImpl.class));
         
-        HealthComponent testComponent = new HealthComponent();
+        TestComponentImpl testComponent = new TestComponentImpl();
         assertNull(testComponent.getParent());
         
         this.testEntity.addComponent(testComponent);
         
         assertNotNull(testComponent.getParent());
         assertEquals(this.testEntity, testComponent.getParent());
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
         
-        HealthComponent retrievedComponent = this.testEntity.getComponent(HealthComponent.class);
+        TestComponentImpl retrievedComponent = this.testEntity.getComponent(TestComponentImpl.class);
         
         assertNotNull(retrievedComponent);
         
@@ -156,73 +155,73 @@ public class EntityTest {
     
     @Test
     public void testDetachComponent(){
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsComponent(TestComponentImpl.class));
         
-        HealthComponent testComponent = new HealthComponent();
+        TestComponentImpl testComponent = new TestComponentImpl();
         assertNull(testComponent.getParent());
         
         this.testEntity.addComponent(testComponent);
         
         assertNotNull(testComponent.getParent());
         assertEquals(this.testEntity, testComponent.getParent());
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
         
-        HealthComponent detachedComponent = this.testEntity.detachComponent(HealthComponent.class);
+        TestComponentImpl detachedComponent = this.testEntity.detachComponent(TestComponentImpl.class);
         
         assertNull(testComponent.getParent());
         assertEquals(testComponent, detachedComponent);
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsComponent(TestComponentImpl.class));
         
-        assertNull(this.testEntity.getComponent(HealthComponent.class));
+        assertNull(this.testEntity.getComponent(TestComponentImpl.class));
     }
     
     @Test
     public void testDestroyComponent(){
-        LogicEngine.getInstance().registerComponent(HealthComponent.class, 1f);
+        LogicEngine.getInstance().registerComponent(TestComponentImpl.class, 1f);
         
         this.testEntity.update();
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsComponent(TestComponentImpl.class));
         
-        HealthComponent testComponent = new HealthComponent();
+        TestComponentImpl testComponent = new TestComponentImpl();
         this.testEntity.addComponent(testComponent);
         
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
         
         // Indirect destruction
-        this.testEntity.getComponent(HealthComponent.class).destroy();
+        this.testEntity.getComponent(TestComponentImpl.class).destroy();
         
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
         
         this.testEntity.update();
         
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsComponent(TestComponentImpl.class));
         
         // Direct destruction
-        this.testEntity.addComponent(new HealthComponent());
+        this.testEntity.addComponent(new TestComponentImpl());
         
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
         
-        this.testEntity.destroyComponent(HealthComponent.class);
+        this.testEntity.destroyComponent(TestComponentImpl.class);
         
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsComponent(TestComponentImpl.class));
     }
     
     @Test
     public void testDestroyEntity(){
         this.testEntity.addChild(new Entity("testChild", new Vector3f(), new Vector3f()));
-        this.testEntity.addComponent(new HealthComponent());
+        this.testEntity.addComponent(new TestComponentImpl());
         
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
         assertNotNull(this.testEntity.getChild("testChild"));
         
         this.testEntity.update();
         
-        assertTrue(this.testEntity.containsComponent(HealthComponent.class));
+        assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
         assertNotNull(this.testEntity.getChild("testChild"));
         
         this.testEntity.destroy();
         
-        assertFalse(this.testEntity.containsComponent(HealthComponent.class));
+        assertFalse(this.testEntity.containsComponent(TestComponentImpl.class));
         assertFalse(this.testEntity.containsChild("testChild"));
         assertNull(this.testEntity.getChild("testChild"));
         assertTrue(this.testEntity.isDestroyed());

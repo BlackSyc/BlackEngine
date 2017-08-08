@@ -37,7 +37,7 @@ public class LogicEngine {
         INSTANCE = new LogicEngine();
     }
 
-    public void destroy() {
+    protected void destroy() {
         INSTANCE = null;
     }
 

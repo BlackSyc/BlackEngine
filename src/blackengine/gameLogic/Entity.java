@@ -393,24 +393,14 @@ public class Entity {
      * Removes all components from this entity that are flagged for destruction.
      */
     private void removeComponentsFlaggedForDestruction() {
-        Iterator<Map.Entry<Class<? extends ComponentBase>, ComponentBase>> iter = this.components.entrySet().iterator();
-        while (iter.hasNext()) {
-            if (iter.next().getValue().isDestroyed()) {
-                iter.remove();
-            }
-        }
+        this.components.entrySet().removeIf(x -> x.getValue().isDestroyed());
     }
 
     /**
      * Removes all children from this entity that are flagged for destruction.
      */
     private void removeChildrenFlaggedForDestruction() {
-        Iterator<Map.Entry<String, Entity>> childrenIterator = this.children.entrySet().iterator();
-        while (childrenIterator.hasNext()) {
-            if (childrenIterator.next().getValue().isDestroyed()) {
-                childrenIterator.remove();
-            }
-        }
+        this.children.entrySet().removeIf(x -> x.getValue().isDestroyed());
     }
 
     //</editor-fold>

@@ -45,9 +45,15 @@ public class DisplayManager {
         Display.update();
 
     }
-    
-    public void createEngine(){
+
+    public void createEngine() {
         RenderEngine.create();
+    }
+
+    public void destroyEngine() {
+        if (RenderEngine.getInstance() != null) {
+            RenderEngine.getInstance().destroy();
+        }
     }
 
     public void createDisplay(int width, int height, String title, boolean fullScreen) {
@@ -72,10 +78,10 @@ public class DisplayManager {
         }
 
         GL11.glViewport(0, 0, width, height);
-        
+
         RenderEngine.getInstance().getMasterRenderer().setWidth(width);
         RenderEngine.getInstance().getMasterRenderer().setHeight(height);
-        
+
         RenderEngine.getInstance().getMasterRenderer().createProjectionMatrix(70f, 500f, 0.1f);
     }
 

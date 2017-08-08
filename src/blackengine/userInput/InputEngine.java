@@ -46,7 +46,7 @@ public class InputEngine<T extends Object> {
 
     }
 
-    public void destroy() {
+    protected void destroy() {
         INSTANCE = null;
         Keyboard.destroy();
         Mouse.destroy();

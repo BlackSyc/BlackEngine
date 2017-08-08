@@ -191,12 +191,7 @@ public class Scene extends GameElement {
      * Removes all entities from this scene that are flagged for destruction.
      */
     private void removeEntitiesFlaggedForDestruction() {
-        Iterator<Map.Entry<String, Entity>> entityIterator = this.entities.entrySet().iterator();
-        while (entityIterator.hasNext()) {
-            if (entityIterator.next().getValue().isDestroyed()) {
-                entityIterator.remove();
-            }
-        }
+        this.entities.entrySet().removeIf(x -> x.getValue().isDestroyed());
     }
     //</editor-fold>
 

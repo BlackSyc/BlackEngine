@@ -101,7 +101,7 @@ public class TestAppManager extends ApplicationManager {
         cameraComponent.activate();
         testPlayer.addComponent(cameraComponent);
 
-        MovementComponent movementComponent = new MovementComponent(30f, 2f, 2f, true);
+        MovementComponent movementComponent = new MovementComponent(30f, 2f, 2f);
         testPlayer.addComponent(movementComponent);
 
         ActionListenerComponent<InputAction> actionComponent = new ActionListenerComponent<>(InputEngine.getInstance().getActionObservable(),
@@ -145,7 +145,7 @@ public class TestAppManager extends ApplicationManager {
     private Entity createTestEntity() throws IOException {
         Entity testEntity = new Entity("testEntity", new Vector3f(5, 0, -12), new Vector3f());
 
-        MeshDataObject meshData = MeshLoader.getInstance().loadFromFile("/testRes/", "cube.obj");
+        MeshDataObject meshData = MeshLoader.getInstance().loadFromFile("/testRes/cube.obj");
 
         Vao meshVao = VaoLoader.loadVAO(meshData);
 
@@ -172,13 +172,15 @@ public class TestAppManager extends ApplicationManager {
 
     @Override
     public void cleanUp() {
-        RenderEngine.getInstance().destroy();
-        LogicEngine.getInstance().destroy();
-        InputEngine.getInstance().destroy();
-
-        super.getDisplayManager().destroyDisplay();
+        
         super.getGameManager().destroyGameElements();
+        super.getGameManager().destroyEngine();
         super.getInputManager().destroySubjects();
+        super.getInputManager().destroyEngine();
+        
+
+        super.getDisplayManager().destroyEngine();
+        super.getDisplayManager().destroyDisplay();
 
     }
 

@@ -23,13 +23,11 @@ public class MovementComponent extends ComponentBase {
     private float rotationSpeed;
     private float upwardsSpeed = 0;
     private float jumpPower;
-    private boolean canFly = false;
 
-    public MovementComponent(float movementSpeed, float rotationSpeed, float jumpPower, boolean canFly) {
+    public MovementComponent(float movementSpeed, float rotationSpeed, float jumpPower) {
         this.movementSpeed = movementSpeed;
         this.rotationSpeed = rotationSpeed;
         this.jumpPower = jumpPower;
-        this.canFly = canFly;
     }
 
     public float getUpwardsSpeed() {
@@ -74,20 +72,12 @@ public class MovementComponent extends ComponentBase {
 
     public void turn(TurnDirection direction) {
         Vector3f translation = direction.calculateRotation(this.rotationSpeed * LogicEngine.getInstance().getTimer().getDelta());
-        this.translateParentRotation(translation);
+        this.turnAbsolute(translation);
     }
 
     public void turnAbsolute(Vector3f rotation) {
         Vector3f newRotation = super.getParent().getRotation().translate(rotation.x, rotation.y, rotation.z);
         super.getParent().setRotation(newRotation);
-    }
-
-
-    private void translateParentRotation(Vector3f translation) {
-        this.getParent().getRotation().translate(translation.x, translation.y, translation.z);
-    }
-
-    public void jump() {
     }
 
     /**

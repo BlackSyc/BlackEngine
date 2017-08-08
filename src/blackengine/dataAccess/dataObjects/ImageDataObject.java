@@ -51,12 +51,20 @@ public class ImageDataObject {
 
     /**
      * Getter for the buffer.
+     *
      * @return The byte buffer containing all image data.
      */
     public ByteBuffer getBuffer() {
         return buffer;
     }
 
+    /**
+     * Default constructor for creating a new instance of ImageDataObject.
+     *
+     * @param buffer The byte buffer representing the image data.
+     * @param width The width of the image.
+     * @param height The height of the image.
+     */
     public ImageDataObject(ByteBuffer buffer, int width, int height) {
         this.buffer = buffer;
         this.width = width;

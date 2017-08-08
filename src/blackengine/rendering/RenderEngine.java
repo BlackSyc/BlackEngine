@@ -36,7 +36,7 @@ public class RenderEngine {
         this.masterRenderer = new MasterRenderer();
     }
     
-    public void destroy(){
+    protected void destroy(){
         this.masterRenderer.destroy();
         INSTANCE = null;
     }

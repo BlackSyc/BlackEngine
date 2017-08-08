@@ -3,21 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package blackengine.gameLogic.components.prefab;
+package gameLogic.entity;
 
 import blackengine.gameLogic.components.base.ComponentBase;
-
 
 /**
  *
  * @author Blackened
  */
-public class HealthComponent extends ComponentBase{
-
+public class TestComponentImpl extends ComponentBase{
 
     @Override
     public void update() {
-        System.out.println("Update requested in HealthComponent");
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

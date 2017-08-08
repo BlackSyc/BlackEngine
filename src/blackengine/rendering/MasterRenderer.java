@@ -34,7 +34,7 @@ public class MasterRenderer {
     /**
      * The camera that will be used to render the elements of the scene.
      */
-    private Camera camera;
+    private Camera mainCamera;
     
     private float width = 0;
     
@@ -90,8 +90,8 @@ public class MasterRenderer {
      *
      * @return An object implementing the Camera interface.
      */
-    public Camera getCamera() {
-        return camera;
+    public Camera getMainCamera() {
+        return mainCamera;
     }
 
     /**
@@ -99,8 +99,8 @@ public class MasterRenderer {
      *
      * @param camera An object implementing the Camera interface.
      */
-    public void setCamera(Camera camera) {
-        this.camera = camera;
+    public void setMainCamera(Camera camera) {
+        this.mainCamera = camera;
     }
 
     /**
@@ -208,13 +208,13 @@ public class MasterRenderer {
      * RenderEngine.
      */
     private void renderPOV() {
-        if (this.camera != null) {
+        if (this.mainCamera != null) {
             Iterator<Class<? extends POVRendererBase>> iter = RenderEngine.getInstance().getPOVRendererIterator();
 
             while (iter.hasNext()) {
                 Class<? extends POVRendererBase> rendererClass = iter.next();
                 if (this.containsPOVRendererByClass(rendererClass)) {
-                    this.getPOVRenderer(rendererClass).render(this.camera.getViewMatrix());
+                    this.getPOVRenderer(rendererClass).render(this.mainCamera.getViewMatrix());
                 }
             }
         }

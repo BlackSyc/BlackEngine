@@ -24,12 +24,12 @@ public class ImageLoader extends FileLoader<ImageDataObject> {
     }
 
     @Override
-    public ImageDataObject loadFromFile(String path, String fileName) throws IOException {
-        String extension = this.getFileExtension(fileName);
+    public ImageDataObject loadFromFile(String filePath) throws IOException {
+        String extension = this.getFileExtension(filePath);
 
         switch (extension) {
             case ".png":
-                return this.loadImageDataFromPNGFile(path + fileName);
+                return this.loadImageDataFromPNGFile(filePath);
             default:
                 throw new UnsupportedOperationException("File extension ('" + extension + "') not (yet) supported for loading an image data object!");
         }
@@ -39,7 +39,6 @@ public class ImageLoader extends FileLoader<ImageDataObject> {
         if (this.cache.containsKey(file)) {
             return this.cache.get(file);
         } else {
-            System.out.println("loading " + file);
             int width = 0;
             int height = 0;
             ByteBuffer buffer = null;

@@ -12,15 +12,21 @@ import blackengine.gameLogic.Entity;
  *
  * @author Blackened
  */
-public abstract class ComponentBase{
-    
+public abstract class ComponentBase {
+
+    /**
+     * The parent entity this component belongs to.
+     */
     private Entity parent;
 
     /**
      * Whether this component is flagged for destruction or not.
      */
     private boolean destroyed = false;
-    
+
+    /**
+     * Whether this component is activated or not.
+     */
     private boolean active = false;
 
     /**
@@ -33,43 +39,73 @@ public abstract class ComponentBase{
         return destroyed;
     }
 
+    /**
+     * Getter for the parent of this component.
+     *
+     * @return The parent entity this component belongs to.
+     */
     public Entity getParent() {
         return parent;
     }
 
+    /**
+     * Setter for the parent of this component.
+     *
+     * @param parent The parent entity this component belongs to.
+     */
     public void setParent(Entity parent) {
         this.parent = parent;
     }
 
+    /**
+     * Getter for the active flag.
+     *
+     * @return Whether the component is activated or not. True when it was
+     * activated, false otherwise.
+     */
     public boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-    
-    
-
     /**
-     * Handles all logic necessary for destroying this component.
+     * Deactivates this component, sets its parent to null and flags for
+     * destruction.
      */
     public void destroy() {
+        this.deactivate();
         this.parent = null;
         this.destroyed = true;
+
     }
 
+    /**
+     * Update method will be called every frame if this implementation of
+     * ComponentBase was registered in the
+     * {@link blackengine.gameLogic.LogicEngine LogicEngine}.
+     */
     public abstract void update();
-    
-    public void activate(){
+
+    /**
+     * Activates this component by settings its active flag to true.
+     */
+    public void activate() {
         this.active = true;
     }
-    
-    public void deactivate(){
+
+    /**
+     * Deactivates this component by setting its active flag to false.
+     */
+    public void deactivate() {
         this.active = false;
     }
-    
-    public Class<? extends ComponentBase> getMapping(){
+
+    /**
+     * Retrieves the Class that will be used to map update priority in the
+     * {@link blackengine.gameLogic.LogicEngine LogicEngine}.
+     *
+     * @return A class extending ComponentBase.
+     */
+    public Class<? extends ComponentBase> getMapping() {
         return this.getClass();
     }
 

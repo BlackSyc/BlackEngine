@@ -5,7 +5,7 @@
  */
 package blackengine.gameLogic.components.prefab;
 
-import blackengine.gameLogic.components.base.ComponentRendererBase;
+import blackengine.gameLogic.components.base.POVComponentRendererBase;
 import blackengine.openGL.vao.Vao;
 import blackengine.rendering.prefab.TestMeshComponentRenderer;
 
@@ -13,7 +13,7 @@ import blackengine.rendering.prefab.TestMeshComponentRenderer;
  *
  * @author Blackened
  */
-public class TestMeshComponent extends ComponentRendererBase<TestMeshComponentRenderer>{
+public class TestMeshComponent extends POVComponentRendererBase<TestMeshComponentRenderer>{
     
     private Vao vao;
     

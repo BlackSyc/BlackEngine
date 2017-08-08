@@ -45,6 +45,12 @@ public class InputManager<T> {
     public void createEngine() {
         InputEngine.create(this.actionSubject, this.mouseSubject);
     }
+    
+    public void destroyEngine(){
+        if(InputEngine.getInstance() != null){
+            InputEngine.getInstance().destroy();
+        }
+    }
 
     public void destroySubjects() {
         this.actionSubject = null;

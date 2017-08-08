@@ -15,7 +15,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- * Loads mesh and animation files from different formats into memory.
+ * Loads mesh files from different formats into memory.
  *
  * @author Blackened
  */
@@ -27,15 +27,15 @@ public class MeshLoader extends FileLoader<MeshDataObject> {
     }
     
     @Override
-    public MeshDataObject loadFromFile(String path, String fileName) throws IOException {
+    public MeshDataObject loadFromFile(String filePath) throws IOException {
         
-        String extension = this.getFileExtension(fileName);
+        String extension = this.getFileExtension(filePath);
 
         switch (extension) {
             case ".obj":
-                return this.loadMeshDataFromObjFile(path + fileName);
+                return this.loadMeshDataFromObjFile(filePath);
             case ".dae":
-                return this.loadMeshFromColladaFile(path + fileName);
+                return this.loadMeshFromColladaFile(filePath);
             default:
                 throw new UnsupportedOperationException("File extension ('" + extension + "') not (yet) supported for loading a mesh data object!");
         }

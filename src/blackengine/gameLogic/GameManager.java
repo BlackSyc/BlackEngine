@@ -41,6 +41,12 @@ public class GameManager {
     public void createEngine() {
         LogicEngine.create();
     }
+    
+    public void destroyEngine(){
+        if(LogicEngine.getInstance() != null){
+            LogicEngine.getInstance().destroy();
+        }
+    }
 
     public void destroyGameElements() {
         if (this.activeScene != null) {
