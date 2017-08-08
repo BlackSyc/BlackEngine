@@ -34,8 +34,6 @@ import javax.imageio.ImageIO;
  */
 public class BufferedImageLoader {
 
-
-
     public static BufferedImage loadBufferedImageFromFile(String path, String fileName) throws IOException {
         String extension = getFileExtension(fileName);
 

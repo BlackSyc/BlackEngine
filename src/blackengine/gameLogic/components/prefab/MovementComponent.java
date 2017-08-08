@@ -38,21 +38,10 @@ public class MovementComponent extends ComponentBase {
 
     private float movementSpeed;
     private float rotationSpeed;
-    private float upwardsSpeed = 0;
-    private float jumpPower;
 
-    public MovementComponent(float movementSpeed, float rotationSpeed, float jumpPower) {
+    public MovementComponent(float movementSpeed, float rotationSpeed) {
         this.movementSpeed = movementSpeed;
         this.rotationSpeed = rotationSpeed;
-        this.jumpPower = jumpPower;
-    }
-
-    public float getUpwardsSpeed() {
-        return upwardsSpeed;
-    }
-
-    public void setUpwardsSpeed(float upwardsSpeed) {
-        this.upwardsSpeed = upwardsSpeed;
     }
 
     public void setMovementSpeed(float movementSpeed) {
@@ -61,18 +50,6 @@ public class MovementComponent extends ComponentBase {
 
     public void setRotationSpeed(float rotationSpeed) {
         this.rotationSpeed = rotationSpeed;
-    }
-
-    public float getJumpPower() {
-        return jumpPower;
-    }
-
-    public void setJumpPower(float jumpPower) {
-        this.jumpPower = jumpPower;
-    }
-
-    public void increaseUpwardsSpeed(float increase) {
-        this.upwardsSpeed += increase;
     }
 
     public void move(MoveDirection direction) {
