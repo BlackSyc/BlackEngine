@@ -24,6 +24,7 @@
 package blackengine.gameLogic.components.prefab.behaviour;
 
 import blackengine.gameLogic.components.base.ComponentBase;
+import java.util.Arrays;
 import java.util.TreeSet;
 
 /**
@@ -38,6 +39,16 @@ public class BehaviourComponent extends ComponentBase {
         this.behaviours = new TreeSet<>((x, y)
                 -> Float.compare(x.getPriority(), y.getPriority()));
     }
+
+    public BehaviourComponent(Behaviour... behaviours) {
+        this();
+        
+        Arrays.stream(behaviours).forEach(x -> this.behaviours.add(x));
+    }
+    
+    
+    
+    
 
     public void addBehaviour(Behaviour behaviour) {
         behaviour.setEntity(this.getParent());
