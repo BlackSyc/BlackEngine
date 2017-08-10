@@ -53,7 +53,7 @@ public class SceneTest {
         assertFalse(this.testScene.containsEntity("testEntity"));
         assertNull(this.testScene.getEntity("testEntity"));
 
-        Entity testEntity = new Entity("testEntity", new Vector3f(), new Vector3f());
+        Entity testEntity = new Entity("testEntity");
         this.testScene.addEntity(testEntity);
 
         assertTrue(this.testScene.containsEntity("testEntity"));
@@ -65,7 +65,7 @@ public class SceneTest {
         assertFalse(this.testScene.containsEntity("testEntity"));
         assertNull(this.testScene.getEntity("testEntity"));
 
-        Entity testEntity = new Entity("testEntity", new Vector3f(), new Vector3f());
+        Entity testEntity = new Entity("testEntity");
         this.testScene.addEntity(testEntity);
 
         assertTrue(this.testScene.containsEntity("testEntity"));
@@ -83,7 +83,7 @@ public class SceneTest {
     public void testDestroyEntity() {
         assertNull(this.testScene.getEntity("testEntity"));
 
-        Entity testEntity = new Entity("testEntity", new Vector3f(), new Vector3f());
+        Entity testEntity = new Entity("testEntity");
 
         this.testScene.addEntity(testEntity);
 
@@ -103,7 +103,7 @@ public class SceneTest {
         assertNull(this.testScene.getEntity("testEntity"));
 
         // Direct destruction
-        this.testScene.addEntity(new Entity("testEntity", new Vector3f(), new Vector3f()));
+        this.testScene.addEntity(new Entity("testEntity"));
 
         assertTrue(this.testScene.containsEntity("testEntity"));
         assertNotNull(this.testScene.getEntity("testEntity"));
@@ -116,7 +116,7 @@ public class SceneTest {
 
     @Test
     public void testDestroyScene() {
-        this.testScene.addEntity(new Entity("testEntity", new Vector3f(), new Vector3f()));
+        this.testScene.addEntity(new Entity("testEntity"));
 
         assertTrue(this.testScene.containsEntity("testEntity"));
         assertNotNull(this.testScene.getEntity("testEntity"));

@@ -37,7 +37,7 @@ public class EntityTest {
     public void setUp() {
         GameManager gameManager = new GameManager();
         gameManager.createEngine();
-        this.testEntity = new Entity("testEntity", new Vector3f(1,1,1), new Vector3f(0,0,0));
+        this.testEntity = new Entity("testEntity", new Vector3f(1,1,1), new Vector3f(), new Vector3f());
     }
     
     @After
@@ -52,7 +52,7 @@ public class EntityTest {
         assertNull(this.testEntity.getChild("testChild"));
         
         Vector3f position = new Vector3f(1,1,1);
-        Entity testChild = new Entity("testChild", position, new Vector3f());
+        Entity testChild = new Entity("testChild", position, new Vector3f(), new Vector3f());
         
         assertEquals(position, testChild.getAbsolutePosition());
         assertEquals(position, testChild.getRelativePosition());
@@ -78,7 +78,7 @@ public class EntityTest {
         assertNull(this.testEntity.getChild("testChild"));
         
         Vector3f position = new Vector3f(1,1,1);
-        Entity testChild = new Entity("testChild", position, new Vector3f());
+        Entity testChild = new Entity("testChild", position, new Vector3f(), new Vector3f());
         
         this.testEntity.addChild(testChild);
         
@@ -102,7 +102,7 @@ public class EntityTest {
     public void testDestroyChild(){
         assertNull(this.testEntity.getChild("testChild"));
         
-        Entity testChild = new Entity("testChild", new Vector3f(), new Vector3f());
+        Entity testChild = new Entity("testChild", new Vector3f(), new Vector3f(), new Vector3f());
         
         this.testEntity.addChild(testChild);
         
@@ -121,7 +121,7 @@ public class EntityTest {
         assertNull(this.testEntity.getChild("testChild"));
         
         // Direct destruction
-        this.testEntity.addChild(new Entity("testChild", new Vector3f(), new Vector3f()));
+        this.testEntity.addChild(new Entity("testChild", new Vector3f(), new Vector3f(), new Vector3f()));
         
         assertTrue(this.testEntity.containsChild("testChild"));
         assertNotNull(this.testEntity.getChild("testChild"));
@@ -208,7 +208,7 @@ public class EntityTest {
     
     @Test
     public void testDestroyEntity(){
-        this.testEntity.addChild(new Entity("testChild", new Vector3f(), new Vector3f()));
+        this.testEntity.addChild(new Entity("testChild", new Vector3f(), new Vector3f(), new Vector3f()));
         this.testEntity.addComponent(new TestComponentImpl());
         
         assertTrue(this.testEntity.containsComponent(TestComponentImpl.class));
