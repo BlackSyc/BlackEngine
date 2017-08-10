@@ -44,10 +44,22 @@ public class MouseListenerComponent extends ComponentBase {
     private Func1<MouseEvent, Boolean> filter;
     private Action2<MouseEvent, Entity> action;
 
+    protected void setFilter(Func1<MouseEvent, Boolean> filter) {
+        this.filter = filter;
+    }
+
+    protected void setAction(Action2<MouseEvent, Entity> action) {
+        this.action = action;
+    }
+
     public MouseListenerComponent(Observable<MouseEvent> mouseObservable, Func1<MouseEvent, Boolean> filter, Action2<MouseEvent, Entity> action) {
         this.mouseObservable = mouseObservable;
         this.filter = filter;
         this.action = action;
+    }
+    
+    protected MouseListenerComponent(Observable<MouseEvent> mouseObservable){
+        this.mouseObservable = mouseObservable;
     }
 
     

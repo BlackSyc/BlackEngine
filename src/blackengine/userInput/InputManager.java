@@ -63,9 +63,9 @@ public class InputManager<T> {
     public void createEngine() {
         InputEngine.create(this.actionSubject, this.mouseSubject);
     }
-    
-    public void destroyEngine(){
-        if(InputEngine.getInstance() != null){
+
+    public void destroyEngine() {
+        if (InputEngine.getInstance() != null) {
             InputEngine.getInstance().destroy();
         }
     }
@@ -98,22 +98,13 @@ public class InputManager<T> {
             if (Mouse.getEventButton() != -1) {
                 if (Mouse.getEventButtonState()) {
                     this.mouseSubject.onNext(MOUSEDOWN.at(Mouse.getX(), Mouse.getY()).withButton(Mouse.getEventButton()).withDelta(dx, dy));
-                }
-                else{
+                } else {
                     this.mouseSubject.onNext(MOUSEUP.at(Mouse.getX(), Mouse.getY()).withButton(Mouse.getEventButton()).withDelta(dx, dy));
                 }
             }
         }
-        if(Mouse.isButtonDown(0) || Mouse.isButtonDown(1)){
-            if(Mouse.isButtonDown(0))
-                this.mouseSubject.onNext(DRAG_LMB.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
-            if(Mouse.isButtonDown(1))
-                this.mouseSubject.onNext(DRAG_RMB.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
-        }
-        else{
-            this.mouseSubject.onNext(HOVER.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
-        }
-        
+        this.mouseSubject.onNext(HOVER.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+
     }
 
 }
