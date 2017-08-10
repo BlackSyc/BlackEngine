@@ -147,9 +147,8 @@ public class CameraComponent extends ComponentBase implements Camera {
      * setting this active flag to true.
      */
     @Override
-    public void activate() {
+    public void onActivate() {
         RenderEngine.getInstance().getMasterRenderer().setMainCamera(this);
-        super.activate();
     }
 
     /**
@@ -159,10 +158,9 @@ public class CameraComponent extends ComponentBase implements Camera {
      * components active flag to false.
      */
     @Override
-    public void deactivate() {
+    public void onDeactivate() {
         if (this.isActive()) {
             RenderEngine.getInstance().getMasterRenderer().setMainCamera(null);
-            super.deactivate();
         }
     }
 

@@ -113,11 +113,10 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
      * {@link blackengine.gameLogic.components.base.ComponentBase#activate() activate()}.
      */
     @Override
-    public void activate() {
+    public void onActivate() {
         this.subscription = inputActionObservable
                 .filter(filter)
                 .subscribe(x -> this.handleInput(x));
-        super.activate();
     }
 
     /**
@@ -126,9 +125,8 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
      * {@link blackengine.gameLogic.components.base.ComponentBase#deactivate() deactivate()}.
      */
     @Override
-    public void deactivate() {
+    public void onDeactivate() {
         this.subscription.unsubscribe();
-        super.deactivate();
     }
 
     /**

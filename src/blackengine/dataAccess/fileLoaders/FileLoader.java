@@ -100,7 +100,8 @@ public abstract class FileLoader<T> {
      * @param filePath The file path used to load in the data that will be
      * represented in the data object.
      * @return An instance of T containing the data loaded in from the file.
-     * @throws IOException 
+     * @throws IOException throws an IO Exception when the file could not be
+     * read.
      */
     public abstract T loadFromFile(String filePath) throws IOException;
 

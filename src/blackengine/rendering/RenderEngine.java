@@ -31,7 +31,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- *
+ * Engine singleton for rendering management.
  * @author Blackened
  */
 public class RenderEngine {

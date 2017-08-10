@@ -71,9 +71,8 @@ public class BehaviourComponent extends ComponentBase {
     }
     
     @Override
-    public void activate(){
+    public void onActivate(){
         this.behaviours.forEach(x -> x.setEntity(this.getParent()));
-        super.activate();
     }
 
     @Override

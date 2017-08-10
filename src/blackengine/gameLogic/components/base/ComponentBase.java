@@ -104,17 +104,29 @@ public abstract class ComponentBase {
     public abstract void update();
 
     /**
-     * Activates this component by settings its active flag to true.
+     * Activates this component by settings its active flag to true and calling
+     * {@link #onActivate() onActivate()}.
      */
-    public void activate() {
+    public final void activate() {
+        this.onActivate();
         this.active = true;
     }
 
+    public void onActivate() {
+
+    }
+
     /**
-     * Deactivates this component by setting its active flag to false.
+     * Deactivates this component by setting its active flag to false and
+     * calling {@link #onDeactivate() onDeactivate()}.
      */
-    public void deactivate() {
+    public final void deactivate() {
+        this.onDeactivate();
         this.active = false;
+    }
+
+    public void onDeactivate() {
+
     }
 
     /**

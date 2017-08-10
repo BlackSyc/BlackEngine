@@ -51,6 +51,11 @@ public class Entity {
     private Entity parent;
 
     /**
+     * A reference to the game element containing this entity.
+     */
+    private GameElement gameElement;
+
+    /**
      * Whether this instance is flagged for destruction or not.
      */
     private boolean destroyed = false;
@@ -69,6 +74,11 @@ public class Entity {
      * The rotation of this entity.
      */
     private Vector3f rotation;
+
+    /**
+     * The scale of this entity.
+     */
+    private Vector3f scale;
 
     /**
      * All components belonging to this entity, mapped to their mapping class.
@@ -95,6 +105,16 @@ public class Entity {
      */
     public Entity getParent() {
         return parent;
+    }
+
+    /**
+     * Getter for the game element that is containing this entities parent, or
+     * if no parent is set, this entity itself.
+     *
+     * @return An instance of GameElement.
+     */
+    public GameElement getGameElement() {
+        return this.getParent() != null ? this.getParent().getGameElement() : this.gameElement;
     }
 
     /**
@@ -142,12 +162,43 @@ public class Entity {
     }
 
     /**
+     * Getter for the scale of this entity.
+     *
+     * @return An instance of Vector3f representing the scale on each axis for
+     * this entity.
+     */
+    public Vector3f getScale() {
+        return scale;
+    }
+
+    /**
+     * Setter for the scale of this entity.
+     *
+     * @param scale An instance of Vector3f that will represent the scale on
+     * each axis for this entity.
+     */
+    public void setScale(Vector3f scale) {
+        this.scale = scale;
+    }
+
+    /**
      * Setter for the parent of this entity.
      *
      * @param parent The parent of this entity.
      */
     public void setParent(Entity parent) {
         this.parent = parent;
+    }
+
+    /**
+     * Setter for the game element containing this entity.
+     *
+     * @param gameElement An instance of
+     * {@link blackengine.gameLogic.GameElement GameElement} containing this
+     * entity.
+     */
+    public void setGameElement(GameElement gameElement) {
+        this.gameElement = gameElement;
     }
 
     /**
@@ -194,7 +245,7 @@ public class Entity {
         this.active = active;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Default constructor for creating a new instance of the Entity class.
@@ -202,16 +253,39 @@ public class Entity {
      * @param name The name of this particular entity.
      * @param position The position of this particular entity in 3D space.
      * @param rotation The rotation of this particular entity.
+     * @param scale The scale of this entity.
      */
-    public Entity(String name, Vector3f position, Vector3f rotation) {
+    public Entity(String name, Vector3f position, Vector3f rotation, Vector3f scale) {
         this.name = name;
         this.position = position;
         this.rotation = rotation;
+        this.scale = scale;
         this.components = new HashMap<>();
         this.children = new HashMap<>();
     }
-    //</editor-fold>
 
+    /**
+     * Constructor for creating a new instance of the Entity class. The position
+     * and rotation will be set to 0, the scale will be set to 1.
+     *
+     * @param name The name of the entity.
+     */
+    public Entity(String name) {
+        this(name, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
+    }
+
+    /**
+     * Constructor for creating a new instance of the Entity class. The rotation
+     * will be set to 0, the scale will be set to 1.
+     *
+     * @param name The name of the entity.
+     * @param position The position of the entity.
+     */
+    public Entity(String name, Vector3f position) {
+        this(name, position, new Vector3f(), new Vector3f());
+    }
+
+    //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Public Methods">
     /**
      * Verifies whether a child with the specified name is present in this
@@ -385,8 +459,8 @@ public class Entity {
         this.components.values().forEach(x -> x.activate());
         this.active = true;
     }
-    
-    public void deactivate(){
+
+    public void deactivate() {
         this.children.values().forEach(x -> x.deactivate());
         this.components.values().forEach(x -> x.deactivate());
         this.active = false;

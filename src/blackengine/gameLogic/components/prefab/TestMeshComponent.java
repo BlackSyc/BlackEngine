@@ -56,15 +56,13 @@ public class TestMeshComponent extends POVComponentRendererBase<TestMeshComponen
     }
 
     @Override
-    public void activate() {
+    public void onActivate() {
         super.getRenderer().addRenderTarget(this);
-        super.activate();
     }
 
     @Override
-    public void deactivate() {
+    public void onDeactivate() {
         super.getRenderer().removeRenderTarget(this);
-        super.activate();
     }
 
     

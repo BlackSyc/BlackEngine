@@ -53,17 +53,15 @@ public class MouseListenerComponent extends ComponentBase {
     
 
     @Override
-    public void activate() {
+    public void onActivate() {
         this.subscription = mouseObservable
                 .filter(filter)
                 .subscribe(x -> this.handleInput(x));
-        super.activate();
     }
 
     @Override
-    public void deactivate() {
+    public void onDeactivate() {
         this.subscription.unsubscribe();
-        super.deactivate();
     }
 
     @Override

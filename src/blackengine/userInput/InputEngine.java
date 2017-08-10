@@ -32,9 +32,10 @@ import org.lwjgl.input.Mouse;
 import rx.Observable;
 
 /**
+ * Engine singleton for input management.
  *
  * @author Blackened
- * @param <T>
+ * @param <T> The type of action returned from the key mapper.
  */
 public class InputEngine<T extends Object> {
 
@@ -70,11 +71,11 @@ public class InputEngine<T extends Object> {
         Mouse.destroy();
     }
     //</editor-fold>
-    
+
     private Observable<T> actionObservable;
-    
+
     private Observable<MouseEvent> mouseObservable;
-    
+
     private float mouseSensitivity = 1;
 
     public float getMouseSensitivity() {

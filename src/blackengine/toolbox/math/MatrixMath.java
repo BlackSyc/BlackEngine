@@ -78,15 +78,18 @@ public class MatrixMath {
      * properties.
      *
      * @param translation The position.
-     * @param width
-     * @param height
+     * @param rotation The Euler rotation.
+     * @param scale The scale.
      * @return A new transformation matrix.
      */
-    public static Matrix4f createTransformationMatrix(Vector3f translation, float width, float height) {
+    public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scale) {
         Matrix4f matrix = new Matrix4f();
         matrix.setIdentity();
         Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.scale(new Vector3f(width, height, 1), matrix, matrix);
+        Matrix4f.rotate(rotation.x, new Vector3f(1, 0, 0), matrix, matrix);
+        Matrix4f.rotate(rotation.y, new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate(rotation.z, new Vector3f(0, 0, 1), matrix, matrix);
+        Matrix4f.scale(scale, matrix, matrix);
         return matrix;
     }
 

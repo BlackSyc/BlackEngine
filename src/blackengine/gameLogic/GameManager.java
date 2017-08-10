@@ -24,7 +24,7 @@
 package blackengine.gameLogic;
 
 /**
- *
+ * Engine singleton for managing game elements.
  * @author Blackened
  */
 public class GameManager {
@@ -43,6 +43,7 @@ public class GameManager {
             this.activeScene.destroy();
         }
         this.activeScene = activeScene;
+        this.activeScene.setGameManager(this);
         this.activeScene.activate();
         
     }
@@ -53,7 +54,9 @@ public class GameManager {
 
     public void setActiveUserInterface(GameElement activeUserInterface) {
         this.activeUserInterface = activeUserInterface;
+        this.activeUserInterface.setGameManager(this);
         this.activeUserInterface.activate();
+        
     }
 
     public void createEngine() {
