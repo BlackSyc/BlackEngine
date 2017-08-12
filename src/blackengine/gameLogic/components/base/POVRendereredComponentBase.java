@@ -30,7 +30,7 @@ import blackengine.rendering.TargetPOVRenderer;
  * @author Blackened
  * @param <T>
  */
-public abstract class POVComponentRendererBase<T extends TargetPOVRenderer> extends ComponentBase {
+public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> extends ComponentBase {
 
     private T renderer;
 
@@ -42,7 +42,7 @@ public abstract class POVComponentRendererBase<T extends TargetPOVRenderer> exte
         this.renderer = renderer;
     }
 
-    public POVComponentRendererBase(T renderer) {
+    public POVRendereredComponentBase(T renderer) {
         this.renderer = renderer;
     }
     

@@ -30,7 +30,7 @@ import blackengine.rendering.TargetFlatRenderer;
  * @author Blackened
  * @param <T>
  */
-public abstract class FlatComponentRendererBase<T extends TargetFlatRenderer> extends ComponentBase {
+public abstract class FlatRenderedComponentBase<T extends TargetFlatRenderer> extends ComponentBase {
 
     private T renderer;
 
@@ -42,7 +42,7 @@ public abstract class FlatComponentRendererBase<T extends TargetFlatRenderer> ex
         this.renderer = renderer;
     }
 
-    public FlatComponentRendererBase(T renderer) {
+    public FlatRenderedComponentBase(T renderer) {
         this.renderer = renderer;
     }
 
