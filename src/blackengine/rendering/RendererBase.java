@@ -38,6 +38,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -145,6 +146,10 @@ public abstract class RendererBase {
         matrix.store(matrixBuffer);
         matrixBuffer.flip();
         GL20.glUniformMatrix4(uniformLocation, false, matrixBuffer);
+    }
+
+    protected void loadUniformVector3f(String uniformName, Vector3f vector) {
+        GL20.glUniform3f(this.getUniformLocation(uniformName), vector.x, vector.y, vector.z);
     }
     //</editor-fold>
 

@@ -93,6 +93,15 @@ public class TextureAtlas {
     }
 
     /**
+     * Setter for the selected index.
+     *
+     * @param index a float representing the index of the image used.
+     */
+    public void setIndex(float index) {
+        this.index = index;
+    }
+
+    /**
      * Default constructor for creating a new texture atlas.
      *
      * @param texture The texture.
