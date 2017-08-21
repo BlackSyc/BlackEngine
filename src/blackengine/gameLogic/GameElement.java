@@ -24,6 +24,7 @@
 package blackengine.gameLogic;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -91,6 +92,10 @@ public abstract class GameElement {
 
     public boolean isActive() {
         return active;
+    }
+    
+    public Iterator<Entity> getEntitiesByTag(Tag tag){
+        return this.entities.values().stream().filter(x -> x.getTag().equals(tag)).iterator();
     }
 
     /**

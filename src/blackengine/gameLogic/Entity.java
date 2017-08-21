@@ -23,6 +23,7 @@
  */
 package blackengine.gameLogic;
 
+import static blackengine.gameLogic.DefaultTag.NONE;
 import blackengine.gameLogic.components.base.ComponentBase;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,6 +41,9 @@ import org.lwjgl.util.vector.Vector3f;
 public class Entity {
 
     //<editor-fold defaultstate="collapsed" desc="Properties">
+    
+    private Tag tag;
+    
     /**
      * The name of this particular entity object.
      */
@@ -237,6 +241,14 @@ public class Entity {
         this.rotation = rotation;
     }
 
+    public Tag getTag() {
+        return tag;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -262,6 +274,7 @@ public class Entity {
         this.scale = scale;
         this.components = new HashMap<>();
         this.children = new HashMap<>();
+        this.tag = NONE;
     }
 
     /**
