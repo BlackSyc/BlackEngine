@@ -23,6 +23,8 @@
  */
 package blackengine.rendering;
 
+import blackengine.application.ApplicationManager;
+import java.awt.Canvas;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -90,6 +92,33 @@ public class DisplayManager {
             GL11.glEnable(GL13.GL_MULTISAMPLE);
             Display.setVSyncEnabled(true);
             Display.setFullscreen(fullScreen);
+
+        } catch (LWJGLException ex) {
+            Logger.getLogger(DisplayManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        GL11.glViewport(0, 0, width, height);
+
+        RenderEngine.getInstance().getMasterRenderer().setWidth(width);
+        RenderEngine.getInstance().getMasterRenderer().setHeight(height);
+
+        RenderEngine.getInstance().getMasterRenderer().createProjectionMatrix(70f, 500f, 0.1f);
+
+    }
+
+    public void embed(int width, int height, Canvas canvas) {
+        ContextAttribs attribs = new ContextAttribs(3, 2)
+                .withForwardCompatible(true)
+                .withProfileCore(true);
+
+        try {
+            Display.setParent(canvas);
+            Display.setDisplayMode(new DisplayMode(width, height));
+            Display.create(new PixelFormat().withSamples(8).withDepthBits(24), attribs);
+
+            Display.setResizable(true);
+            GL11.glEnable(GL13.GL_MULTISAMPLE);
+            Display.setVSyncEnabled(true);
 
         } catch (LWJGLException ex) {
             Logger.getLogger(DisplayManager.class.getName()).log(Level.SEVERE, null, ex);
