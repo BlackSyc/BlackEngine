@@ -23,7 +23,6 @@
  */
 package blackengine.rendering;
 
-import blackengine.application.ApplicationManager;
 import java.awt.Canvas;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,7 +105,10 @@ public class DisplayManager {
 
     }
 
-    public void embed(int width, int height, Canvas canvas) {
+    public void embed(Canvas canvas) {
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+
         ContextAttribs attribs = new ContextAttribs(3, 2)
                 .withForwardCompatible(true)
                 .withProfileCore(true);
