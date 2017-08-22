@@ -25,6 +25,8 @@ package blackengine.gameLogic;
 
 import static blackengine.gameLogic.DefaultTag.NONE;
 import blackengine.gameLogic.components.base.ComponentBase;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -391,6 +393,14 @@ public class Entity {
      */
     public <T extends ComponentBase> T getComponent(Class<T> clazz) {
         return clazz.cast(this.components.get(clazz));
+    }
+    
+    /**
+     * Retrieved all components in the entity's component collection.
+     * @return A collection of all the components.
+     */
+    public Collection<ComponentBase> getAllComponents() {
+        return this.components.values();
     }
 
     /**
