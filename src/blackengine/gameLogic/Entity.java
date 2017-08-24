@@ -47,7 +47,7 @@ public class Entity {
     /**
      * The name of this particular entity object.
      */
-    private final String name;
+    private String name;
 
     /**
      * The parent of this entity.
@@ -102,6 +102,10 @@ public class Entity {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Getter for the parent of this entity.
      *
@@ -136,7 +140,7 @@ public class Entity {
      * @return A new instance of Vector3f with the relative 3D position of this
      * entity.
      */
-    public Vector3f getRelativePosition() {
+    public Vector3f getPosition() {
         return position;
     }
 
@@ -211,7 +215,7 @@ public class Entity {
      * @param position An instance of Vector3f containing the new relative
      * position for this entity in 3D space.
      */
-    public void setRelativePosition(Vector3f position) {
+    public void setPosition(Vector3f position) {
         this.position = position;
     }
 
@@ -251,10 +255,6 @@ public class Entity {
 
     public boolean isActive() {
         return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
     //</editor-fold>
 

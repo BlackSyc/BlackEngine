@@ -55,14 +55,14 @@ public class EntityTest {
         Entity testChild = new Entity("testChild", position, new Vector3f(), new Vector3f());
         
         assertEquals(position, testChild.getAbsolutePosition());
-        assertEquals(position, testChild.getRelativePosition());
+        assertEquals(position, testChild.getPosition());
         assertNull(testChild.getParent());
         
         this.testEntity.addChild(testChild);
         
         assertNotNull(testChild.getParent());
         assertEquals(testChild.getParent(), this.testEntity);
-        assertEquals(position, testChild.getRelativePosition());
+        assertEquals(position, testChild.getPosition());
         assertNotEquals(position, testChild.getAbsolutePosition());
         assertEquals(new Vector3f(2,2,2), testChild.getAbsolutePosition());
         assertTrue(this.testEntity.containsChild("testChild"));
@@ -84,14 +84,14 @@ public class EntityTest {
         
         assertTrue(this.testEntity.containsChild("testChild"));
         assertNotNull(this.testEntity.getChild("testChild"));
-        assertEquals(position, testChild.getRelativePosition());
+        assertEquals(position, testChild.getPosition());
         assertNotEquals(position, testChild.getAbsolutePosition());
         assertEquals(new Vector3f(2,2,2), testChild.getAbsolutePosition());
         
         Entity detachedChild = this.testEntity.detachChild("testChild");
         
         assertEquals(testChild, detachedChild);
-        assertEquals(position, testChild.getRelativePosition());
+        assertEquals(position, testChild.getPosition());
         assertEquals(position, testChild.getAbsolutePosition());
         
         assertFalse(this.testEntity.containsChild("testChild"));
