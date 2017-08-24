@@ -97,6 +97,10 @@ public abstract class GameElement {
     public Iterator<Entity> getEntitiesByTag(Tag tag){
         return this.entities.values().stream().filter(x -> x.getTag().equals(tag)).iterator();
     }
+    
+    public Iterator<Entity> getAllEntities() {
+        return this.entities.values().stream().iterator();
+    }
 
     /**
      * Setter for the {@link blackengine.gameLogic.GameManager GameManager} that
