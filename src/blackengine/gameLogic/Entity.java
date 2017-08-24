@@ -141,6 +141,14 @@ public class Entity {
     public Vector3f getRelativePosition() {
         return new Vector3f(position);
     }
+    
+    /**
+     * Getter for the relative 3D position of this entity.
+     * @return The actual position vector so it can be adjusted.
+     */
+    public Vector3f getAdjustableRelativePosition() {
+        return this.position;
+    }
 
     /**
      * Getter for the absolute 3D position of this entity.
