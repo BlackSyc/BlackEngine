@@ -74,4 +74,13 @@ public class VectorMath {
         return new Vector2f(original);
     }
 
+    public static float distance(Vector3f vector1, Vector3f vector2) {
+        float xDistance = Math.abs(vector1.x - vector2.x);
+        float yDistance = Math.abs(vector1.y - vector2.y);
+        float zDistance = Math.abs(vector1.z - vector2.z);
+        float distance = (float) Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2) + Math.pow(zDistance, 2));
+        
+        return distance;
+    }
+
 }
