@@ -25,7 +25,6 @@ package blackengine.gameLogic;
 
 import static blackengine.gameLogic.DefaultTag.NONE;
 import blackengine.gameLogic.components.base.ComponentBase;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,9 +42,8 @@ import org.lwjgl.util.vector.Vector3f;
 public class Entity {
 
     //<editor-fold defaultstate="collapsed" desc="Properties">
-    
     private Tag tag;
-    
+
     /**
      * The name of this particular entity object.
      */
@@ -139,15 +137,7 @@ public class Entity {
      * entity.
      */
     public Vector3f getRelativePosition() {
-        return new Vector3f(position);
-    }
-    
-    /**
-     * Getter for the relative 3D position of this entity.
-     * @return The actual position vector so it can be adjusted.
-     */
-    public Vector3f getAdjustableRelativePosition() {
-        return this.position;
+        return position;
     }
 
     /**
@@ -222,7 +212,7 @@ public class Entity {
      * position for this entity in 3D space.
      */
     public void setRelativePosition(Vector3f position) {
-        this.position = new Vector3f(position);
+        this.position = position;
     }
 
     /**
@@ -305,7 +295,7 @@ public class Entity {
      * @param position The position of the entity.
      */
     public Entity(String name, Vector3f position) {
-        this(name, position, new Vector3f(), new Vector3f());
+        this(name, position, new Vector3f(), new Vector3f(1, 1, 1));
     }
 
     //</editor-fold>
@@ -402,9 +392,10 @@ public class Entity {
     public <T extends ComponentBase> T getComponent(Class<T> clazz) {
         return clazz.cast(this.components.get(clazz));
     }
-    
+
     /**
      * Retrieved all components in the entity's component collection.
+     *
      * @return A collection of all the components.
      */
     public Collection<ComponentBase> getAllComponents() {
