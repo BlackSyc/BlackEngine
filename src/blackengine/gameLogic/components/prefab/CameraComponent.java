@@ -179,7 +179,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      * Updates the yaw of this camera to the negative Y-rotation of its parent.
      */
     protected void updateYawPitchRoll() {
-        this.yaw = -super.getParent().getRotation().getY();
+        this.yaw = -super.getParent().getTransform().getEulerRotation().getY();
     }
 
     /**
@@ -187,7 +187,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      * parent.
      */
     protected void updatePosition() {
-        this.position = new Vector3f(super.getParent().getAbsolutePosition());
+        this.position = new Vector3f(super.getParent().getTransform().getAbsolutePosition());
     }
 
     /**

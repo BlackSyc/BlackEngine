@@ -69,20 +69,7 @@ public class Entity {
      */
     private final Map<String, Entity> children;
 
-    /**
-     * The position of this entity in 3D space.
-     */
-    private Vector3f position;
-
-    /**
-     * The rotation of this entity.
-     */
-    private Vector3f rotation;
-
-    /**
-     * The scale of this entity.
-     */
-    private Vector3f scale;
+    private Transform transform;
 
     /**
      * All components belonging to this entity, mapped to their mapping class.
@@ -134,59 +121,8 @@ public class Entity {
         return destroyed;
     }
 
-    /**
-     * Getter for the relative 3D position of this entity.
-     *
-     * @return A new instance of Vector3f with the relative 3D position of this
-     * entity.
-     */
-    public Vector3f getPosition() {
-        return position;
-    }
-
-    /**
-     * Getter for the absolute 3D position of this entity.
-     *
-     * @return A new instance of Vector3f with the absolute 3D position of this
-     * entity.
-     */
-    public Vector3f getAbsolutePosition() {
-        if (this.getParent() != null) {
-            return new Vector3f(
-                    this.position.x + this.getParent().getAbsolutePosition().x,
-                    this.position.y + this.getParent().getAbsolutePosition().y,
-                    this.position.z + this.getParent().getAbsolutePosition().z);
-        }
-        return new Vector3f(this.position);
-    }
-
-    /**
-     * Getter for the rotation of this entity.
-     *
-     * @return An instance of Vector3f with the euler rotation of this entity.
-     */
-    public Vector3f getRotation() {
-        return rotation;
-    }
-
-    /**
-     * Getter for the scale of this entity.
-     *
-     * @return An instance of Vector3f representing the scale on each axis for
-     * this entity.
-     */
-    public Vector3f getScale() {
-        return scale;
-    }
-
-    /**
-     * Setter for the scale of this entity.
-     *
-     * @param scale An instance of Vector3f that will represent the scale on
-     * each axis for this entity.
-     */
-    public void setScale(Vector3f scale) {
-        this.scale = scale;
+    public Transform getTransform() {
+        return transform;
     }
 
     /**
@@ -207,42 +143,6 @@ public class Entity {
      */
     public void setGameElement(GameElement gameElement) {
         this.gameElement = gameElement;
-    }
-
-    /**
-     * Setter for the relative 3D position of this entity.
-     *
-     * @param position An instance of Vector3f containing the new relative
-     * position for this entity in 3D space.
-     */
-    public void setPosition(Vector3f position) {
-        this.position = position;
-    }
-
-    /**
-     * Setter for the absolute 3D position of this entity.
-     *
-     * @param newPosition An instance of Vector3f containing the new absolute
-     * position for this entity in 3D space.
-     */
-    public void setAbsolutePosition(Vector3f newPosition) {
-        if (this.getParent() != null) {
-            this.position = new Vector3f(newPosition.x - this.getParent().getAbsolutePosition().x,
-                    newPosition.y - this.getParent().getAbsolutePosition().y,
-                    newPosition.z - this.getParent().getAbsolutePosition().z);
-        } else {
-            this.position = new Vector3f(newPosition);
-        }
-    }
-
-    /**
-     * Setter for the rotation of this entity.
-     *
-     * @param rotation An instance of Vector3f containing the new euler rotation
-     * for this entity.
-     */
-    public void setRotation(Vector3f rotation) {
-        this.rotation = rotation;
     }
 
     public Tag getTag() {
@@ -269,12 +169,10 @@ public class Entity {
      */
     public Entity(String name, Vector3f position, Vector3f rotation, Vector3f scale) {
         this.name = name;
-        this.position = position;
-        this.rotation = rotation;
-        this.scale = scale;
         this.components = new HashMap<>();
         this.children = new HashMap<>();
         this.tag = NONE;
+        this.transform = new Transform(this, position, rotation, scale);
     }
 
     /**

@@ -54,7 +54,7 @@ public class TestMeshComponentRenderer extends TargetPOVRenderer<TestMeshCompone
 
         this.renderTargets.forEach(x -> {
             x.getVao().bind();
-            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getAbsolutePosition(), x.getParent().getRotation(), 1);
+            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getTransform().getAbsolutePosition(), x.getParent().getTransform().getEulerRotation(), 1);
             this.loadUniformMatrix("transformationMatrix", transformationMatrix);
             GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
             x.getVao().unbind();
