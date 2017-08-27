@@ -24,14 +24,13 @@
 package blackengine.userInput;
 
 /**
+ * An instance of this enum represents a mouse event that has been registered by
+ * the InputManager.
  *
  * @author Blackened
  */
 public enum MouseEvent {
 
-    /**
-     *
-     */
     HOVER,
     MOUSEDOWN,
     MOUSEUP;
@@ -43,8 +42,8 @@ public enum MouseEvent {
         this.dy = 0;
         this.button = -1;
     }
-    
-    MouseEvent(int button){
+
+    MouseEvent(int button) {
         this.x = 0;
         this.y = 0;
         this.dx = 0;
@@ -62,8 +61,8 @@ public enum MouseEvent {
         this.button = button;
         return this;
     }
-    
-    public MouseEvent withDelta(int dx, int dy){
+
+    public MouseEvent withDelta(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
         return this;

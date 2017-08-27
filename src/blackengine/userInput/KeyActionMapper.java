@@ -26,30 +26,101 @@ package blackengine.userInput;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
 /**
+ * An instance of KeyActionMapper can be used to tie actions to certain keyboard
+ * states or keyboard events.
  *
  * @author Blackened
  */
 public class KeyActionMapper<T> {
-    
+
+    /**
+     * An instance of HashMap that maps a boolean supplier that checks the state
+     * to any defined action.
+     */
     private HashMap<BooleanSupplier, T> keyActionMap;
 
-    public KeyActionMapper(HashMap<BooleanSupplier, T> keyActionMap) {
+    /**
+     * An instance of HashMap that maps a boolean supplier that checks for
+     * keyboard events to any defined action.
+     */
+    private HashMap<BooleanSupplier, T> eventActionMap;
+
+    /**
+     * Default constructor for creating a new instance of KeyActionMapper.
+     *
+     * @param keyActionMap An instance of HashMap that maps a boolean supplier
+     * that checks the state to any defined action.
+     * @param eventActionMap An instance of HashMap that maps a boolean supplier
+     * that checks for keyboard events to any defined action.
+     */
+    public KeyActionMapper(HashMap<BooleanSupplier, T> keyActionMap, HashMap<BooleanSupplier, T> eventActionMap) {
         this.keyActionMap = keyActionMap;
+        this.eventActionMap = eventActionMap;
     }
-    
-    public Iterator<BooleanSupplier> getMappedKeyIterator(){
+
+    /**
+     * Returns an iterator of all boolean suppliers that check for state.
+     *
+     * @return An instance of Iterator&lt;BooleanSupplier&gt;.
+     */
+    public Iterator<BooleanSupplier> getMappedKeyIterator() {
         return this.keyActionMap.keySet().iterator();
     }
-    
-    public Iterator<T> getMappedActionIterator(){
+
+    /**
+     * Returns an iterator of all boolean suppliers that check for keyboard
+     * events.
+     *
+     * @return An instance of Iterator&lt;BooleanSupplier&gt;.
+     */
+    public Iterator<BooleanSupplier> getMappedEventIterator() {
+        return this.eventActionMap.keySet().iterator();
+    }
+
+    /**
+     * Getter for all actions that have matching boolean suppliers for checking
+     * state in this instance of KeyAcctionMapper.
+     *
+     * @return An instance of Iterator&lt;T&gt;.
+     */
+    public Iterator<T> getActionIterator() {
         return this.keyActionMap.values().iterator();
     }
-    
-    public T getAction(BooleanSupplier key){
+
+    /**
+     * Getter for all actions that have matching boolean suppliers for checking
+     * keyboard events in this instance of KeyAcctionMapper.
+     *
+     * @return An instance of Iterator&lt;T&gt;.
+     */
+    public Iterator<T> getEventActionIterator() {
+        return this.eventActionMap.values().iterator();
+    }
+
+    /**
+     * Getter for a specific action that matches the specified boolean supplier
+     * that checks for state.
+     *
+     * @param key The boolean supplier that will be used to look up its action.
+     * @return An instance of T, representing the action that will be sent out
+     * upon satisfaction of the boolean supplier.
+     */
+    public T getAction(BooleanSupplier key) {
         return this.keyActionMap.get(key);
     }
-    
+
+    /**
+     * Getter for a specific action that matches the specified boolean supplier
+     * that checks for keyboard events.
+     *
+     * @param key The boolean supplier that will be used to look up its action.
+     * @return An instance of T, representing the action that will be sent out
+     * upon satisfaction of the boolean supplier.
+     */
+    public T getEventAction(BooleanSupplier key) {
+        return this.eventActionMap.get(key);
+    }
+
 }

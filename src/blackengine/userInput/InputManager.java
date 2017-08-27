@@ -26,61 +26,136 @@ package blackengine.userInput;
 import static blackengine.userInput.MouseEvent.*;
 import java.util.Iterator;
 import java.util.function.BooleanSupplier;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 /**
+ * An instance of InputManager makes sure to handle all input specified in the
+ * provided key mapper. Components and other parts of the game can subscribe to
+ * either the mouse observable or the action observable.
  *
  * @author Blackened
  */
 public class InputManager<T> {
 
+    /**
+     * The action subject sends out actions of type T to all subscribers when
+     * their requirements (set in the key mapper) are met.
+     */
     private PublishSubject<T> actionSubject;
 
+    /**
+     * The mouse subject sends out mouse events to all subscribers.
+     */
     private PublishSubject<MouseEvent> mouseSubject;
 
+    /**
+     * The key mapper defines which keys or key events to listen to in order to
+     * send out actions.
+     */
     private final KeyActionMapper<T> keyActionMapper;
 
+    /**
+     * Getter for the instance of Observable&lt;T&gt; that can be subscribed to
+     * in order to receive actions.
+     *
+     * @return An instance of Observable&lt;T&gt;.
+     */
     public Observable<T> getActionObservable() {
         return actionSubject;
     }
 
-    public KeyActionMapper<T> getKeyActionMapper() {
-        return keyActionMapper;
-    }
-
+    /**
+     * Getter for the instance of
+     * Observable&lt;{@link blackengine.userInput.MouseEvent MouseEvent}&gt;
+     * that can be subscribed to in order to receive the events.
+     *
+     * @return An instance of
+     * Observable&lt;{@link blackengine.userInput.MouseEvent MouseEvent}&gt;.
+     */
     public Observable<MouseEvent> getMouseObservable() {
         return mouseSubject;
     }
 
+    /**
+     * Default constructor for creating a new instance of InputManager.
+     *
+     * @param keyActionMapper An instance of
+     * {@link blackengine.userInput.KeyActionMapper KeyActionMapper} that will
+     * be used to iterate over the keyboards state and events to send out
+     * actions through the action observable.
+     */
     public InputManager(KeyActionMapper<T> keyActionMapper) {
         this.keyActionMapper = keyActionMapper;
         this.actionSubject = PublishSubject.create();
         this.mouseSubject = PublishSubject.create();
     }
 
+    /**
+     * Creates the {@link blackengine.userInput.InputEngine InputEngine}, which
+     * can be used to retrieve either observable at any point. Best practice is
+     * to call this method within the
+     * {@link blackengine.application.ApplicationManager#setUp() setUp()} method
+     * inside an implementation of
+     * {@link blackengine.application.ApplicationManager ApplicationManager}.
+     */
     public void createEngine() {
         InputEngine.create(this.actionSubject, this.mouseSubject);
     }
 
+    /**
+     * Destroys the {@link blackengine.userInput.InputEngine InputEngine}
+     */
     public void destroyEngine() {
         if (InputEngine.getInstance() != null) {
             InputEngine.getInstance().destroy();
         }
     }
 
+    /**
+     * Calls onCompleted() on the subjects and sets them to null.
+     */
     public void destroySubjects() {
+        this.actionSubject.onCompleted();
+        this.mouseSubject.onCompleted();
         this.actionSubject = null;
         this.mouseSubject = null;
     }
 
+    /**
+     * Handles all input for the application. This should be called from the
+     * game loop (already defined in
+     * {@link blackengine.application.ApplicationManager ApplicationManager}.
+     */
     public void handleInput() {
-        this.handleSingleKeys();
+        this.handleKeyEvents();
+        this.handleKeys();
         this.handleMouseInput();
     }
 
-    private void handleSingleKeys() {
+    /**
+     * Handles all events retrieved from the keyboard by sending out the
+     * appropriate actions defined in the key mapper.
+     */
+    private void handleKeyEvents() {
+        while (Keyboard.next()) {
+            Iterator<BooleanSupplier> mappedEventIterator = this.keyActionMapper.getMappedEventIterator();
+            while (mappedEventIterator.hasNext()) {
+                BooleanSupplier booleanSupplier = mappedEventIterator.next();
+                if (booleanSupplier.getAsBoolean()) {
+                    this.actionSubject.onNext(this.keyActionMapper.getEventAction(booleanSupplier));
+                }
+            }
+        }
+    }
+
+    /**
+     * Handles all key states from the keyboard by sending out the appropriate
+     * actions defined in the key mapper.
+     */
+    private void handleKeys() {
         Iterator<BooleanSupplier> mappedKeyIterator = this.keyActionMapper.getMappedKeyIterator();
 
         while (mappedKeyIterator.hasNext()) {
@@ -91,6 +166,10 @@ public class InputManager<T> {
         }
     }
 
+    /**
+     * Handles all events from the mouse by sending out the appropriate events
+     * that are predefined in BlackEngine.
+     */
     private void handleMouseInput() {
         int dx = Mouse.getDX();
         int dy = Mouse.getDY();
