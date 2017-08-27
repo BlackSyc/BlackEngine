@@ -50,11 +50,6 @@ public class InputEngine<T extends Object> {
         throw new InputEngineNotCreatedException();
     }
 
-    private InputEngine(Observable<T> actionObservable, Observable<MouseEvent> mouseObservable) {
-        this.actionObservable = actionObservable;
-        this.mouseObservable = mouseObservable;
-    }
-
     protected static void create(Observable<? extends Object> actionObservable, Observable<MouseEvent> mouseObservable) {
         INSTANCE = new InputEngine<>(actionObservable, mouseObservable);
         try {
@@ -116,6 +111,30 @@ public class InputEngine<T extends Object> {
      */
     public Observable<MouseEvent> getMouseObservable() {
         return mouseObservable;
+    }
+
+    private InputEngine(Observable<T> actionObservable, Observable<MouseEvent> mouseObservable) {
+        this.actionObservable = actionObservable;
+        this.mouseObservable = mouseObservable;
+    }
+
+    /**
+     * Makes the cursor invisible and keeps it in its position. Mouse events act
+     * as though the mouse was not grabbed.
+     *
+     * @param value True if the cursor should be hidden, false otherwise.
+     */
+    public void setMouseGrabbed(boolean value) {
+        Mouse.setGrabbed(value);
+    }
+
+    /**
+     * Retrieves whether the cursor is hidden or not.
+     *
+     * @return True if the cursor is hidden, false otherwise.
+     */
+    public boolean isMouseGrabbed() {
+        return Mouse.isGrabbed();
     }
 
 }
