@@ -28,6 +28,8 @@ import blackengine.gameLogic.LogicEngine;
 import org.lwjgl.opengl.Display;
 import blackengine.rendering.DisplayManager;
 import blackengine.userInput.InputManager;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * An implementation of this abstract class will manage the outside of the
@@ -41,6 +43,8 @@ public abstract class ApplicationManager {
      * Flags whether the game loop should be running.
      */
     private boolean isRunning;
+
+    private Queue<Runnable> dispatchQueue;
 
     /**
      * The game manager that is responsible for handling all game state updates.
@@ -131,6 +135,7 @@ public abstract class ApplicationManager {
      */
     public ApplicationManager() {
         this.displayManager = new DisplayManager(60);
+        this.dispatchQueue = new LinkedBlockingQueue<>();
     }
 
     /**
@@ -172,11 +177,24 @@ public abstract class ApplicationManager {
                 this.displayManager.render();
                 LogicEngine.getInstance().getTimer().registerFrame();
 
+                while (this.dispatchQueue.peek() != null) {
+                    this.dispatchQueue.poll().run();
+                }
+
             }
 
             cleanUp();
             this.isRunning = false;
         }
+    }
+
+    /**
+     * Runs the provided runnable at the end of this frame.
+     *
+     * @param runnable The runnable to be run at the end of this frame.
+     */
+    public void runLater(Runnable runnable) {
+        this.dispatchQueue.add(runnable);
     }
 
     /**
