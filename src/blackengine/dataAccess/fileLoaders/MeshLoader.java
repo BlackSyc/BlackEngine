@@ -26,6 +26,7 @@ package blackengine.dataAccess.fileLoaders;
 import blackengine.dataAccess.dataObjects.MeshDataObject;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
@@ -37,25 +38,10 @@ import org.lwjgl.util.vector.Vector3f;
  * @author Blackened
  */
 public class MeshLoader extends FileLoader<MeshDataObject> {
-    
+
     private static MeshLoader instance;
 
     private MeshLoader() {
-    }
-    
-    @Override
-    public MeshDataObject loadFromFile(String filePath) throws IOException {
-        
-        String extension = this.getFileExtension(filePath);
-
-        switch (extension) {
-            case ".obj":
-                return this.loadMeshDataFromObjFile(filePath);
-            case ".dae":
-                return this.loadMeshFromColladaFile(filePath);
-            default:
-                throw new UnsupportedOperationException("File extension ('" + extension + "') not (yet) supported for loading a mesh data object!");
-        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Private Methods">
@@ -66,80 +52,73 @@ public class MeshLoader extends FileLoader<MeshDataObject> {
      * @return
      * @throws IOException
      */
-    private MeshDataObject loadMeshDataFromObjFile(String file) throws IOException {
-        if (this.cache.containsKey(file)) {
-            return this.cache.get(file);
-        } else {
+    private MeshDataObject loadMeshDataFromObjFile(InputStream inputStream) throws IOException {
+        try (BufferedReader reader = this.createBufferedReader(inputStream)) {
 
-            try (BufferedReader reader = this.createBufferedReader(file)) {
+            List<Vector3f> vertexPositions = new ArrayList<>();
+            List<Vector2f> textureCoords = new ArrayList<>();
+            List<Vector3f> normalVectors = new ArrayList<>();
+            List<Integer> indices = new ArrayList<>();
 
-                List<Vector3f> vertexPositions = new ArrayList<>();
-                List<Vector2f> textureCoords = new ArrayList<>();
-                List<Vector3f> normalVectors = new ArrayList<>();
-                List<Integer> indices = new ArrayList<>();
+            float[] vertexPositionArray = null;
+            float[] normalVectorsArray = null;
+            float[] textureCoordsArray = null;
+            int[] indicesArray = null;
 
-                float[] vertexPositionArray = null;
-                float[] normalVectorsArray = null;
-                float[] textureCoordsArray = null;
-                int[] indicesArray = null;
-
-                String line;
-                while (true) {
-                    line = reader.readLine();
-                    String[] currentLine = line.split(" ");
-                    if (line.startsWith("v ")) {
-                        Vector3f vertex = new Vector3f(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
-                        vertexPositions.add(vertex);
-                    } else if (line.startsWith("vt ")) {
-                        Vector2f texture = new Vector2f(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]));
-                        textureCoords.add(texture);
-                    } else if (line.startsWith("vn ")) {
-                        Vector3f normal = new Vector3f(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
-                        normalVectors.add(normal);
-                    } else if (line.startsWith("f ")) {
-                        textureCoordsArray = new float[vertexPositions.size() * 2];
-                        normalVectorsArray = new float[vertexPositions.size() * 3];
-                        break;
-                    }
+            String line;
+            while (true) {
+                line = reader.readLine();
+                String[] currentLine = line.split(" ");
+                if (line.startsWith("v ")) {
+                    Vector3f vertex = new Vector3f(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
+                    vertexPositions.add(vertex);
+                } else if (line.startsWith("vt ")) {
+                    Vector2f texture = new Vector2f(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]));
+                    textureCoords.add(texture);
+                } else if (line.startsWith("vn ")) {
+                    Vector3f normal = new Vector3f(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
+                    normalVectors.add(normal);
+                } else if (line.startsWith("f ")) {
+                    textureCoordsArray = new float[vertexPositions.size() * 2];
+                    normalVectorsArray = new float[vertexPositions.size() * 3];
+                    break;
                 }
-                while (line != null) {
-                    if (!line.startsWith("f ")) {
-                        line = reader.readLine();
-                        continue;
-                    }
-                    String[] currentLine = line.split(" ");
-                    String[] vertex1 = currentLine[1].split("/");
-                    String[] vertex2 = currentLine[2].split("/");
-                    String[] vertex3 = currentLine[3].split("/");
-
-                    processVertex(vertex1, indices, textureCoords, normalVectors, textureCoordsArray, normalVectorsArray);
-                    processVertex(vertex2, indices, textureCoords, normalVectors, textureCoordsArray, normalVectorsArray);
-                    processVertex(vertex3, indices, textureCoords, normalVectors, textureCoordsArray, normalVectorsArray);
-                    line = reader.readLine();
-                }
-                reader.close();
-
-                vertexPositionArray = new float[vertexPositions.size() * 3];
-                indicesArray = new int[indices.size()];
-
-                int vertexPointer = 0;
-                for (Vector3f vertex : vertexPositions) {
-                    vertexPositionArray[vertexPointer++] = vertex.x;
-                    vertexPositionArray[vertexPointer++] = vertex.y;
-                    vertexPositionArray[vertexPointer++] = vertex.z;
-                }
-
-                for (int i = 0; i < indices.size(); i++) {
-                    indicesArray[i] = indices.get(i);
-                }
-
-                MeshDataObject meshDataObject = new MeshDataObject(vertexPositionArray, textureCoordsArray, normalVectorsArray, indicesArray, 3);
-                this.cache.put(file, meshDataObject);
-                return meshDataObject;
-
-            } catch (IOException e) {
-                throw new IOException("obj file could not be loaded");
             }
+            while (line != null) {
+                if (!line.startsWith("f ")) {
+                    line = reader.readLine();
+                    continue;
+                }
+                String[] currentLine = line.split(" ");
+                String[] vertex1 = currentLine[1].split("/");
+                String[] vertex2 = currentLine[2].split("/");
+                String[] vertex3 = currentLine[3].split("/");
+
+                processVertex(vertex1, indices, textureCoords, normalVectors, textureCoordsArray, normalVectorsArray);
+                processVertex(vertex2, indices, textureCoords, normalVectors, textureCoordsArray, normalVectorsArray);
+                processVertex(vertex3, indices, textureCoords, normalVectors, textureCoordsArray, normalVectorsArray);
+                line = reader.readLine();
+            }
+            reader.close();
+
+            vertexPositionArray = new float[vertexPositions.size() * 3];
+            indicesArray = new int[indices.size()];
+
+            int vertexPointer = 0;
+            for (Vector3f vertex : vertexPositions) {
+                vertexPositionArray[vertexPointer++] = vertex.x;
+                vertexPositionArray[vertexPointer++] = vertex.y;
+                vertexPositionArray[vertexPointer++] = vertex.z;
+            }
+
+            for (int i = 0; i < indices.size(); i++) {
+                indicesArray[i] = indices.get(i);
+            }
+
+            return new MeshDataObject(vertexPositionArray, textureCoordsArray, normalVectorsArray, indicesArray, 3);
+
+        } catch (IOException e) {
+            throw new IOException("obj file could not be loaded");
         }
 
     }
@@ -156,19 +135,28 @@ public class MeshLoader extends FileLoader<MeshDataObject> {
         normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
     }
 
-    private MeshDataObject loadMeshFromColladaFile(String file) {
+    private MeshDataObject loadMeshFromColladaFile(InputStream inputStream) {
         throw new UnsupportedOperationException("Method not implemented yet!");
     }
-    
+
     //</editor-fold>
-    
-    
-    public static MeshLoader getInstance(){
-        if(instance == null){
+    public static MeshLoader getInstance() {
+        if (instance == null) {
             instance = new MeshLoader();
         }
         return instance;
     }
-    
+
+    @Override
+    protected MeshDataObject loadData(InputStream inputStream, String extension) throws IOException {
+        switch (extension) {
+            case ".obj":
+                return this.loadMeshDataFromObjFile(inputStream);
+            case ".dae":
+                return this.loadMeshFromColladaFile(inputStream);
+            default:
+                throw new UnsupportedOperationException("File extension ('" + extension + "') not (yet) supported for loading a mesh data object!");
+        }
+    }
 
 }
