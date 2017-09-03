@@ -30,14 +30,16 @@ import org.lwjgl.util.vector.Vector3f;
  * @author Blackened
  */
 public class Transform {
-    
-    
+
     private Entity parent;
-    
+
     private Vector3f position;
-    
+
+    /**
+     * The euler rotation in degrees.
+     */
     private Vector3f eulerRotation;
-    
+
     private Vector3f scale;
 
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
@@ -66,17 +68,25 @@ public class Transform {
     }
     //</editor-fold>
 
+    /**
+     * Default constructor for creating a new instance of Transform.
+     *
+     * @param parent
+     * @param position The euler rotation in degrees.
+     * @param eulerRotation
+     * @param scale
+     */
     public Transform(Entity parent, Vector3f position, Vector3f eulerRotation, Vector3f scale) {
         this.parent = parent;
         this.position = position;
         this.eulerRotation = eulerRotation;
         this.scale = scale;
     }
-    
-    public Vector3f getAbsolutePosition(){
-        if(this.parent.getParent() != null){
+
+    public Vector3f getAbsolutePosition() {
+        if (this.parent.getParent() != null) {
             return Vector3f.add(this.parent.getParent().getTransform().getAbsolutePosition(), this.getPosition(), null);
         }
         return new Vector3f(this.position);
-    }    
+    }
 }

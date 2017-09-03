@@ -195,8 +195,8 @@ public class Entity {
     public Entity(String name, Vector3f position) {
         this(name, position, new Vector3f(), new Vector3f(1, 1, 1));
     }
-
     //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Public Methods">
     /**
      * Verifies whether a child with the specified name is present in this

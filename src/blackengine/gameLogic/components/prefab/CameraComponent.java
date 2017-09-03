@@ -51,17 +51,17 @@ import org.lwjgl.util.vector.Vector3f;
 public class CameraComponent extends ComponentBase implements Camera {
 
     /**
-     * The pitch of this camera.
+     * The pitch of this camera in degrees.
      */
     private double pitch = 0;
 
     /**
-     * The yaw of this camera.
+     * The yaw of this camera in degrees.
      */
     private double yaw = 0;
 
     /**
-     * The roll of this camera.
+     * The roll of this camera in degrees.
      */
     private double roll = 0;
 
@@ -76,7 +76,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     protected Matrix4f viewMatrix = new Matrix4f();
 
     /**
-     * Getter for the pitch.
+     * Getter for the pitch in degrees.
      *
      * @return The pitch of this camera.
      */
@@ -85,7 +85,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     /**
-     * Getter for the yaw.
+     * Getter for the yaw in degrees.
      *
      * @return The yaw of this camera.
      */
@@ -94,7 +94,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     /**
-     * Getter for the roll.
+     * Getter for the roll in degrees.
      *
      * @return The roll of this camera.
      */
@@ -103,7 +103,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     /**
-     * Setter for the pitch.
+     * Setter for the pitch in degrees.
      *
      * @param pitch The new pitch of this camera.
      */
@@ -112,7 +112,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     /**
-     * Setter for the yaw.
+     * Setter for the yaw in degrees.
      *
      * @param yaw The new yaw of this camera.
      */
@@ -121,7 +121,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     /**
-     * Setter for the roll.
+     * Setter for the roll in degrees.
      *
      * @param roll The new roll of this camera.
      */
@@ -208,9 +208,9 @@ public class CameraComponent extends ComponentBase implements Camera {
     private void createViewMatrix() {
         this.viewMatrix = new Matrix4f();
         this.viewMatrix.setIdentity();
-        Matrix4f.rotate((float) this.getPitch(), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) this.getYaw(), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) this.getRoll(), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
         Vector3f negativeCameraPos = this.position.negate(null);
         Matrix4f.translate(negativeCameraPos, this.viewMatrix, this.viewMatrix);
     }
