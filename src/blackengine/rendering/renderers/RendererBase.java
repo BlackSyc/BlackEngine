@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
+package blackengine.rendering.renderers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -163,7 +163,7 @@ public abstract class RendererBase {
      * Loads the shader program with its shaders to OpenGL, and calls the
      * bindAttributes method.
      */
-    private void load(String vertexFile, String fragmentFile) {
+    protected void load(String vertexFile, String fragmentFile) {
         List<String> uniformVariables = new ArrayList<>();
         uniformVariables.addAll(this.loadShader(vertexFile, GL20.GL_VERTEX_SHADER));
         uniformVariables.addAll(this.loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER));

@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,35 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.base;
-
-import blackengine.rendering.renderers.TargetPOVRenderer;
+package blackengine.rendering.lighting;
 
 /**
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> extends ComponentBase {
-
-    private T renderer;
-
-    public T getRenderer() {
-        return renderer;
-    }
+public interface PointLight extends Light{
     
-    public void setRenderer(T renderer){
-        this.renderer = renderer;
-    }
-
-    public POVRendereredComponentBase(T renderer) {
-        this.renderer = renderer;
-    }
-    
-    public abstract boolean isRendered();
-    
-    @Override
-    public void update(){
-        
-    }
 }

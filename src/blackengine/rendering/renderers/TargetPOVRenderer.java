@@ -21,35 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.base;
+package blackengine.rendering.renderers;
 
-import blackengine.rendering.renderers.TargetPOVRenderer;
+import blackengine.rendering.renderers.POVRendererBase;
+
 
 /**
  *
  * @author Blackened
  * @param <T>
  */
-public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> extends ComponentBase {
-
-    private T renderer;
-
-    public T getRenderer() {
-        return renderer;
+public abstract class TargetPOVRenderer<T> extends POVRendererBase {
+    
+    /**
+     * 
+     * @param vertexFile
+     * @param fragmentFile 
+     */
+    public TargetPOVRenderer(String vertexFile, String fragmentFile) {
+        super(vertexFile, fragmentFile);
     }
     
-    public void setRenderer(T renderer){
-        this.renderer = renderer;
-    }
-
-    public POVRendereredComponentBase(T renderer) {
-        this.renderer = renderer;
-    }
+    /**
+     * 
+     * @param renderTarget
+     */
+    public abstract void addRenderTarget(T renderTarget);
     
-    public abstract boolean isRendered();
+    /**
+     * 
+     * @param renderTarget
+     */
+    public abstract void removeRenderTarget(T renderTarget);
     
-    @Override
-    public void update(){
-        
-    }
+    /**
+     * 
+     * @param renderTarget
+     * @return 
+     */
+    public abstract boolean containsRenderTarget(T renderTarget);
+    
+    
 }

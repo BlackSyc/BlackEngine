@@ -23,7 +23,7 @@
  */
 package blackengine.gameLogic.components.base;
 
-import blackengine.rendering.TargetFlatRenderer;
+import blackengine.rendering.renderers.TargetFlatRenderer;
 
 /**
  *

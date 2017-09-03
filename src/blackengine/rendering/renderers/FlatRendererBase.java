@@ -21,36 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
-
-import org.lwjgl.util.vector.Matrix4f;
+package blackengine.rendering.renderers;
 
 /**
  *
  * @author Blackened
  */
-public abstract class POVRendererBase extends RendererBase {
+public abstract class FlatRendererBase extends RendererBase {
 
-    private Matrix4f projectionMatrix;
-
-    public Matrix4f getProjectionMatrix() {
-        return projectionMatrix;
-    }
-
-    public void setProjectionMatrix(Matrix4f projectionMatrix) {
-        this.projectionMatrix = projectionMatrix;
-    }
-
-    public POVRendererBase(String vertexFile, String fragmentFile) {
+    public FlatRendererBase(String vertexFile, String fragmentFile) {
         super(vertexFile, fragmentFile);
     }
 
     /**
      * Render the targets.
      *
-     * @param viewMatrix The view matrix of the camera to calculate the position
-     * of 3d elements on screen.
      */
-    public abstract void render(Matrix4f viewMatrix);
+    public abstract void render();
 
 }

@@ -21,22 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
+package blackengine.rendering.renderers;
 
+import blackengine.rendering.renderers.FlatRendererBase;
 
 /**
  *
  * @author Blackened
  * @param <T>
  */
-public abstract class TargetPOVRenderer<T> extends POVRendererBase {
-    
+public abstract class TargetFlatRenderer<T> extends FlatRendererBase{
+        
     /**
      * 
      * @param vertexFile
      * @param fragmentFile 
      */
-    public TargetPOVRenderer(String vertexFile, String fragmentFile) {
+    public TargetFlatRenderer(String vertexFile, String fragmentFile) {
         super(vertexFile, fragmentFile);
     }
     
@@ -58,6 +59,4 @@ public abstract class TargetPOVRenderer<T> extends POVRendererBase {
      * @return 
      */
     public abstract boolean containsRenderTarget(T renderTarget);
-    
-    
 }

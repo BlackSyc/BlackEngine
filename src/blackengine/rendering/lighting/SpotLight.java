@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,35 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.base;
+package blackengine.rendering.lighting;
 
-import blackengine.rendering.renderers.TargetPOVRenderer;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> extends ComponentBase {
-
-    private T renderer;
-
-    public T getRenderer() {
-        return renderer;
-    }
+public interface SpotLight extends Light{
     
-    public void setRenderer(T renderer){
-        this.renderer = renderer;
-    }
-
-    public POVRendereredComponentBase(T renderer) {
-        this.renderer = renderer;
-    }
+    public Vector3f getDirection();
     
-    public abstract boolean isRendered();
+    public float getTheta();
     
-    @Override
-    public void update(){
-        
-    }
 }

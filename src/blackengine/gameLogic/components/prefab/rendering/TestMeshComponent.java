@@ -21,35 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.base;
+package blackengine.gameLogic.components.prefab.rendering;
 
-import blackengine.rendering.renderers.TargetPOVRenderer;
+import blackengine.gameLogic.components.base.POVRendereredComponentBase;
+import blackengine.openGL.vao.Vao;
+import blackengine.rendering.prefab.testing.TestMeshRenderer;
 
 /**
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> extends ComponentBase {
+public class TestMeshComponent extends POVRendereredComponentBase<TestMeshRenderer>{
+    
+    private Vao vao;
+    
 
-    private T renderer;
-
-    public T getRenderer() {
-        return renderer;
+    public Vao getVao() {
+        return vao;
     }
     
-    public void setRenderer(T renderer){
-        this.renderer = renderer;
-    }
-
-    public POVRendereredComponentBase(T renderer) {
-        this.renderer = renderer;
-    }
-    
-    public abstract boolean isRendered();
-    
-    @Override
-    public void update(){
+    public TestMeshComponent(Vao vao, TestMeshRenderer renderer) {
+        super(renderer);
         
+        this.vao = vao;
     }
+        
+
+    @Override
+    public boolean isRendered() {
+        if(super.getRenderer() != null){
+            super.getRenderer().containsRenderTarget(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void onActivate() {
+        super.getRenderer().addRenderTarget(this);
+    }
+
+    @Override
+    public void onDeactivate() {
+        super.getRenderer().removeRenderTarget(this);
+    }
+
+    
 }

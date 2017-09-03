@@ -23,6 +23,8 @@
  */
 package blackengine.rendering;
 
+import blackengine.rendering.renderers.POVRendererBase;
+import blackengine.rendering.renderers.FlatRendererBase;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

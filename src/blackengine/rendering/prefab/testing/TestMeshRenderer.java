@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.prefab;
+package blackengine.rendering.prefab.testing;
 
-import blackengine.gameLogic.components.prefab.TestMeshComponent;
+import blackengine.gameLogic.components.prefab.rendering.TestMeshComponent;
 import static blackengine.openGL.vao.vbo.AttributeType.*;
-import blackengine.rendering.TargetPOVRenderer;
+import blackengine.rendering.renderers.TargetPOVRenderer;
 import blackengine.toolbox.math.MatrixMath;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,12 +39,12 @@ import org.lwjgl.util.vector.Matrix4f;
  *
  * @author Blackened
  */
-public class TestMeshComponentRenderer extends TargetPOVRenderer<TestMeshComponent> {
+public class TestMeshRenderer extends TargetPOVRenderer<TestMeshComponent> {
 
     private Set<TestMeshComponent> renderTargets;
 
-    public TestMeshComponentRenderer() {
-        super("/blackengine/rendering/prefab/vertexShader.glsl", "/blackengine/rendering/prefab/fragmentShader.glsl");
+    public TestMeshRenderer() {
+        super("/blackengine/rendering/prefab/testing/vertexShader.glsl", "/blackengine/rendering/prefab/testing/fragmentShader.glsl");
         this.renderTargets = new HashSet<>();
     }
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,38 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.prefab;
+package blackengine.gameLogic.components.prefab.rendering;
 
 import blackengine.gameLogic.components.base.POVRendereredComponentBase;
+import blackengine.openGL.texture.Texture;
 import blackengine.openGL.vao.Vao;
-import blackengine.rendering.prefab.TestMeshComponentRenderer;
+import blackengine.rendering.prefab.texturedRendering.TexturedMeshRenderer;
 
 /**
  *
  * @author Blackened
  */
-public class TestMeshComponent extends POVRendereredComponentBase<TestMeshComponentRenderer>{
+public class TexturedMeshComponent extends POVRendereredComponentBase<TexturedMeshRenderer>{
     
     private Vao vao;
     
-
+    private Texture texture;
+    
     public Vao getVao() {
         return vao;
     }
-    
-    public TestMeshComponent(Vao vao, TestMeshComponentRenderer renderer) {
-        super(renderer);
-        
-        this.vao = vao;
-    }
-        
 
-    @Override
-    public boolean isRendered() {
-        if(super.getRenderer() != null){
-            super.getRenderer().containsRenderTarget(this);
-        }
-        return false;
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public TexturedMeshComponent(TexturedMeshRenderer renderer, Vao vao, Texture texture) {
+        super(renderer);
+        this.vao = vao;
+        this.texture = texture;
     }
 
     @Override
@@ -65,5 +62,9 @@ public class TestMeshComponent extends POVRendereredComponentBase<TestMeshCompon
         super.getRenderer().removeRenderTarget(this);
     }
 
+    @Override
+    public boolean isRendered() {
+        return super.getRenderer().containsRenderTarget(this);
+    }
     
 }
