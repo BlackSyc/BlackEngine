@@ -23,11 +23,13 @@
  */
 package blackengine.rendering.prefab.texturedRendering;
 
+import blackengine.dataAccess.tools.PlainTextLoader;
 import blackengine.gameLogic.components.prefab.rendering.TexturedMeshComponent;
 import static blackengine.openGL.vao.vbo.AttributeType.TEXTURE_COORDS;
 import static blackengine.openGL.vao.vbo.AttributeType.VERTEX_POSITIONS;
 import blackengine.rendering.renderers.TargetPOVRenderer;
 import blackengine.toolbox.math.MatrixMath;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import org.lwjgl.opengl.GL11;
@@ -42,8 +44,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
 
     private Set<TexturedMeshComponent> targets;
 
-    public TexturedMeshRenderer() {
-        super("/blackengine/rendering/prefab/texturedRendering/vertexShader.glsl", "/blackengine/rendering/prefab/texturedRendering/fragmentShader.glsl");
+    protected TexturedMeshRenderer(){
         this.targets = new HashSet<>();
     }
 
@@ -98,6 +99,21 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
     private void finalizeRendering() {
         this.stop();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
+    }
+
+    public static TexturedMeshRenderer createDefault() throws IOException {
+        TexturedMeshRenderer tmr = new TexturedMeshRenderer();
+        
+        String vertexSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/texturedRendering/vertexShader.glsl");
+        String fragmentSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/texturedRendering/fragmentShader.glsl");
+        
+        tmr.load(vertexSource, fragmentSource);
+        
+        return tmr;
+    }
+    
+    public static TexturedMeshRenderer createEmpty(){
+        return new TexturedMeshRenderer();
     }
 
 }

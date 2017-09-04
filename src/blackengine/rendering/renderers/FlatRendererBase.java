@@ -29,8 +29,7 @@ package blackengine.rendering.renderers;
  */
 public abstract class FlatRendererBase extends RendererBase {
 
-    public FlatRendererBase(String vertexFile, String fragmentFile) {
-        super(vertexFile, fragmentFile);
+    public FlatRendererBase() {
     }
 
     /**

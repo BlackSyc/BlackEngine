@@ -23,7 +23,6 @@
  */
 package blackengine.rendering.renderers;
 
-import blackengine.rendering.renderers.POVRendererBase;
 
 
 /**
@@ -38,8 +37,7 @@ public abstract class TargetPOVRenderer<T> extends POVRendererBase {
      * @param vertexFile
      * @param fragmentFile 
      */
-    public TargetPOVRenderer(String vertexFile, String fragmentFile) {
-        super(vertexFile, fragmentFile);
+    public TargetPOVRenderer() {
     }
     
     /**

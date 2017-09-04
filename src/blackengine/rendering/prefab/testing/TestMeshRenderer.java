@@ -23,10 +23,12 @@
  */
 package blackengine.rendering.prefab.testing;
 
+import blackengine.dataAccess.tools.PlainTextLoader;
 import blackengine.gameLogic.components.prefab.rendering.TestMeshComponent;
 import static blackengine.openGL.vao.vbo.AttributeType.*;
 import blackengine.rendering.renderers.TargetPOVRenderer;
 import blackengine.toolbox.math.MatrixMath;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import org.lwjgl.opengl.GL11;
@@ -43,8 +45,7 @@ public class TestMeshRenderer extends TargetPOVRenderer<TestMeshComponent> {
 
     private Set<TestMeshComponent> renderTargets;
 
-    public TestMeshRenderer() {
-        super("/blackengine/rendering/prefab/testing/vertexShader.glsl", "/blackengine/rendering/prefab/testing/fragmentShader.glsl");
+    protected TestMeshRenderer() {
         this.renderTargets = new HashSet<>();
     }
 
@@ -102,7 +103,7 @@ public class TestMeshRenderer extends TargetPOVRenderer<TestMeshComponent> {
     }
 
     private void initializeRendering(Matrix4f viewMatrix) {
-        GL11.glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         this.start();
         this.loadUniformMatrix("viewMatrix", viewMatrix);
@@ -110,8 +111,22 @@ public class TestMeshRenderer extends TargetPOVRenderer<TestMeshComponent> {
 
     private void finalizeRendering() {
         this.stop();
-        GL11.glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+        GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
     }
 
+    public static TestMeshRenderer createDefault() throws IOException {
+        TestMeshRenderer tmr = new TestMeshRenderer();
+
+        String vertexSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/testing/vertexShader.glsl");
+        String fragmentSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/testing/fragmentShader.glsl");
+
+        tmr.load(vertexSource, fragmentSource);
+
+        return tmr;
+    }
+
+    public static TestMeshRenderer createEmpty() {
+        return new TestMeshRenderer();
+    }
 }

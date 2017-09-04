@@ -41,8 +41,7 @@ public abstract class POVRendererBase extends RendererBase {
         this.projectionMatrix = projectionMatrix;
     }
 
-    public POVRendererBase(String vertexFile, String fragmentFile) {
-        super(vertexFile, fragmentFile);
+    public POVRendererBase() {
     }
 
     /**

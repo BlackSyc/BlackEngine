@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,40 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.dataAccess.tools;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class TargetFlatRenderer<T> extends FlatRendererBase{
-        
-    /**
-     * 
-     * @param vertexFile
-     * @param fragmentFile 
-     */
-    public TargetFlatRenderer() {
+public class PlainTextLoader {
+
+    public static String loadResource(String resourcePath) throws IOException {
+        try (InputStream is = Class.class.getResourceAsStream(resourcePath)) {
+            try (BufferedReader buffer = new BufferedReader(new InputStreamReader(is))) {
+                return buffer.lines().collect(Collectors.joining("\n"));
+            }
+        }
+
     }
-    
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void addRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void removeRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     * @return 
-     */
-    public abstract boolean containsRenderTarget(T renderTarget);
+
 }
