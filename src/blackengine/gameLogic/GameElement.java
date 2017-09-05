@@ -23,6 +23,7 @@
  */
 package blackengine.gameLogic;
 
+import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -93,11 +94,11 @@ public abstract class GameElement {
     public boolean isActive() {
         return active;
     }
-    
-    public Iterator<Entity> getEntitiesByTag(Tag tag){
+
+    public Iterator<Entity> getEntitiesByTag(Tag tag) {
         return this.entities.values().stream().filter(x -> x.getTag().equals(tag)).iterator();
     }
-    
+
     public Iterator<Entity> getAllEntities() {
         return this.entities.values().stream().iterator();
     }
@@ -153,17 +154,20 @@ public abstract class GameElement {
 
     /**
      * Adds an entity to this scene. If one with the same name was already
-     * present, that one will be destroyed and replaced with the new one.
+     * present, this will throw a new DuplicateEntityNameException.
      *
      * @param entity The entity that will be added to this scene.
+     * @throws blackengine.gameLogic.exceptions.DuplicateEntityNameException
      */
-    public void addEntity(Entity entity) {
+    public void addEntity(Entity entity) throws DuplicateEntityNameException {
         if (entity != null) {
             if (this.containsEntity(entity.getName())) {
-                this.destroyEntity(entity.getName());
+                throw new DuplicateEntityNameException();
+            } else {
+                this.entities.put(entity.getName(), entity);
+                entity.setGameElement(this);
             }
-            this.entities.put(entity.getName(), entity);
-            entity.setGameElement(this);
+
         }
     }
 
