@@ -80,6 +80,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      *
      * @return The pitch of this camera.
      */
+    @Override
     public double getPitch() {
         return this.pitch;
     }
@@ -89,6 +90,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      *
      * @return The yaw of this camera.
      */
+    @Override
     public double getYaw() {
         return this.yaw;
     }
@@ -98,6 +100,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      *
      * @return The roll of this camera.
      */
+    @Override
     public double getRoll() {
         return this.roll;
     }
@@ -213,6 +216,11 @@ public class CameraComponent extends ComponentBase implements Camera {
         Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
         Vector3f negativeCameraPos = this.position.negate(null);
         Matrix4f.translate(negativeCameraPos, this.viewMatrix, this.viewMatrix);
+    }
+
+    @Override
+    public Vector3f getPosition() {
+        return this.position;
     }
 
 }

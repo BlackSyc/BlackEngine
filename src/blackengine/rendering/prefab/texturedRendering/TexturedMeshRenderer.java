@@ -27,6 +27,7 @@ import blackengine.dataAccess.tools.PlainTextLoader;
 import blackengine.gameLogic.components.prefab.rendering.TexturedMeshComponent;
 import static blackengine.openGL.vao.vbo.AttributeType.TEXTURE_COORDS;
 import static blackengine.openGL.vao.vbo.AttributeType.VERTEX_POSITIONS;
+import blackengine.rendering.Camera;
 import blackengine.rendering.renderers.TargetPOVRenderer;
 import blackengine.toolbox.math.MatrixMath;
 import java.io.IOException;
@@ -64,7 +65,8 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
     }
 
     @Override
-    public void render(Matrix4f viewMatrix) {
+    public void render(Camera camera) {
+        Matrix4f viewMatrix = camera.getViewMatrix();
         this.initializeRendering(viewMatrix);
         this.targets.forEach(x -> {
             x.getVao().bind();
@@ -92,6 +94,8 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
 
     private void initializeRendering(Matrix4f viewMatrix) {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.start();
         this.loadUniformMatrix("viewMatrix", viewMatrix);
     }
@@ -99,6 +103,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
     private void finalizeRendering() {
         this.stop();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     public static TexturedMeshRenderer createDefault() throws IOException {

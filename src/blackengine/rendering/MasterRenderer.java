@@ -246,7 +246,7 @@ public class MasterRenderer {
             while (iter.hasNext()) {
                 Class<? extends POVRendererBase> rendererClass = iter.next();
                 if (this.containsPOVRendererByClass(rendererClass)) {
-                    this.getPOVRenderer(rendererClass).render(this.mainCamera.getViewMatrix());
+                    this.getPOVRenderer(rendererClass).render(this.mainCamera);
                 }
             }
         }

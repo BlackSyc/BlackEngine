@@ -24,6 +24,7 @@
 package blackengine.rendering;
 
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -32,5 +33,13 @@ import org.lwjgl.util.vector.Matrix4f;
 public interface Camera {
     
     public Matrix4f getViewMatrix();
+    
+    public Vector3f getPosition();
+    
+    public double getYaw();
+    
+    public double getRoll();
+    
+    public double getPitch();
     
 }

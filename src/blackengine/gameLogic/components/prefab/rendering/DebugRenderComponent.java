@@ -24,23 +24,45 @@
 package blackengine.gameLogic.components.prefab.rendering;
 
 import blackengine.gameLogic.components.base.POVRendereredComponentBase;
+import blackengine.openGL.texture.Texture;
 import blackengine.openGL.vao.Vao;
-import blackengine.rendering.prefab.testing.TestMeshRenderer;
+import blackengine.rendering.prefab.testing.DebugRenderer;
 
 /**
  *
  * @author Blackened
  */
-public class TestMeshComponent extends POVRendereredComponentBase<TestMeshRenderer>{
+public class DebugRenderComponent extends POVRendereredComponentBase<DebugRenderer>{
     
     private Vao vao;
     
+    private Texture texture;
+    
+    private boolean wireFrameEnabled = false;
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public boolean isWireFrameEnabled() {
+        return wireFrameEnabled || this.texture == null;
+    }
+
+    
+    public boolean setWireFrameEnabled(boolean wireFrameEnabled) {
+        this.wireFrameEnabled = wireFrameEnabled;
+        return this.texture != null;
+    }
 
     public Vao getVao() {
         return vao;
     }
     
-    public TestMeshComponent(Vao vao, TestMeshRenderer renderer) {
+    public DebugRenderComponent(Vao vao, DebugRenderer renderer) {
         super(renderer);
         
         this.vao = vao;

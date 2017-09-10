@@ -145,6 +145,10 @@ public abstract class RendererBase {
         matrixBuffer.flip();
         GL20.glUniformMatrix4(uniformLocation, false, matrixBuffer);
     }
+    
+    protected void loadUniformBool(String uniformName, boolean value){
+        GL20.glUniform1i(this.getUniformLocation(uniformName), value ? 1 : 0);
+    }
 
     protected void loadUniformVector3f(String uniformName, Vector3f vector) {
         GL20.glUniform3f(this.getUniformLocation(uniformName), vector.x, vector.y, vector.z);

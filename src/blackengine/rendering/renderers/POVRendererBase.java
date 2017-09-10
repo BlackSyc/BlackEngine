@@ -23,6 +23,7 @@
  */
 package blackengine.rendering.renderers;
 
+import blackengine.rendering.Camera;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
@@ -47,9 +48,8 @@ public abstract class POVRendererBase extends RendererBase {
     /**
      * Render the targets.
      *
-     * @param viewMatrix The view matrix of the camera to calculate the position
-     * of 3d elements on screen.
+     * @param camera The camera
      */
-    public abstract void render(Matrix4f viewMatrix);
+    public abstract void render(Camera camera);
 
 }
