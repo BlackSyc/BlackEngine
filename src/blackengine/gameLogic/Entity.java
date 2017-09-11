@@ -25,6 +25,9 @@ package blackengine.gameLogic;
 
 import static blackengine.gameLogic.DefaultTag.NONE;
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.gameLogic.exceptions.DuplicateComponentTypeException;
+import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -196,7 +199,7 @@ public class Entity {
         this(name, position, new Vector3f(), new Vector3f(1, 1, 1));
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Public Methods">
     /**
      * Verifies whether a child with the specified name is present in this
@@ -223,18 +226,25 @@ public class Entity {
 
     /**
      * Adds a child entity to this entity. If one with the same name was already
-     * present, that one will be destroyed and replaced with the new one.
+     * present, a
+     * {@link blackengine.gameLogic.exceptions.DuplicateEntityNameException DuplicateEntityNameException}
+     * will be thrown. If the parent entity was flagged active, the child will
+     * be activated as well.
      *
      * @param child An entity that will be added to this entity as a child.
      */
-    public void addChild(Entity child) {
+    public void addChild(Entity child) throws DuplicateEntityNameException {
         if (child != null) {
-
             if (this.containsChild(child.getName())) {
-                this.destroyChild(child.getName());
+                throw new DuplicateEntityNameException();
+            } else {
+                this.children.put(child.getName(), child);
+                child.setParent(this);
+                if (this.active) {
+                    child.activate();
+                }
             }
-            this.children.put(child.getName(), child);
-            child.setParent(this);
+
         }
     }
 
@@ -302,18 +312,25 @@ public class Entity {
 
     /**
      * Adds a component to this entity if a component with this mapping was not
-     * yet present. If one was already present, the existing one will be
-     * destroyed and replaced.
+     * yet present. If one was already present, a
+     * {@link blackengine.gameLogic.exceptions.DuplicateComponentTypeException DuplicateComponentTypeException}
+     * will be thrown. If the entity is flagged active, the component will be
+     * activated as well.
      *
      * @param component The component to be added to this entity.
      */
-    public void addComponent(ComponentBase component) {
+    public void addComponent(ComponentBase component) throws DuplicateComponentTypeException {
         if (component != null) {
             if (this.containsComponent(component.getMapping())) {
-                this.getComponent(component.getMapping()).destroy();
+                throw new DuplicateComponentTypeException();
+            } else {
+                component.setParent(this);
+                this.components.put(component.getMapping(), component);
+                if (this.active) {
+                    component.activate();
+                }
             }
-            component.setParent(this);
-            this.components.put(component.getMapping(), component);
+
         }
     }
 
@@ -413,6 +430,50 @@ public class Entity {
      */
     private void removeChildrenFlaggedForDestruction() {
         this.children.entrySet().removeIf(x -> x.getValue().isDestroyed());
+    }
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Static Methods">
+    /**
+     * Creates an instance of Entity, and activates it and its components.
+     *
+     * @param name The name of the entity.
+     * @param position The position of the entity.
+     * @param rotation The rotation of the entity.
+     * @param scale The scale of the entity.
+     * @param components The components that will be added to this entity.
+     * @return The entity.
+     */
+    public static Entity create(String name, Vector3f position, Vector3f rotation, Vector3f scale, ComponentBase... components) {
+        Entity entity = new Entity(name, position, rotation, scale);
+        if (components != null) {
+            Arrays.stream(components).forEach(x -> entity.addComponent(x));
+        }
+        entity.activate();
+
+        return entity;
+    }
+
+    /**
+     * Creates an instance of Entity, and activates it and its components.
+     *
+     * @param name The name of the entity.
+     * @param position The position of the entity.
+     * @param components The components that will be added to this entity.
+     * @return The entity.
+     */
+    public static Entity create(String name, Vector3f position, ComponentBase... components) throws DuplicateComponentTypeException {
+        try {
+            Entity entity = new Entity(name, position);
+            if (components != null) {
+                Arrays.stream(components).forEach(x -> entity.addComponent(x));
+            }
+            entity.activate();
+
+            return entity;
+        } catch (DuplicateComponentTypeException ex) {
+            throw ex;
+        }
     }
 
     //</editor-fold>

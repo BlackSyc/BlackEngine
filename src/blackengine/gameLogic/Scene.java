@@ -39,6 +39,7 @@ public class Scene extends GameElement {
     
     public void setPlayer(Entity player) throws DuplicateEntityNameException{
         super.addEntity(player);
+        
         this.player = player;
     }
 
