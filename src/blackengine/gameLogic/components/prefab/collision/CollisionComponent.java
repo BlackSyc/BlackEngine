@@ -34,7 +34,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public abstract class CollisionComponent extends ComponentBase {
 
-    protected Vector3f offset;
+    protected Vector3f offset = new Vector3f();
 
     /**
      *
@@ -42,16 +42,17 @@ public abstract class CollisionComponent extends ComponentBase {
      */
     protected abstract List<Entity> isColliding();
 
-    protected abstract void onCollision(Entity entity);
+    protected abstract void onCollision(Entity otherEntity);
 
-    public abstract Vector3f getEdgePoint(Vector3f otherCollisionComponentCenter);
+    protected abstract Vector3f getRelativeEdgePoint(Vector3f otherCollisionComponentCenter);
 
-    protected abstract Vector3f getCollisionComponentCenter();
+    public abstract Vector3f getCollisionComponentCenter();
 
     @Override
     public void update() {
         List<Entity> collidingEntities = this.isColliding();
-        collidingEntities.forEach(x -> this.onCollision(x));
+        if (collidingEntities.size() > 0)
+            collidingEntities.forEach(x -> this.onCollision(x));
     }
 
 }

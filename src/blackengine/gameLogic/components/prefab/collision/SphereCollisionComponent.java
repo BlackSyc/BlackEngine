@@ -54,23 +54,26 @@ public abstract class SphereCollisionComponent extends CollisionComponent {
     }
 
     @Override
-    protected Vector3f getCollisionComponentCenter() {
+    public Vector3f getCollisionComponentCenter() {
         return Vector3f.add(this.getParent().getTransform().getAbsolutePosition(), this.offset, null);
     }
 
     @Override
     protected List<Entity> isColliding() {
-        Vector3f collisionComponentCenter = this.getCollisionComponentCenter();
         List<Entity> collidingEntities = new ArrayList<>();
         GameElement scene = this.getParent().getGameElement();
         Iterator<Entity> entities = scene.getAllEntities();
 
         while (entities.hasNext()) {
+
             Entity entity = entities.next();
-            if (entity.containsComponent(CollisionComponent.class)) {
-                Vector3f edgePoint = entity.getComponent(CollisionComponent.class).getEdgePoint(collisionComponentCenter);
-                if (VectorMath.distance(edgePoint, collisionComponentCenter) < this.radius) {
-                    collidingEntities.add(entity);
+            if (entity != this.getParent()) {
+                if (entity.containsComponent(CollisionComponent.class)) {
+                    Vector3f otherCollisionComponentCenter = entity.getComponent(CollisionComponent.class).getCollisionComponentCenter();
+                    Vector3f edgePoint = Vector3f.add(this.getCollisionComponentCenter(), this.getRelativeEdgePoint(otherCollisionComponentCenter), null);
+                    if (VectorMath.distance(edgePoint, otherCollisionComponentCenter) < this.radius) {
+                        collidingEntities.add(entity);
+                    }
                 }
             }
         }
@@ -79,8 +82,9 @@ public abstract class SphereCollisionComponent extends CollisionComponent {
     }
 
     @Override
-    public Vector3f getEdgePoint(Vector3f otherCollisionComponentCenter) {
-        Vector3f directionVector = Vector3f.sub(this.getCollisionComponentCenter(), otherCollisionComponentCenter, null);
+    protected Vector3f getRelativeEdgePoint(Vector3f otherCollisionComponentCenter) {
+        Vector3f directionVector = Vector3f.sub(otherCollisionComponentCenter, this.getCollisionComponentCenter(), null);
+
         float directionLength = directionVector.length();
         float scaleFactor = this.radius / directionLength;
 

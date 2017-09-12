@@ -86,14 +86,11 @@ public abstract class ComponentBase {
     }
 
     /**
-     * Deactivates this component, sets its parent to null and flags for
-     * destruction.
+     * Deactivates this component, sets its flags for destruction.
      */
     public void destroy() {
         this.deactivate();
-        this.parent = null;
         this.destroyed = true;
-
     }
 
     /**
