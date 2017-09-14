@@ -25,14 +25,21 @@ package blackengine.rendering.prefab.texturedRendering;
 
 import blackengine.dataAccess.tools.PlainTextLoader;
 import blackengine.gameLogic.components.prefab.rendering.TexturedMeshComponent;
+import blackengine.openGL.vao.vbo.AttributeType;
+import static blackengine.openGL.vao.vbo.AttributeType.NORMAL_VECTORS;
 import static blackengine.openGL.vao.vbo.AttributeType.TEXTURE_COORDS;
 import static blackengine.openGL.vao.vbo.AttributeType.VERTEX_POSITIONS;
 import blackengine.rendering.Camera;
+import blackengine.rendering.RenderEngine;
+import blackengine.rendering.lighting.Light;
 import blackengine.rendering.renderers.TargetPOVRenderer;
 import blackengine.toolbox.math.MatrixMath;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
@@ -44,6 +51,8 @@ import org.lwjgl.util.vector.Matrix4f;
 public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponent> {
 
     private Set<TexturedMeshComponent> targets;
+    
+    private final int maxLights = 4;
 
     protected TexturedMeshRenderer(){
         this.targets = new HashSet<>();
@@ -83,6 +92,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
     public void bindAttributes() {
         super.bindAttribute(VERTEX_POSITIONS.getValue(), "position");
         super.bindAttribute(TEXTURE_COORDS.getValue(), "texCoords");
+        super.bindAttribute(NORMAL_VECTORS.getValue(), "normal");
     }
 
     @Override
@@ -90,14 +100,28 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
         this.start();
         super.loadUniformMatrix("projectionMatrix", super.getProjectionMatrix());
         this.stop();
+        
+    }
+    
+    private void loadUniformLights(List<Light> lights){
+        for(int i = 0; i < lights.size(); i++){
+            this.loadUniformVector3f("lightColour[" + i + "]", lights.get(i).getColour());
+            this.loadUniformVector3f("lightPosition[" + i + "]", lights.get(i).getPosition());
+            this.loadUniformVector3f("lightAttenuation[" + i + "]", lights.get(i).getAttenuation());
+        }
+        
     }
 
     private void initializeRendering(Matrix4f viewMatrix) {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        //GL11.glEnable(GL11.GL_BLEND);
+        //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.start();
         this.loadUniformMatrix("viewMatrix", viewMatrix);
+                this.loadUniformLights(RenderEngine.getInstance()
+                .getLightStream()
+                .limit(this.maxLights)
+                .collect(Collectors.toList()));
     }
 
     private void finalizeRendering() {
