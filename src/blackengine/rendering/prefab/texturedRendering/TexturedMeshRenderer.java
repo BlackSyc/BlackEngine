@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -104,18 +105,26 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
     }
     
     private void loadUniformLights(List<Light> lights){
+        int lightCount = 0;
         for(int i = 0; i < lights.size(); i++){
             this.loadUniformVector3f("lightColour[" + i + "]", lights.get(i).getColour());
             this.loadUniformVector3f("lightPosition[" + i + "]", lights.get(i).getPosition());
             this.loadUniformVector3f("lightAttenuation[" + i + "]", lights.get(i).getAttenuation());
+            lightCount++;
         }
+        for(int i = lightCount; i < this.maxLights; i++){
+            this.loadUniformVector3f("lightColour[" + i + "]", new Vector3f(0,0,0));
+            this.loadUniformVector3f("lightPosition[" + i + "]", new Vector3f(1,1,1));
+            this.loadUniformVector3f("lightAttenuation[" + i + "]", new Vector3f(1,1,1));
+        }
+        
         
     }
 
     private void initializeRendering(Matrix4f viewMatrix) {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        //GL11.glEnable(GL11.GL_BLEND);
-        //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.start();
         this.loadUniformMatrix("viewMatrix", viewMatrix);
                 this.loadUniformLights(RenderEngine.getInstance()
