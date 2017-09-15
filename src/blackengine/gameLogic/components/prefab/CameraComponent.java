@@ -51,26 +51,6 @@ import org.lwjgl.util.vector.Vector3f;
 public class CameraComponent extends ComponentBase implements Camera {
 
     /**
-     * The pitch of this camera in degrees.
-     */
-    private double pitch = 0;
-
-    /**
-     * The yaw of this camera in degrees.
-     */
-    private double yaw = 0;
-
-    /**
-     * The roll of this camera in degrees.
-     */
-    private double roll = 0;
-
-    /**
-     * The position of this camera.
-     */
-    private Vector3f position;
-
-    /**
      * The view matrix of this camera.
      */
     protected Matrix4f viewMatrix = new Matrix4f();
@@ -82,7 +62,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public double getPitch() {
-        return this.pitch;
+        return -this.getParent().getTransform().getEulerRotation().getX();
     }
 
     /**
@@ -92,7 +72,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public double getYaw() {
-        return this.yaw;
+        return -this.getParent().getTransform().getEulerRotation().getY();
     }
 
     /**
@@ -102,34 +82,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public double getRoll() {
-        return this.roll;
-    }
-
-    /**
-     * Setter for the pitch in degrees.
-     *
-     * @param pitch The new pitch of this camera.
-     */
-    public void setPitch(double pitch) {
-        this.pitch = pitch;
-    }
-
-    /**
-     * Setter for the yaw in degrees.
-     *
-     * @param yaw The new yaw of this camera.
-     */
-    public void setYaw(double yaw) {
-        this.yaw = yaw;
-    }
-
-    /**
-     * Setter for the roll in degrees.
-     *
-     * @param roll The new roll of this camera.
-     */
-    public void setRoll(double roll) {
-        this.roll = roll;
+        return -this.getParent().getTransform().getEulerRotation().getZ();
     }
 
     /**
@@ -173,24 +126,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public void update() {
-        this.updateYawPitchRoll();
-        this.updatePosition();
         this.createViewMatrix();
-    }
-
-    /**
-     * Updates the yaw of this camera to the negative Y-rotation of its parent.
-     */
-    protected void updateYawPitchRoll() {
-        this.yaw = -super.getParent().getTransform().getEulerRotation().getY();
-    }
-
-    /**
-     * Updates the position of this camera to the absolute position of its
-     * parent.
-     */
-    protected void updatePosition() {
-        this.position = new Vector3f(super.getParent().getTransform().getAbsolutePosition());
     }
 
     /**
@@ -214,13 +150,13 @@ public class CameraComponent extends ComponentBase implements Camera {
         Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
-        Vector3f negativeCameraPos = this.position.negate(null);
+        Vector3f negativeCameraPos = this.getParent().getTransform().getAbsolutePosition().negate(null);
         Matrix4f.translate(negativeCameraPos, this.viewMatrix, this.viewMatrix);
     }
 
     @Override
     public Vector3f getPosition() {
-        return this.position;
+        return this.getParent().getTransform().getAbsolutePosition();
     }
 
 }

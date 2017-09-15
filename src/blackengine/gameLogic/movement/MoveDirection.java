@@ -35,32 +35,32 @@ public enum MoveDirection {
 
         @Override
         public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
-            float dx = (float) (amount * Math.sin(currentRotation.getY()));
-            float dz = (float) (amount * Math.cos(currentRotation.getY()));
+            float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY())));
+            float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY())));
             return new Vector3f(-dx, 0, -dz);
         }
     },
     BACKWARD {
         @Override
         public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
-            float dx = (float) (amount * Math.sin(currentRotation.getY()));
-            float dz = (float) (amount * Math.cos(currentRotation.getY()));
+            float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY())));
+            float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY())));
             return new Vector3f(dx, 0, dz);
         }
     },
     LEFT {
         @Override
         public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
-            float dx = (float) (amount * Math.sin(currentRotation.getY() - 0.5 * Math.PI));
-            float dz = (float) (amount * Math.cos(currentRotation.getY() - 0.5 * Math.PI));
+            float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
+            float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
             return new Vector3f(dx, 0, dz);
         }
     },
     RIGHT {
         @Override
         public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
-            float dx = (float) (amount * Math.sin(currentRotation.getY() - 0.5 * Math.PI));
-            float dz = (float) (amount * Math.cos(currentRotation.getY() - 0.5 * Math.PI));
+            float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
+            float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
             return new Vector3f(-dx, 0, -dz);
         }
     },
