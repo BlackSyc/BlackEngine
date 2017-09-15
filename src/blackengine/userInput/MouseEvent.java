@@ -33,7 +33,9 @@ public enum MouseEvent {
 
     HOVER,
     MOUSEDOWN,
-    MOUSEUP;
+    MOUSEUP,
+    DRAG_RMB(1),
+    DRAG_LMB(0);
 
     MouseEvent() {
         this.x = 0;

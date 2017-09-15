@@ -182,7 +182,18 @@ public class InputManager<T> {
                 }
             }
         }
-        this.mouseSubject.onNext(HOVER.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+        if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) {
+            if (Mouse.isButtonDown(0)) {
+                this.mouseSubject.onNext(DRAG_LMB.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+            }
+            if (Mouse.isButtonDown(1)) {
+                this.mouseSubject.onNext(DRAG_RMB.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+            }
+        } else {
+            this.mouseSubject.onNext(HOVER.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
+        }
+
+        //this.mouseSubject.onNext(HOVER.at(Mouse.getX(), Mouse.getY()).withDelta(dx, dy));
 
     }
 
