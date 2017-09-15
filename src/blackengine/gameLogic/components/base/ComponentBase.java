@@ -119,7 +119,8 @@ public abstract class ComponentBase {
      * calling {@link #onDeactivate() onDeactivate()}.
      */
     public final void deactivate() {
-        this.onDeactivate();
+        if (this.active)
+            this.onDeactivate();
         this.active = false;
     }
 
