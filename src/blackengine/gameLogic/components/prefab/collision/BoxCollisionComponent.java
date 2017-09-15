@@ -25,8 +25,12 @@ package blackengine.gameLogic.components.prefab.collision;
 
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.toolbox.math.VectorMath;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -36,6 +40,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
 
     private float width;
     private float height;
+    private float depth;
 
     public float getWidth() {
         return width;
@@ -44,7 +49,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
     public void setWidth(float width) {
         this.width = width;
     }
-    
+
     public float getHeight() {
         return height;
     }
@@ -52,12 +57,69 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
     public void setHeight(float height) {
         this.height = height;
     }
-    
-    public BoxCollisionComponent(float width, float height) {
+
+    public float getDepth() {
+        return depth;
+    }
+
+    public void setDepth(float depth) {
+        this.depth = depth;
+    }
+
+    public BoxCollisionComponent(float width, float height, float depth) {
         this.width = width;
         this.height = height;
+        this.depth = depth;
     }
-    
+
+    /**
+     * Returns the absolute X value of the position of the right side of the box.
+     * @return the absolute X value of the position of the right side of the box.
+     */
+    public float getRightBound() {
+        return this.getCollisionComponentCenter().getX() + (this.width / 2);
+    }
+
+    /**
+     * Returns the absolute X value of the position of the left side of the box.
+     * @return the absolute X value of the position of the left side of the box.
+     */
+    public float getLeftBound() {
+        return this.getCollisionComponentCenter().getX() - (this.width / 2);
+    }
+
+    /**
+     * Returns the absolute Y value of the position of the top side of the box.
+     * @return the absolute Y value of the position of the top side of the box.
+     */
+    public float getTopBound() {
+        return this.getCollisionComponentCenter().getY() + (this.height / 2);
+    }
+
+    /**
+     * Returns the absolute Y value of the position of the bottom side of the box.
+     * @return the absolute Y value of the position of the bottom side of the box.
+     */
+    public float getBottomBound() {
+        return this.getCollisionComponentCenter().getY() - (this.height / 2);
+    }
+
+    /**
+     * Returns the absolute Z value of the position of the front side of the box.
+     * @return the absolute Z value of the position of the front side of the box.
+     */
+    public float getFrontBound() {
+        return this.getCollisionComponentCenter().getZ() + (this.depth / 2);
+    }
+
+    /**
+     * Returns the absolute Z value of the position of the back side of the box.
+     * @return the absolute Z value of the position of the back side of the box.
+     */
+    public float getBackBound() {
+        return this.getCollisionComponentCenter().getZ() - (this.depth / 2);
+    }
+
     @Override
     protected List<Entity> calculateCollisions() {
         return this.getParent().getGameElement().getAllEntities()
@@ -70,10 +132,32 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
     protected boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
         return false;
     }
-    
+
     @Override
     protected boolean isColliding(BoxCollisionComponent boxCollisionComponent) {
-        return false;
+        Vector3f[] cornerPoints = new Vector3f[] {
+            new Vector3f(this.getRightBound(), this.getTopBound(), this.getFrontBound()),
+            new Vector3f(this.getLeftBound(), this.getTopBound(), this.getFrontBound()),
+            new Vector3f(this.getRightBound(), this.getBottomBound(), this.getFrontBound()),
+            new Vector3f(this.getLeftBound(), this.getBottomBound(), this.getFrontBound()),
+            new Vector3f(this.getRightBound(), this.getTopBound(), this.getBackBound()),
+            new Vector3f(this.getLeftBound(), this.getTopBound(), this.getBackBound()),
+            new Vector3f(this.getRightBound(), this.getBottomBound(), this.getBackBound()),
+            new Vector3f(this.getLeftBound(), this.getBottomBound(), this.getBackBound())
+        };
+        
+        // Corner point with minimum distance to the center of the other boxcollider
+        Vector3f vector = Stream.of(cornerPoints).min((x, y) -> 
+                Float.compare(VectorMath.distance(x, boxCollisionComponent.getCollisionComponentCenter()),
+                        VectorMath.distance(y, boxCollisionComponent.getCollisionComponentCenter()))).get();
+
+        // Is closest corner point inside other box.
+        return vector.getX() < boxCollisionComponent.getRightBound() && 
+                vector.getX() > boxCollisionComponent.getLeftBound() && 
+                vector.getY() < boxCollisionComponent.getTopBound() && 
+                vector.getY() > boxCollisionComponent.getBottomBound() && 
+                vector.getZ() < boxCollisionComponent.getFrontBound() && 
+                vector.getZ() > boxCollisionComponent.getBackBound();
     }
 
     @Override
