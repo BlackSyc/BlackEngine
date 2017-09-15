@@ -27,6 +27,7 @@ import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  *
@@ -95,12 +96,12 @@ public abstract class GameElement {
         return active;
     }
 
-    public Iterator<Entity> getEntitiesByTag(Tag tag) {
-        return this.entities.values().stream().filter(x -> x.getTag().equals(tag)).iterator();
+    public Stream<Entity> getEntitiesByTag(Tag tag) {
+        return this.entities.values().stream().filter(x -> x.getTag().equals(tag));
     }
 
-    public Iterator<Entity> getAllEntities() {
-        return this.entities.values().stream().iterator();
+    public Stream<Entity> getAllEntities() {
+        return this.entities.values().stream();
     }
 
     /**
@@ -114,8 +115,8 @@ public abstract class GameElement {
     public void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
     }
-
     //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Default constructor for creating a new instance of scene.

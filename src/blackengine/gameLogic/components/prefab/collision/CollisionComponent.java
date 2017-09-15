@@ -26,6 +26,7 @@ package blackengine.gameLogic.components.prefab.collision;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -40,19 +41,24 @@ public abstract class CollisionComponent extends ComponentBase {
      *
      * @return
      */
-    protected abstract List<Entity> isColliding();
+    protected abstract List<Entity> calculateCollisions();
+
+    public abstract boolean isColliding(SphereCollisionComponent sphereCollisionComponent);
+
+    public abstract boolean isColliding(PlaneCollisionComponent planeCollisionComponent);
 
     protected abstract void onCollision(Entity otherEntity);
 
-    protected abstract Vector3f getRelativeEdgePoint(Vector3f otherCollisionComponentCenter);
-
-    public abstract Vector3f getCollisionComponentCenter();
+    public Vector3f getCollisionComponentCenter() {
+        return Vector3f.add(this.getParent().getTransform().getAbsolutePosition(), this.offset, null);
+    }
 
     @Override
     public void update() {
-        List<Entity> collidingEntities = this.isColliding();
-        if (collidingEntities.size() > 0)
+        List<Entity> collidingEntities = this.calculateCollisions();
+        if (collidingEntities.size() > 0) {
             collidingEntities.forEach(x -> this.onCollision(x));
+        }
     }
 
 }

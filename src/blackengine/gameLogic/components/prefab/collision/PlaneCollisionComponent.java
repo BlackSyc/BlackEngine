@@ -24,32 +24,14 @@
 package blackengine.gameLogic.components.prefab.collision;
 
 import blackengine.gameLogic.Entity;
-import blackengine.gameLogic.components.base.ComponentBase;
-import blackengine.toolbox.math.VectorMath;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
  * @author Blackened
  */
-public abstract class SphereCollisionComponent extends CollisionComponent {
-
-    private float radius;
-
-    public float getRadius() {
-        return radius;
-    }
-
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
-
-    public SphereCollisionComponent(float radius) {
-        this.radius = radius;
-    }
-
+public abstract class PlaneCollisionComponent extends CollisionComponent {
 
     @Override
     protected List<Entity> calculateCollisions() {
@@ -61,20 +43,12 @@ public abstract class SphereCollisionComponent extends CollisionComponent {
 
     @Override
     public boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
-        Vector3f otherCenter = sphereCollisionComponent.getCollisionComponentCenter();
-        Vector3f thisCenter = this.getCollisionComponentCenter();
-        float minimalDistance = this.getRadius() + sphereCollisionComponent.getRadius();
-        return VectorMath.distance(otherCenter, thisCenter) < minimalDistance;
-    }
-    
-    @Override
-    public boolean isColliding(PlaneCollisionComponent planeCollisionComponent){
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Class<? extends ComponentBase> getMapping() {
-        return CollisionComponent.class;
+    public boolean isColliding(PlaneCollisionComponent planeCollisionComponent) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
