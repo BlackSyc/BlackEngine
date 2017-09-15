@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Blackened.
+ * Copyright 2017 clainder.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,34 @@ import java.util.stream.Collectors;
 
 /**
  *
- * @author Blackened
+ * @author clainder
  */
-public abstract class PlaneCollisionComponent extends CollisionComponent {
+public abstract class BoxCollisionComponent extends CollisionComponent {
 
+    private float width;
+    private float height;
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+    
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+    
+    public BoxCollisionComponent(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
+    
     @Override
     protected List<Entity> calculateCollisions() {
         return this.getParent().getGameElement().getAllEntities()
@@ -61,5 +85,4 @@ public abstract class PlaneCollisionComponent extends CollisionComponent {
     public Class<? extends ComponentBase> getMapping() {
         return CollisionComponent.class;
     }
-
 }

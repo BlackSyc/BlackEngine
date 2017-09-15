@@ -26,7 +26,6 @@ package blackengine.gameLogic.components.prefab.collision;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -37,15 +36,13 @@ public abstract class CollisionComponent extends ComponentBase {
 
     protected Vector3f offset = new Vector3f();
 
-    /**
-     *
-     * @return
-     */
     protected abstract List<Entity> calculateCollisions();
 
-    public abstract boolean isColliding(SphereCollisionComponent sphereCollisionComponent);
+    protected abstract boolean isColliding(SphereCollisionComponent sphereCollisionComponent);
+    
+    protected abstract boolean isColliding(BoxCollisionComponent boxCollisionComponent);
 
-    public abstract boolean isColliding(PlaneCollisionComponent planeCollisionComponent);
+    protected abstract boolean isColliding(PlaneCollisionComponent planeCollisionComponent);
 
     protected abstract void onCollision(Entity otherEntity);
 

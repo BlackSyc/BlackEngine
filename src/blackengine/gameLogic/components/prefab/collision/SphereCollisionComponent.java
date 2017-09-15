@@ -50,7 +50,6 @@ public abstract class SphereCollisionComponent extends CollisionComponent {
         this.radius = radius;
     }
 
-
     @Override
     protected List<Entity> calculateCollisions() {
         return this.getParent().getGameElement().getAllEntities()
@@ -60,7 +59,7 @@ public abstract class SphereCollisionComponent extends CollisionComponent {
     }
 
     @Override
-    public boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
+    protected boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
         Vector3f otherCenter = sphereCollisionComponent.getCollisionComponentCenter();
         Vector3f thisCenter = this.getCollisionComponentCenter();
         float minimalDistance = this.getRadius() + sphereCollisionComponent.getRadius();
@@ -68,8 +67,13 @@ public abstract class SphereCollisionComponent extends CollisionComponent {
     }
     
     @Override
-    public boolean isColliding(PlaneCollisionComponent planeCollisionComponent){
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected boolean isColliding(BoxCollisionComponent boxCollisionComponent){
+        return false;
+    }
+    
+    @Override
+    protected boolean isColliding(PlaneCollisionComponent planeCollisionComponent){
+        return false;
     }
 
     @Override

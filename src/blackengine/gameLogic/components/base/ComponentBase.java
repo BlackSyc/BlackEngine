@@ -105,7 +105,8 @@ public abstract class ComponentBase {
      * {@link #onActivate() onActivate()}.
      */
     public final void activate() {
-        this.onActivate();
+        if (!this.active)
+            this.onActivate();
         this.active = true;
     }
 
