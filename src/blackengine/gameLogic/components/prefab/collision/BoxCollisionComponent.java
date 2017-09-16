@@ -152,12 +152,12 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
                         VectorMath.distance(y, boxCollisionComponent.getCollisionComponentCenter()))).get();
 
         // Is closest corner point inside other box.
-        return vector.getX() < boxCollisionComponent.getRightBound() && 
-                vector.getX() > boxCollisionComponent.getLeftBound() && 
-                vector.getY() < boxCollisionComponent.getTopBound() && 
-                vector.getY() > boxCollisionComponent.getBottomBound() && 
-                vector.getZ() < boxCollisionComponent.getFrontBound() && 
-                vector.getZ() > boxCollisionComponent.getBackBound();
+        return vector.getX() <= boxCollisionComponent.getRightBound() && 
+                vector.getX() >= boxCollisionComponent.getLeftBound() && 
+                vector.getY() <= boxCollisionComponent.getTopBound() && 
+                vector.getY() >= boxCollisionComponent.getBottomBound() && 
+                vector.getZ() <= boxCollisionComponent.getFrontBound() && 
+                vector.getZ() >= boxCollisionComponent.getBackBound();
     }
 
     @Override
