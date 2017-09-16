@@ -8,13 +8,13 @@ in vec3 normal;
 
 out vec2 pass_textureCoords;
 out vec3 surfaceNormal;
-out vec3 toLightVector[4];
+out vec3 toLightVector[6];
 
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 lightPosition[4];
+uniform vec3 lightPosition[6];
 
 void main(void){
 
@@ -22,7 +22,7 @@ void main(void){
 
     pass_textureCoords = textureCoords;
     vec4 worldPosition = transformationMatrix * vec4(position,1.0);
-    for(int i=0;i<4;i++){
+    for(int i=0;i<6;i++){
         toLightVector[i] = lightPosition[i] - worldPosition.xyz;
     }
 
