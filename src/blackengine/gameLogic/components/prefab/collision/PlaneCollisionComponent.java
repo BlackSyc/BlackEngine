@@ -37,6 +37,7 @@ public abstract class PlaneCollisionComponent extends CollisionComponent {
     @Override
     protected List<Entity> calculateCollisions() {
         return this.getParent().getGameElement().getAllEntities()
+                .filter(x -> !x.equals(this))
                 .filter(x -> x.containsComponent(CollisionComponent.class))
                 .filter(x -> x.getComponent(CollisionComponent.class).isColliding(this))
                 .collect(Collectors.toList());
