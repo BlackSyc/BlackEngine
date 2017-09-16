@@ -364,11 +364,28 @@ public class Entity {
     }
 
     /**
-     * Updates all children entities and components. Removes all components and
-     * children that are flagged for destruction.
+     * Updates all children entities and components.
      */
     public void update() {
-        // Update all components that are present in the order presented by the
+        Iterator<Class<? extends ComponentBase>> iter = LogicEngine.getInstance().getComponentIterator();
+
+        while (iter.hasNext()) {
+            Class<? extends ComponentBase> componentClass = iter.next();
+            if (this.components.containsKey(componentClass)) {
+                this.components.get(componentClass).update();
+            }
+        }
+
+        // Update all children.
+        this.children.values().forEach(x -> x.update());
+    }
+
+    /**
+     * Gets called after the {@link #update() update()} method. Also removes all
+     * components and children that have been flagged for destruction.
+     */
+    public void lateUpdate() {
+        // LateUpdate all components that are present in the order presented by the
         // order iterator. Removes the components if they are flagged for 
         // destruction.
         Iterator<Class<? extends ComponentBase>> iter = LogicEngine.getInstance().getComponentIterator();
@@ -377,7 +394,7 @@ public class Entity {
             Class<? extends ComponentBase> componentClass = iter.next();
             if (this.components.containsKey(componentClass)) {
                 ComponentBase currentComponent = this.components.get(componentClass);
-                currentComponent.update();
+                currentComponent.lateUpdate();
                 if (currentComponent.isDestroyed()) {
                     this.components.remove(currentComponent.getMapping());
                 }
@@ -385,7 +402,7 @@ public class Entity {
         }
 
         // Update all children.
-        this.children.values().forEach(x -> x.update());
+        this.children.values().forEach(x -> x.lateUpdate());
 
         // Remove all children that are flagged for destruction.
         this.removeChildrenFlaggedForDestruction();

@@ -101,12 +101,20 @@ public abstract class ComponentBase {
     public abstract void update();
 
     /**
+     * Gets called after the {@link #update() update()} method;
+     */
+    public void lateUpdate() {
+
+    }
+
+    /**
      * Activates this component by settings its active flag to true and calling
      * {@link #onActivate() onActivate()}.
      */
     public final void activate() {
-        if (!this.active)
+        if (!this.active) {
             this.onActivate();
+        }
         this.active = true;
     }
 
@@ -119,8 +127,9 @@ public abstract class ComponentBase {
      * calling {@link #onDeactivate() onDeactivate()}.
      */
     public final void deactivate() {
-        if (this.active)
+        if (this.active) {
             this.onDeactivate();
+        }
         this.active = false;
     }
 

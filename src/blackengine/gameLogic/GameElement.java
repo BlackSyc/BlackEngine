@@ -204,6 +204,7 @@ public abstract class GameElement {
      */
     public void update() {
         this.entities.values().forEach(x -> x.update());
+        this.entities.values().forEach(x -> x.lateUpdate());
 
         this.removeEntitiesFlaggedForDestruction();
     }
