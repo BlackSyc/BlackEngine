@@ -26,6 +26,7 @@ package blackengine.gameLogic.components.prefab.collision;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -35,14 +36,32 @@ import org.lwjgl.util.vector.Vector3f;
 public abstract class CollisionComponent extends ComponentBase {
 
     protected Vector3f offset = new Vector3f();
-
-    protected abstract List<Entity> calculateCollisions();
-
-    protected abstract boolean isColliding(SphereCollisionComponent sphereCollisionComponent);
     
-    protected abstract boolean isColliding(BoxCollisionComponent boxCollisionComponent);
+    private Vector3f lastPosition;
 
-    protected abstract boolean isColliding(PlaneCollisionComponent planeCollisionComponent);
+    private List<Entity> calculateCollisions() {
+        return this.getParent().getGameElement().getAllEntities()
+                .filter(x -> !x.equals(this.getParent()))
+                .filter(x -> x.containsComponent(CollisionComponent.class))
+                .filter(x -> {
+                    if (this instanceof SphereCollisionComponent) {
+                        return x.getComponent(CollisionComponent.class).isColliding((SphereCollisionComponent) this);
+                    } else if (this instanceof BoxCollisionComponent) {
+                        return x.getComponent(CollisionComponent.class).isColliding((BoxCollisionComponent) this);
+                    } else if (this instanceof PlaneCollisionComponent) {
+                        return x.getComponent(CollisionComponent.class).isColliding((PlaneCollisionComponent) this);
+                    } else{
+                        return false;
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    public abstract boolean isColliding(SphereCollisionComponent sphereCollisionComponent);
+
+    public abstract boolean isColliding(BoxCollisionComponent boxCollisionComponent);
+
+    public abstract boolean isColliding(PlaneCollisionComponent planeCollisionComponent);
 
     protected abstract void onCollision(Entity otherEntity);
 
@@ -52,6 +71,7 @@ public abstract class CollisionComponent extends ComponentBase {
 
     @Override
     public void update() {
+        this.lastPosition = this.getParent().getTransform().getAbsolutePosition();
         List<Entity> collidingEntities = this.calculateCollisions();
         if (collidingEntities.size() > 0) {
             collidingEntities.forEach(x -> this.onCollision(x));

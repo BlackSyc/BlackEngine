@@ -23,10 +23,7 @@
  */
 package blackengine.gameLogic.components.prefab.collision;
 
-import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -34,27 +31,19 @@ import java.util.stream.Collectors;
  */
 public abstract class PlaneCollisionComponent extends CollisionComponent {
 
-    @Override
-    protected List<Entity> calculateCollisions() {
-        return this.getParent().getGameElement().getAllEntities()
-                .filter(x -> !x.equals(this))
-                .filter(x -> x.containsComponent(CollisionComponent.class))
-                .filter(x -> x.getComponent(CollisionComponent.class).isColliding(this))
-                .collect(Collectors.toList());
-    }
 
     @Override
-    protected boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
+    public boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
         return false;
     }
     
     @Override
-    protected boolean isColliding(BoxCollisionComponent boxCollisionComponent) {
+    public boolean isColliding(BoxCollisionComponent boxCollisionComponent) {
         return false;
     }
 
     @Override
-    protected boolean isColliding(PlaneCollisionComponent planeCollisionComponent) {
+    public boolean isColliding(PlaneCollisionComponent planeCollisionComponent) {
         return false;
     }
 

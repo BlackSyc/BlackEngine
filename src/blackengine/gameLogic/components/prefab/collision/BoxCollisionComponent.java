@@ -132,21 +132,12 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
     }
 
     @Override
-    protected List<Entity> calculateCollisions() {
-        return this.getParent().getGameElement().getAllEntities()
-                .filter(x -> !x.equals(this))
-                .filter(x -> x.containsComponent(CollisionComponent.class))
-                .filter(x -> x.getComponent(CollisionComponent.class).isColliding(this))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    protected boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
+    public boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
         return false;
     }
 
     @Override
-    protected boolean isColliding(BoxCollisionComponent boxCollisionComponent) {
+    public boolean isColliding(BoxCollisionComponent boxCollisionComponent) {
         Vector3f[] cornerPoints = new Vector3f[]{
             new Vector3f(this.getRightBound(), this.getTopBound(), this.getFrontBound()),
             new Vector3f(this.getLeftBound(), this.getTopBound(), this.getFrontBound()),
@@ -191,7 +182,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
     }
 
     @Override
-    protected boolean isColliding(PlaneCollisionComponent planeCollisionComponent) {
+    public boolean isColliding(PlaneCollisionComponent planeCollisionComponent) {
         return false;
     }
 
