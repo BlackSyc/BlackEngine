@@ -103,7 +103,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
                 this.loadUniformBool("textured", false);
             }
 
-            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getTransform().getAbsolutePosition(), x.getParent().getTransform().getEulerRotation(), 1);
+            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getTransform().getAbsolutePosition(), x.getParent().getTransform().getEulerRotation(), x.getParent().getTransform().getScale());
             this.loadUniformMatrix("transformationMatrix", transformationMatrix);
 
             GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);

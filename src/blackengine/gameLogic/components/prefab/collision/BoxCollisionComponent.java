@@ -23,13 +23,8 @@
  */
 package blackengine.gameLogic.components.prefab.collision;
 
-import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
-import blackengine.toolbox.math.VectorMath;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.lwjgl.util.vector.Vector3f;
+import blackengine.toolbox.math.Maths;
 
 /**
  *
@@ -136,49 +131,42 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
         return false;
     }
 
+    /**
+     * Checks of this collision component is colliding with the provided
+     * boxCollisionComponent.
+     *
+     * @param boxCollisionComponent The boxCollisionComponent which will be used
+     * to check collision with.
+     * @return True if a collision is present, false if otherwise.
+     */
     @Override
     public boolean isColliding(BoxCollisionComponent boxCollisionComponent) {
-        Vector3f[] cornerPoints = new Vector3f[]{
-            new Vector3f(this.getRightBound(), this.getTopBound(), this.getFrontBound()),
-            new Vector3f(this.getLeftBound(), this.getTopBound(), this.getFrontBound()),
-            new Vector3f(this.getRightBound(), this.getBottomBound(), this.getFrontBound()),
-            new Vector3f(this.getLeftBound(), this.getBottomBound(), this.getFrontBound()),
-            new Vector3f(this.getRightBound(), this.getTopBound(), this.getBackBound()),
-            new Vector3f(this.getLeftBound(), this.getTopBound(), this.getBackBound()),
-            new Vector3f(this.getRightBound(), this.getBottomBound(), this.getBackBound()),
-            new Vector3f(this.getLeftBound(), this.getBottomBound(), this.getBackBound())
-        };
 
-        // Corner point with minimum distance to the center of the other boxcollider
-//        Vector3f vector = Stream.of(cornerPoints).min((x, y)
-//                -> Float.compare(VectorMath.distance(x, boxCollisionComponent.getCollisionComponentCenter()),
-//                        VectorMath.distance(y, boxCollisionComponent.getCollisionComponentCenter()))).get();
-        
-        float dist = Float.MAX_VALUE;
-        Vector3f vector = new Vector3f();
-        for(Vector3f v : cornerPoints) {
-            float d = VectorMath.distance(v, boxCollisionComponent.getCollisionComponentCenter());
-            if (d < dist) {
-                dist = d;
-                vector = v;
-            }
-        }
+        boolean xAxisColliding
+                = // Check if the left-most bound of boxCollisionComponent is between this left bound and right bound
+                Maths.inRange(boxCollisionComponent.getLeftBound(), this.getLeftBound(), this.getRightBound())
+                || // Check if the right-most bound of boxCollisionComponent is between this left bound and right bound
+                Maths.inRange(boxCollisionComponent.getRightBound(), this.getLeftBound(), this.getRightBound())
+                || // Check if both x bounds of boxCollisionComponent are on either side of this y bounds
+                (boxCollisionComponent.getLeftBound() < this.getLeftBound() && boxCollisionComponent.getRightBound() > this.getRightBound());
 
-        if (this.getParent().getName().equals("MovingCube")) {
-            //System.out.println(this.getParent().getName() + "'s min vector = " + vector);
-            if (this.getBottomBound() < 1.5f) {
-                String kots = "troep";
-            }               
-            
-        }
+        boolean yAxisColliding
+                = // Check if the bottom-most bound of boxCollisionComponent is between this bottom bound and top bound
+                Maths.inRange(boxCollisionComponent.getBottomBound(), this.getBottomBound(), this.getTopBound())
+                || // Check if the top-most bound of boxCollisionComponent is between this bottom bound and top bound
+                Maths.inRange(boxCollisionComponent.getTopBound(), this.getBottomBound(), this.getTopBound())
+                || // Check if both y bounds of boxCollisionComponent are on either side of this y bounds
+                (boxCollisionComponent.getBottomBound() < this.getBottomBound() && boxCollisionComponent.getTopBound() > this.getTopBound());
 
-        // Is closest corner point inside other box.
-        return vector.getX() <= boxCollisionComponent.getRightBound()
-                && vector.getX() >= boxCollisionComponent.getLeftBound()
-                && vector.getY() <= boxCollisionComponent.getTopBound()
-                && vector.getY() >= boxCollisionComponent.getBottomBound()
-                && vector.getZ() <= boxCollisionComponent.getFrontBound()
-                && vector.getZ() >= boxCollisionComponent.getBackBound();
+        boolean zAxisColliding
+                = // Check if the front-most bound of boxCollisionComponent is between this front bound and back bound
+                Maths.inRange(boxCollisionComponent.getFrontBound(), this.getFrontBound(), this.getBackBound())
+                || // Check if the back-most bound of boxCollisionComponent is between this front bound and back bound
+                Maths.inRange(boxCollisionComponent.getBackBound(), this.getFrontBound(), this.getBackBound())
+                || // Check if both z bounds of boxCollisionComponent are on either side of this z bounds
+                (boxCollisionComponent.getBackBound() < this.getBackBound() && boxCollisionComponent.getFrontBound() > this.getFrontBound());
+
+        return xAxisColliding && yAxisColliding && zAxisColliding;
     }
 
     @Override
@@ -190,4 +178,5 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
     public Class<? extends ComponentBase> getMapping() {
         return CollisionComponent.class;
     }
+
 }
