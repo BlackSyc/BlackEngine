@@ -25,3 +25,5 @@ nbproject/private/
 
 #dist
 dist/
+
+build/

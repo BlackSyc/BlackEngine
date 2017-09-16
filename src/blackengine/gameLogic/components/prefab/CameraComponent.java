@@ -140,6 +140,16 @@ public class CameraComponent extends ComponentBase implements Camera {
         return this.viewMatrix;
     }
 
+    private Vector3f offset;
+
+    public Vector3f getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Vector3f offset) {
+        this.offset = offset;
+    }
+
     /**
      * Creates the view matrix for this camera component using its position and
      * rotation.
@@ -150,13 +160,13 @@ public class CameraComponent extends ComponentBase implements Camera {
         Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
-        Vector3f negativeCameraPos = this.getParent().getTransform().getAbsolutePosition().negate(null);
+        Vector3f negativeCameraPos = this.getPosition().negate(null);
         Matrix4f.translate(negativeCameraPos, this.viewMatrix, this.viewMatrix);
     }
 
     @Override
     public Vector3f getPosition() {
-        return this.getParent().getTransform().getAbsolutePosition();
+        return Vector3f.add(this.getParent().getTransform().getAbsolutePosition(), offset, null);
     }
 
 }
