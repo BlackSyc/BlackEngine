@@ -50,9 +50,9 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponent> {
 
-    private Set<TexturedMeshComponent> targets;
+    protected Set<TexturedMeshComponent> targets;
 
-    private final int maxLights = 6;
+    protected int maxLights = 6;
 
     protected TexturedMeshRenderer() {
         this.targets = new HashSet<>();
@@ -104,7 +104,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
 
     }
     
-    private List<Light> getLights(Vector3f position){
+    protected List<Light> getLights(Vector3f position){
         return RenderEngine.getInstance()
                     .getLightStream()
                     .sorted((x,y) -> {
@@ -116,7 +116,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
                     .collect(Collectors.toList());
     }
 
-    private void loadUniformLights(List<Light> lights) {
+    protected void loadUniformLights(List<Light> lights) {
         int lightCount = 0;
         for (int i = 0; i < lights.size(); i++) {
             this.loadUniformVector3f("lightColour[" + i + "]", lights.get(i).getColour());
@@ -132,7 +132,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
 
     }
 
-    private void initializeRendering(Matrix4f viewMatrix) {
+    protected void initializeRendering(Matrix4f viewMatrix) {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -140,7 +140,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
         this.loadUniformMatrix("viewMatrix", viewMatrix);
     }
 
-    private void finalizeRendering() {
+    protected void finalizeRendering() {
         this.stop();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_BLEND);
