@@ -36,8 +36,14 @@ import org.lwjgl.util.vector.Vector3f;
 public abstract class CollisionComponent extends ComponentBase {
 
     protected Vector3f offset = new Vector3f();
-    
-    private Vector3f lastPosition;
+
+    public Vector3f getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Vector3f offset) {
+        this.offset = offset;
+    }
 
     private List<Entity> calculateCollisions() {
         return this.getParent().getGameElement().getAllEntities()
@@ -71,7 +77,6 @@ public abstract class CollisionComponent extends ComponentBase {
 
     @Override
     public void update() {
-        this.lastPosition = this.getParent().getTransform().getAbsolutePosition();
         List<Entity> collidingEntities = this.calculateCollisions();
         if (collidingEntities.size() > 0) {
             collidingEntities.forEach(x -> this.onCollision(x));
