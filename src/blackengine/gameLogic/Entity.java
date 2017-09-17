@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -222,6 +223,20 @@ public class Entity {
      */
     public Entity getChild(String name) {
         return this.children.get(name);
+    }
+
+    /**
+     * Creates a flat stream of all children and (recursively) their children.
+     *
+     * @return A stream containing all this entities children and their children
+     * (recursively).
+     */
+    public Stream<Entity> flattened() {
+        return Stream.concat(
+                Stream.of(this),
+                this.children.values()
+                        .stream()
+                        .flatMap(Entity::flattened));
     }
 
     /**

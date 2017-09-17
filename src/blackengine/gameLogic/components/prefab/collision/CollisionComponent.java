@@ -27,6 +27,7 @@ import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -36,11 +37,11 @@ import org.lwjgl.util.vector.Vector3f;
 public abstract class CollisionComponent extends ComponentBase {
 
     protected Vector3f offset = new Vector3f();
-    
+
     private Vector3f lastPosition;
 
     private List<Entity> calculateCollisions() {
-        return this.getParent().getGameElement().getAllEntities()
+        return this.getParent().getGameElement().flattened()
                 .filter(x -> !x.equals(this.getParent()))
                 .filter(x -> x.containsComponent(CollisionComponent.class))
                 .filter(x -> {
@@ -50,7 +51,7 @@ public abstract class CollisionComponent extends ComponentBase {
                         return x.getComponent(CollisionComponent.class).isColliding((BoxCollisionComponent) this);
                     } else if (this instanceof PlaneCollisionComponent) {
                         return x.getComponent(CollisionComponent.class).isColliding((PlaneCollisionComponent) this);
-                    } else{
+                    } else {
                         return false;
                     }
                 })

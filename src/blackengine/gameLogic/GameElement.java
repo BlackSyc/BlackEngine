@@ -116,7 +116,16 @@ public abstract class GameElement {
         this.gameManager = gameManager;
     }
     //</editor-fold>
-    
+
+    /**
+     * Creates a flat stream of all entities and their children recursively.
+     *
+     * @return
+     */
+    public Stream<Entity> flattened() {
+        return this.getAllEntities().flatMap(x -> x.flattened());
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Default constructor for creating a new instance of scene.
