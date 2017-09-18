@@ -140,7 +140,7 @@ public class CameraComponent extends ComponentBase implements Camera {
         return this.viewMatrix;
     }
 
-    private Vector3f offset;
+    private Vector3f offset = new Vector3f();
 
     public Vector3f getOffset() {
         return offset;
