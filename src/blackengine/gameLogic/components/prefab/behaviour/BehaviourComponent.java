@@ -24,8 +24,8 @@
 package blackengine.gameLogic.components.prefab.behaviour;
 
 import blackengine.gameLogic.components.base.ComponentBase;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.TreeSet;
 
 /**
  *
@@ -33,26 +33,21 @@ import java.util.TreeSet;
  */
 public class BehaviourComponent extends ComponentBase {
 
-    private TreeSet<Behaviour> behaviours;
+    private ArrayList<Behaviour> behaviours;
 
     public BehaviourComponent() {
-        this.behaviours = new TreeSet<>((x, y)
-                -> Float.compare(x.getPriority(), y.getPriority()));
+        this.behaviours = new ArrayList<>();
     }
 
     public BehaviourComponent(Behaviour... behaviours) {
         this();
-        
-        Arrays.stream(behaviours).forEach(x -> this.behaviours.add(x));
-    }
-    
-    
-    
-    
+        Arrays.stream(behaviours).forEach(x -> this.addBehaviour(x));
+    }    
 
     public void addBehaviour(Behaviour behaviour) {
         behaviour.setEntity(this.getParent());
         this.behaviours.add(behaviour);
+        this.behaviours.sort((x,y) -> Float.compare(x.getPriority(), y.getPriority()));
     }
 
     public void removeBehaviour(Behaviour behaviour) {
