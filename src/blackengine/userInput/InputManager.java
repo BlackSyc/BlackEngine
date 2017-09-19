@@ -24,12 +24,12 @@
 package blackengine.userInput;
 
 import static blackengine.userInput.MouseEvent.*;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 import java.util.Iterator;
 import java.util.function.BooleanSupplier;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 
 /**
  * An instance of InputManager makes sure to handle all input specified in the
@@ -118,8 +118,8 @@ public class InputManager<T> {
      * Calls onCompleted() on the subjects and sets them to null.
      */
     public void destroySubjects() {
-        this.actionSubject.onCompleted();
-        this.mouseSubject.onCompleted();
+        this.actionSubject.onComplete();
+        this.mouseSubject.onComplete();
         this.actionSubject = null;
         this.mouseSubject = null;
     }
