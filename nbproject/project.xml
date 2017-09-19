@@ -12,6 +12,9 @@
             </test-roots>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>behaviour</word>
+            <word>behavioural</word>
+            <word>behaviours</word>
             <word>Enums</word>
             <word>euler</word>
             <word>renderers</word>
