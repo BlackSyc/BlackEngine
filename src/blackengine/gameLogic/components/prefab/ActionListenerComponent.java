@@ -25,10 +25,10 @@ package blackengine.gameLogic.components.prefab;
 
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action2;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
+import java.util.function.BiConsumer;
 
 /**
  * An implementation of this component class will be able to listen to input
@@ -51,13 +51,13 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
      * A function that returns true for all input actions that are checked in
      * the action.
      */
-    private final Func1<T, Boolean> filter;
+    private final Predicate<T> filter;
 
     /**
      * The action that will be performed on the parent entity when an input
      * action is received that passed through the filter.
      */
-    private final Action2<T, Entity> action;
+    private final BiConsumer<T, Entity> action;
 
     /**
      * The observable that will be subscribed to using the filter and action.
@@ -68,7 +68,7 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
      * The subscription to the observable. Only present when this component is
      * activated.
      */
-    private Subscription subscription;
+    private Disposable subscription;
 
     /**
      * Default constructor for creating a new instance of
@@ -80,7 +80,7 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
      * @param action The action that will be performed on the parent entity when
      * an input action is received that passed through the filter.
      */
-    public ActionListenerComponent(Observable inputActionObservable, Func1<T, Boolean> filter, Action2<T, Entity> action) {
+    public ActionListenerComponent(Observable inputActionObservable, Predicate<T> filter, BiConsumer<T, Entity> action) {
         this.filter = filter;
         this.action = action;
         this.inputActionObservable = this.castObservable(inputActionObservable);
@@ -104,7 +104,7 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
      * @param inputAction The received input action.
      */
     private void handleInput(T inputAction) {
-        this.action.call(inputAction, this.getParent());
+        this.action.accept(inputAction, this.getParent());
     }
 
     /**
@@ -126,7 +126,7 @@ public class ActionListenerComponent<T extends Object> extends ComponentBase {
      */
     @Override
     public void onDeactivate() {
-        this.subscription.unsubscribe();
+        this.subscription.dispose();;
     }
 
     /**

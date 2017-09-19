@@ -26,10 +26,10 @@ package blackengine.gameLogic.components.prefab;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.userInput.MouseEvent;
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action2;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -39,20 +39,20 @@ public class MouseListenerComponent extends ComponentBase {
 
     private Observable<MouseEvent> mouseObservable;
 
-    private Subscription subscription;
+    private Disposable subscription;
 
-    private Func1<MouseEvent, Boolean> filter;
-    private Action2<MouseEvent, Entity> action;
+    private Predicate<MouseEvent> filter;
+    private BiConsumer<MouseEvent, Entity> action;
 
-    protected void setFilter(Func1<MouseEvent, Boolean> filter) {
+    protected void setFilter(Predicate<MouseEvent> filter) {
         this.filter = filter;
     }
 
-    protected void setAction(Action2<MouseEvent, Entity> action) {
+    protected void setAction(BiConsumer<MouseEvent, Entity> action) {
         this.action = action;
     }
 
-    public MouseListenerComponent(Observable<MouseEvent> mouseObservable, Func1<MouseEvent, Boolean> filter, Action2<MouseEvent, Entity> action) {
+    public MouseListenerComponent(Observable<MouseEvent> mouseObservable, Predicate<MouseEvent> filter, BiConsumer<MouseEvent, Entity> action) {
         this.mouseObservable = mouseObservable;
         this.filter = filter;
         this.action = action;
@@ -73,7 +73,7 @@ public class MouseListenerComponent extends ComponentBase {
 
     @Override
     public void onDeactivate() {
-        this.subscription.unsubscribe();
+        this.subscription.dispose();
     }
 
     @Override
@@ -81,6 +81,6 @@ public class MouseListenerComponent extends ComponentBase {
     }
     
     private void handleInput(MouseEvent input) {
-        this.action.call(input, this.getParent());
+        this.action.accept(input, this.getParent());
     }
 }

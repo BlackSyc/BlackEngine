@@ -24,12 +24,12 @@
 package blackengine.userInput;
 
 import blackengine.userInput.exceptions.InputEngineNotCreatedException;
+import io.reactivex.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import rx.Observable;
 
 /**
  * Engine singleton for input management. Can be used to retrieve the mouse
