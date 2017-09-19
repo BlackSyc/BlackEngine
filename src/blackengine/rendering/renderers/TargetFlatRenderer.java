@@ -33,8 +33,6 @@ public abstract class TargetFlatRenderer<T> extends FlatRendererBase{
         
     /**
      * 
-     * @param vertexFile
-     * @param fragmentFile 
      */
     public TargetFlatRenderer() {
     }

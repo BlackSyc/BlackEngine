@@ -28,33 +28,72 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
+ * An instance of this component class executes behaviours that have been added
+ * to it in order of their priority.
  *
  * @author Blackened
  */
 public class BehaviourComponent extends ComponentBase {
 
+    /**
+     * A list of all behaviours that will be called.
+     */
     private ArrayList<Behaviour> behaviours;
 
+    /**
+     * Default constructor for creating a new instance of BehaviourComponent.
+     */
     public BehaviourComponent() {
         this.behaviours = new ArrayList<>();
     }
 
+    /**
+     * Constructor for creating a new instance of BehaviourComponent.
+     *
+     * @param behaviours Any amount of instances of
+     * {@link blackengine.gameLogic.components.prefab.behaviour.Behaviour Behaviour}
+     * or its implementations.
+     */
     public BehaviourComponent(Behaviour... behaviours) {
         this();
         Arrays.stream(behaviours).forEach(x -> this.addBehaviour(x));
-    }    
+    }
 
+    /**
+     * Adds a behaviour to this components behaviour list. Sets its entity
+     * reference to the parent of this component.
+     *
+     * @param behaviour The instance of
+     * {@link blackengine.gameLogic.components.prefab.behaviour.Behaviour Behaviour}
+     * that will be added to this component.
+     */
     public void addBehaviour(Behaviour behaviour) {
         behaviour.setEntity(this.getParent());
         this.behaviours.add(behaviour);
-        this.behaviours.sort((x,y) -> Float.compare(x.getPriority(), y.getPriority()));
+        this.behaviours.sort((x, y) -> Float.compare(x.getPriority(), y.getPriority()));
     }
 
+    /**
+     * Removes a behaviour from this component. Sets its entity reference to
+     * null.
+     *
+     * @param behaviour The instance of
+     * {@link blackengine.gameLogic.components.prefab.behaviour.Behaviour Behaviour}
+     * that will be removed.
+     */
     public void removeBehaviour(Behaviour behaviour) {
         behaviour.setEntity(null);
         this.behaviours.remove(behaviour);
     }
 
+    /**
+     * Removes a behaviour from this component. Sets its entity reference to
+     * null.
+     *
+     * @param behaviourName An instance of String that represents the name of
+     * the behaviour, and is defined as such in the behaviour that is to be
+     * removed.
+     */
     public void removeBehaviour(String behaviourName) {
         this.behaviours.removeIf(x -> {
             if (x.getName().equals(behaviourName)) {
@@ -64,14 +103,25 @@ public class BehaviourComponent extends ComponentBase {
             return false;
         });
     }
-    
+
+    /**
+     * Sets the {@link blackengine.gameLogic.Entity Entity} reference in all
+     * behaviours in this component to this components parent.
+     */
     @Override
-    public void onActivate(){
+    public void onActivate() {
         this.behaviours.forEach(x -> x.setEntity(this.getParent()));
     }
 
+    /**
+     * Removes all behaviours that have been flagged for destruction and calls
+     * the
+     * {@link blackengine.gameLogic.components.prefab.behaviour.Behaviour#tick()  tick()}
+     * method on all behaviours that are present in this component.
+     */
     @Override
     public void update() {
+        this.behaviours.removeIf(x -> x.isDestroyed());
         this.behaviours.forEach(x -> x.tick());
     }
 
