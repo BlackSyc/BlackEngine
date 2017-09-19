@@ -96,7 +96,7 @@ public abstract class FileLoader<T> {
 
     /**
      * Checks its internal cache for previously loaded resources, otherwise
-     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String) loadData(...).
+     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String)} loadData(...).
      *
      * @param resourcePath
      * @return
@@ -113,7 +113,7 @@ public abstract class FileLoader<T> {
 
     /**
      * Checks its internal cache for previously loaded files, otherwise
-     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String) loadData(...).
+     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String)} loadData(...).
      *
      * @param filePath The <b> absolute </b> path to the file.
      * @return
@@ -131,7 +131,7 @@ public abstract class FileLoader<T> {
 
     /**
      * Checks its internal cache for previously loaded files, otherwise
-     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String) loadData(...).
+     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String)} loadData(...).
     
      * @param file The file to be loaded.
      * @return

@@ -34,8 +34,6 @@ public abstract class TargetPOVRenderer<T> extends POVRendererBase {
     
     /**
      * 
-     * @param vertexFile
-     * @param fragmentFile 
      */
     public TargetPOVRenderer() {
     }
