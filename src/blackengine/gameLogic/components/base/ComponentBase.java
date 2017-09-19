@@ -26,7 +26,15 @@ package blackengine.gameLogic.components.base;
 import blackengine.gameLogic.Entity;
 
 /**
- * The base of all components used for the entity system of BlackEngine.
+ * The base of all components used for the entity system of BlackEngine. If the
+ * implementing class is registered using the
+ * {@link blackengine.gameLogic.LogicEngine#registerComponent(java.lang.Class, java.lang.Float) registerComponent(Class, Float)}
+ * method, the component will be 'Active'. Active components will be updated
+ * using their {@link #update() update()} and {@link #lateUpdate() lateUpdate()}
+ * methods in order of their priority every frame by their parent
+ * {@link blackengine.gameLogic.Entity Entity}. Passive components will not be
+ * updated using their {@link #update() update()} or
+ * {@link #lateUpdate() lateUpdate()} methods.
  *
  * @author Blackened
  */
@@ -118,6 +126,9 @@ public abstract class ComponentBase {
         this.active = true;
     }
 
+    /**
+     * Gets called whenever this component is activated.
+     */
     public void onActivate() {
 
     }
@@ -133,6 +144,9 @@ public abstract class ComponentBase {
         this.active = false;
     }
 
+    /**
+     * Gets called whenever this component is deactivated.
+     */
     public void onDeactivate() {
 
     }
