@@ -57,7 +57,7 @@ public class PointLightComponent extends ComponentBase implements PointLight {
 
     @Override
     public Vector3f getPosition() {
-        return Vector3f.add(this.getParent().getTransform().getPosition(), this.offSet, null);
+        return Vector3f.add(this.getParent().getTransform().getAbsolutePosition(), this.offSet, null);
     }
 
     @Override

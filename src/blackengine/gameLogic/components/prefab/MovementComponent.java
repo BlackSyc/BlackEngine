@@ -53,15 +53,15 @@ public class MovementComponent extends ComponentBase {
     }
 
     public void move(MoveDirection direction) {
-        Vector3f currentRotation = this.getParent().getTransform().getEulerRotation();
+        Vector3f currentRotation = this.getParent().getTransform().getRelativeEulerRotation();
         Vector3f translation = direction.calculateTranslation(this.movementSpeed * LogicEngine.getInstance().getTimer().getDelta(), currentRotation);
         this.moveAbsolute(translation);
     }
 
     public void moveAbsolute(Vector3f translation) {
-        Vector3f currentPosition = this.getParent().getTransform().getAbsolutePosition();
+        Vector3f currentPosition = this.getParent().getTransform().getRelativePosition();
         Vector3f newPosition = currentPosition.translate(translation.x, translation.y, translation.z);
-        this.getParent().getTransform().setPosition(newPosition);
+        this.getParent().getTransform().setRelativePosition(newPosition);
     }
 
     public void turn(TurnDirection direction) {
@@ -70,8 +70,8 @@ public class MovementComponent extends ComponentBase {
     }
 
     public void turnAbsolute(Vector3f rotation) {
-        Vector3f newRotation = super.getParent().getTransform().getEulerRotation().translate(rotation.x, rotation.y, rotation.z);
-        super.getParent().getTransform().setEulerRotation(newRotation);
+        Vector3f newRotation = super.getParent().getTransform().getRelativeEulerRotation().translate(rotation.x, rotation.y, rotation.z);
+        super.getParent().getTransform().setRelativeEulerRotation(newRotation);
     }
 
     /**

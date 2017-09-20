@@ -135,7 +135,13 @@ public class Entity {
      * @param parent The parent of this entity.
      */
     public void setParent(Entity parent) {
+        if (parent == null) {
+            this.parent = null;
+            this.transform.stopListening();
+            return;
+        }
         this.parent = parent;
+        this.transform.listenTo(parent.getTransform());
     }
 
     /**
@@ -176,7 +182,7 @@ public class Entity {
         this.components = new HashMap<>();
         this.children = new HashMap<>();
         this.tag = NONE;
-        this.transform = new Transform(this, position, rotation, scale);
+        this.transform = new Transform(position, rotation, scale);
     }
 
     /**
@@ -444,6 +450,7 @@ public class Entity {
         this.removeChildrenFlaggedForDestruction();
         this.components.values().forEach(x -> x.destroy());
         this.removeComponentsFlaggedForDestruction();
+        this.transform.destroy();
         this.destroyed = true;
 
     }
