@@ -23,8 +23,10 @@
  */
 package blackengine.toolbox.math;
 
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
@@ -81,6 +83,14 @@ public class VectorMath {
         float distance = (float) Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2) + Math.pow(zDistance, 2));
         
         return distance;
+    }
+    
+    public static Vector3f rotateEuler(Vector3f vector, Vector3f eulerRotation){
+        Matrix4f rotationMatrix = MatrixMath.createRotationMatrix(eulerRotation);
+        Vector4f extendedVector = new Vector4f(vector.getX(), vector.getY(), vector.getZ(), 1.0f);
+        Matrix4f.transform(rotationMatrix, extendedVector, extendedVector);
+        Vector3f result = new Vector3f(extendedVector.getX(), extendedVector.getY(), extendedVector.getZ());
+        return result;
     }
 
 }

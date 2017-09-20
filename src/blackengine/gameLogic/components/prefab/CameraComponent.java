@@ -62,7 +62,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public double getPitch() {
-        return -this.getParent().getTransform().getEulerRotation().getX();
+        return -this.getParent().getTransform().getAbsoluteEulerRotation().getX();
     }
 
     /**
@@ -72,7 +72,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public double getYaw() {
-        return -this.getParent().getTransform().getEulerRotation().getY();
+        return -this.getParent().getTransform().getAbsoluteEulerRotation().getY();
     }
 
     /**
@@ -82,7 +82,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public double getRoll() {
-        return -this.getParent().getTransform().getEulerRotation().getZ();
+        return -this.getParent().getTransform().getAbsoluteEulerRotation().getZ();
     }
 
     /**
