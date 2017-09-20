@@ -33,7 +33,7 @@ import org.lwjgl.util.vector.Vector3f;
  * @author Blackened
  */
 public class Transform {
-    
+
     private Transform parentTransform;
 
     // Both position vectors, subject and subscription.
@@ -178,13 +178,13 @@ public class Transform {
      * @param relativeScale
      */
     public void setRelativeScale(Vector3f relativeScale) {
-        
-        Vector3f parentsAbsoluteScale = this.parentTransform != null ? this.parentTransform.getAbsoluteScale() : new Vector3f(1,1,1);
         this.relativeScale = new Vector3f(relativeScale);
-        
-        this.absoluteScale = new Vector3f(parentsAbsoluteScale.getX() * this.relativeScale.getX(), 
-                parentsAbsoluteScale.getY() * this.relativeScale.getY(), 
-                parentsAbsoluteScale.getZ() * this.relativeScale.getZ());
+
+        if (this.parentTransform != null) {
+            this.absoluteScale = this.calculateAbsoluteScale(this.parentTransform.getAbsoluteScale());
+        } else {
+            this.absoluteScale = this.relativeScale;
+        }
         this.absoluteScaleSubject.onNext(this.absoluteScale);
     }
 
@@ -194,13 +194,13 @@ public class Transform {
      * @param absoluteScale
      */
     public void setAbsoluteScale(Vector3f absoluteScale) {
-        
-        Vector3f parentsAbsoluteScale = this.parentTransform != null ? this.parentTransform.getAbsoluteScale() : new Vector3f(1,1,1);
         this.absoluteScale = new Vector3f(absoluteScale);
-        
-        this.relativeScale = new Vector3f(this.absoluteScale.getX() / parentsAbsoluteScale.getX(), 
-                this.absoluteScale.getY() / parentsAbsoluteScale.getY(), 
-                this.absoluteScale.getZ() / parentsAbsoluteScale.getZ());
+
+        if (this.parentTransform != null) {
+            this.relativeScale = this.calculateRelativeScale(this.parentTransform.getAbsoluteScale());
+        } else {
+            this.relativeScale = this.absoluteScale;
+        }
         this.absoluteScaleSubject.onNext(this.absoluteScale);
     }
     //</editor-fold>
@@ -240,15 +240,13 @@ public class Transform {
     public void listenTo(Transform transform) {
 
         this.stopListening();
-        
+
         this.parentTransform = transform;
 
         // set the absolute properties for this transform.
         this.absolutePosition = Vector3f.add(this.parentTransform.getAbsolutePosition(), this.relativePosition, null);
         this.absoluteEulerRotation = Vector3f.add(this.parentTransform.getAbsoluteEulerRotation(), this.relativeEulerRotation, null);
-        this.absoluteScale = new Vector3f(this.parentTransform.getAbsoluteScale().getX() * this.relativeScale.getX(), 
-                this.parentTransform.getAbsoluteScale().getY() * this.relativeScale.getY(), 
-                this.parentTransform.getAbsoluteScale().getZ() * this.relativeScale.getZ());
+        this.absoluteScale = this.calculateAbsoluteScale(this.parentTransform.getAbsoluteScale());
 
         // notify listeners of changes
         this.absolutePositionSubject.onNext(this.absolutePosition);
@@ -278,16 +276,7 @@ public class Transform {
                             this.absoluteEulerRotationSubject.onNext(this.absoluteEulerRotation);
                         });
 
-        this.scaleSubscription = this.parentTransform.getAbsoluteScaleObservable()
-                .subscribe(x -> {
-                    this.absoluteScale = new Vector3f(this.relativeScale.getX() * x.getX(), this.relativeScale.getY() * x.getY(), this.relativeScale.getZ() * x.getZ());
-                    this.absoluteScaleSubject.onNext(this.absoluteScale);
-                },
-                        x -> System.out.println(x),
-                        () -> {
-                            this.absoluteScale = this.relativeScale;
-                            this.absoluteScaleSubject.onNext(this.absoluteScale);
-                        });
+        this.scaleSubscription = this.subscribeToParentScale();
     }
 
     public void stopListening() {
@@ -312,6 +301,30 @@ public class Transform {
         this.absolutePositionSubject.onNext(this.absolutePosition);
         this.absoluteEulerRotationSubject.onNext(this.absoluteEulerRotation);
         this.absoluteScaleSubject.onNext(this.absoluteScale);
+    }
 
+    private Vector3f calculateAbsoluteScale(Vector3f parentsAbsoluteScale) {
+        return new Vector3f(parentsAbsoluteScale.getX() * this.relativeScale.getX(),
+                parentsAbsoluteScale.getY() * this.relativeScale.getY(),
+                parentsAbsoluteScale.getZ() * this.relativeScale.getZ());
+    }
+
+    private Vector3f calculateRelativeScale(Vector3f parentsAbsoluteScale) {
+        return new Vector3f(this.absoluteScale.getX() / parentsAbsoluteScale.getX(),
+                this.absoluteScale.getY() / parentsAbsoluteScale.getY(),
+                this.absoluteScale.getZ() / parentsAbsoluteScale.getZ());
+    }
+
+    private Disposable subscribeToParentScale() {
+        return this.parentTransform.getAbsoluteScaleObservable()
+                .subscribe(x -> {
+                    this.absoluteScale = this.calculateAbsoluteScale(x);
+                    this.absoluteScaleSubject.onNext(this.absoluteScale);
+                },
+                        x -> System.out.println(x),
+                        () -> {
+                            this.absoluteScale = this.relativeScale;
+                            this.absoluteScaleSubject.onNext(this.absoluteScale);
+                        });
     }
 }

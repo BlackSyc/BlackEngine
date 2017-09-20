@@ -119,9 +119,6 @@ public class TransformTest {
         assertEquals(new Vector3f(2,2,4), parent.getTransform().getRelativeScale());
         assertEquals(new Vector3f(2,2,4), parent.getTransform().getAbsoluteScale());
         
-        
-        
-        
     }
 
 }
