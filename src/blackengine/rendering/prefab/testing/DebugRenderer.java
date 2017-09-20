@@ -125,10 +125,12 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
                 GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 x.getTexture().bindToUnit(GL13.GL_TEXTURE0);
                 this.loadUniformBool("textured", true);
+                this.loadUniformVector3f("colour", new Vector3f(1,1,1));
                 unbindTexture = true;
             } else {
                 GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 this.loadUniformBool("textured", false);
+                this.loadUniformVector3f("colour", new Vector3f(1,1,1));
             }
 
             Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getTransform().getAbsolutePosition(), x.getParent().getTransform().getAbsoluteEulerRotation(), x.getParent().getTransform().getAbsoluteScale());
@@ -158,6 +160,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         } else {
             GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             this.loadUniformBool("textured", false);
+            this.loadUniformVector3f("colour", new Vector3f(1,1,1));
         }
 
         Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(
@@ -178,9 +181,10 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.unitCube.bind();
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         this.loadUniformBool("textured", false);
+        this.loadUniformVector3f("colour", new Vector3f(0,1,0));
         activeScene.flattened().filter(x -> x.containsComponent(CollisionComponent.class)).map(x -> x.getComponent(CollisionComponent.class)).forEach(x -> {
             if (x instanceof BoxCollisionComponent) {
-                Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getTransform().getAbsolutePosition(), x.getParent().getTransform().getAbsoluteEulerRotation(), x.getParent().getTransform().getAbsoluteScale());
+                Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getTransform().getAbsolutePosition(), x.getTransform().getAbsoluteEulerRotation(), x.getTransform().getAbsoluteScale());
                 this.loadUniformMatrix("transformationMatrix", transformationMatrix);
                 GL11.glDrawElements(GL11.GL_TRIANGLES, unitCube.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
             }

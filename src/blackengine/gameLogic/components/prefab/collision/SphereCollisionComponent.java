@@ -23,6 +23,7 @@
  */
 package blackengine.gameLogic.components.prefab.collision;
 
+import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.toolbox.math.VectorMath;
 import org.lwjgl.util.vector.Vector3f;
@@ -33,18 +34,14 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public abstract class SphereCollisionComponent extends CollisionComponent {
 
-    private float radius;
 
     public float getRadius() {
-        return radius;
+        return this.getTransform().getAbsoluteScale().getX();
     }
 
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
 
     public SphereCollisionComponent(float radius) {
-        this.radius = radius;
+        super(new Transform(new Vector3f(), new Vector3f(), new Vector3f(radius, radius, radius)));
     }
 
     @Override

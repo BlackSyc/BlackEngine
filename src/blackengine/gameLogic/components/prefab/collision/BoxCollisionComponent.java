@@ -23,47 +23,19 @@
  */
 package blackengine.gameLogic.components.prefab.collision;
 
+import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.toolbox.math.Maths;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
  * @author clainder
  */
 public abstract class BoxCollisionComponent extends CollisionComponent {
-
-    private float width;
-    private float height;
-    private float depth;
-
-    public float getWidth() {
-        return width;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
-    }
-
-    public float getDepth() {
-        return depth;
-    }
-
-    public void setDepth(float depth) {
-        this.depth = depth;
-    }
-
-    public BoxCollisionComponent(float width, float height, float depth) {
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
+    
+    public BoxCollisionComponent(Vector3f scale) {
+        super(new Transform(new Vector3f(), new Vector3f(), scale));
     }
 
     /**
@@ -74,7 +46,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
      * box.
      */
     public float getRightBound() {
-        return this.getCollisionComponentCenter().getX() + (this.width / 2);
+        return this.getCollisionComponentCenter().getX() + (this.getTransform().getAbsoluteScale().getX() / 2);
     }
 
     /**
@@ -83,7 +55,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
      * @return the absolute X value of the position of the left side of the box.
      */
     public float getLeftBound() {
-        return this.getCollisionComponentCenter().getX() - (this.width / 2);
+        return this.getCollisionComponentCenter().getX() - (this.getTransform().getAbsoluteScale().getX()/ 2);
     }
 
     /**
@@ -92,7 +64,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
      * @return the absolute Y value of the position of the top side of the box.
      */
     public float getTopBound() {
-        return this.getCollisionComponentCenter().getY() + (this.height / 2);
+        return this.getCollisionComponentCenter().getY() + (this.getTransform().getAbsoluteScale().getY() / 2);
     }
 
     /**
@@ -103,7 +75,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
      * box.
      */
     public float getBottomBound() {
-        return this.getCollisionComponentCenter().getY() - (this.height / 2);
+        return this.getCollisionComponentCenter().getY() - (this.getTransform().getAbsoluteScale().getY() / 2);
     }
 
     /**
@@ -114,7 +86,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
      * box.
      */
     public float getFrontBound() {
-        return this.getCollisionComponentCenter().getZ() + (this.depth / 2);
+        return this.getCollisionComponentCenter().getZ() + (this.getTransform().getAbsoluteScale().getZ() / 2);
     }
 
     /**
@@ -123,7 +95,7 @@ public abstract class BoxCollisionComponent extends CollisionComponent {
      * @return the absolute Z value of the position of the back side of the box.
      */
     public float getBackBound() {
-        return this.getCollisionComponentCenter().getZ() - (this.depth / 2);
+        return this.getCollisionComponentCenter().getZ() - (this.getTransform().getAbsoluteScale().getZ() / 2);
     }
 
     @Override

@@ -23,6 +23,7 @@
  */
 package blackengine.gameLogic.components.prefab.collision;
 
+import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
 
 /**
@@ -30,6 +31,10 @@ import blackengine.gameLogic.components.base.ComponentBase;
  * @author Blackened
  */
 public abstract class PlaneCollisionComponent extends CollisionComponent {
+
+    public PlaneCollisionComponent(Transform transform) {
+        super(transform);
+    }
 
 
     @Override

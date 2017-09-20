@@ -6,6 +6,7 @@ out vec4 out_Colour;
 
 uniform sampler2D textureSampler;
 uniform bool textured;
+uniform vec3 colour;
 
 
 void sampleTexture(void){
@@ -13,7 +14,7 @@ void sampleTexture(void){
 }
 
 void sampleColour(void){
-    out_Colour = vec4(0,0.5,1,1);
+    out_Colour = vec4(colour,1);
 }
 
 void main(void){
