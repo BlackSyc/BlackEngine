@@ -27,6 +27,7 @@ import blackengine.gameLogic.Entity;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -119,6 +120,28 @@ public class TransformTest {
         assertEquals(new Vector3f(2,2,4), parent.getTransform().getRelativeScale());
         assertEquals(new Vector3f(2,2,4), parent.getTransform().getAbsoluteScale());
         
+    }
+    
+    @Test
+    public void testChildPositioning(){
+        Entity parent = new Entity("parent", new Vector3f(), new Vector3f(), new Vector3f(1,1,1));
+        Entity child = new Entity("child", new Vector3f(1,0,0), new Vector3f(), new Vector3f(1,1,1));
+        
+        parent.addChild(child);
+        
+        parent.getTransform().setAbsoluteEulerRotation(new Vector3f(0,90,0));
+        
+        assertTrue(areEqual(new Vector3f(0,0,-1), child.getTransform().getAbsolutePosition()));
+        
+        parent.getTransform().setAbsoluteEulerRotation(new Vector3f(0,0,0));
+        
+        assertTrue(areEqual(new Vector3f(1,0,0), child.getTransform().getAbsolutePosition()));
+    }
+    
+    private boolean areEqual(Vector3f left, Vector3f right){
+        return Math.abs(left.x - right.x) < 0.001f &&
+                Math.abs(left.y - right.y) < 0.001f &&
+                Math.abs(left.z - right.z) < 0.001f;
     }
 
 }
