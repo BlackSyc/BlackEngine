@@ -107,6 +107,17 @@ public class Entity {
     }
 
     /**
+     * Getter for a stream of all children entities.
+     *
+     * @return An instance of
+     * Stream%lt{@link blackengine.gameLogic.Entity Entity}%gt containing all
+     * children of this entity.
+     */
+    public Stream<Entity> getChildren() {
+        return children.values().stream();
+    }
+
+    /**
      * Getter for the game element that is containing this entities parent, or
      * if no parent is set, this entity itself.
      *
