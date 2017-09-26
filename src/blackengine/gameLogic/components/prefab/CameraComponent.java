@@ -23,6 +23,7 @@
  */
 package blackengine.gameLogic.components.prefab;
 
+import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.rendering.Camera;
@@ -60,7 +61,7 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     private float roll;
 
-    private Vector3f position;
+    private Vector3f position = new Vector3f();
 
     private Vector3f offset = new Vector3f();
 
@@ -118,6 +119,17 @@ public class CameraComponent extends ComponentBase implements Camera {
     public boolean isActive() {
         return RenderEngine.getInstance().getMasterRenderer().getMainCamera() == this;
     }
+    
+    @Override
+    public void setParent(Entity parent){
+        if(parent != null){
+            this.position = Vector3f.add(this.offset, parent.getTransform().getAbsolutePosition(), null);
+            this.pitch = -parent.getTransform().getAbsoluteEulerRotation().getX();
+            this.yaw = -parent.getTransform().getAbsoluteEulerRotation().getY();
+            this.roll = -parent.getTransform().getAbsoluteEulerRotation().getZ();
+        }
+        super.setParent(parent);
+    }
 
     /**
      * Activates this camera component by setting the main camera in the
@@ -128,6 +140,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     public void onActivate() {
         this.parentTransformSubscription = this.getParent().getTransform().getObservable()
                 .subscribe(x -> this.onParentTransformChanged(x));
+        this.updateViewMatrix();
         RenderEngine.getInstance().getMasterRenderer().setMainCamera(this);
     }
 
