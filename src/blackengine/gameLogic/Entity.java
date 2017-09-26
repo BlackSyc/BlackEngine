@@ -73,6 +73,9 @@ public class Entity {
      */
     private final Map<String, Entity> children;
 
+    /**
+     * The transform of this Entity.
+     */
     private Transform transform;
 
     /**
@@ -80,6 +83,9 @@ public class Entity {
      */
     private final Map<Class<? extends ComponentBase>, ComponentBase> components;
 
+    /**
+     * A boolean representing whether this entity was activated or not.
+     */
     private boolean active = false;
     //</editor-fold>
 
@@ -334,12 +340,13 @@ public class Entity {
     }
 
     /**
-     * Retrieved all components in the entity's component collection.
+     * Retrieves a stream of all components in the entity's component
+     * collection.
      *
      * @return A collection of all the components.
      */
-    public Collection<ComponentBase> getAllComponents() {
-        return this.components.values();
+    public Stream<ComponentBase> getAllComponents() {
+        return this.components.values().stream();
     }
 
     /**
@@ -481,8 +488,8 @@ public class Entity {
     private void removeChildrenFlaggedForDestruction() {
         this.children.entrySet().removeIf(x -> x.getValue().isDestroyed());
     }
-
     //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Static Methods">
     /**
      * Creates an instance of Entity, and activates it and its components.
