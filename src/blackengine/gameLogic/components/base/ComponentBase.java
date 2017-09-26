@@ -106,7 +106,9 @@ public abstract class ComponentBase {
      * ComponentBase was registered in the
      * {@link blackengine.gameLogic.LogicEngine LogicEngine}.
      */
-    public abstract void update();
+    public void update(){
+        
+    }
 
     /**
      * Gets called after the {@link #update() update()} method;

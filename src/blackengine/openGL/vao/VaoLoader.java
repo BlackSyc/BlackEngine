@@ -44,7 +44,7 @@ import org.lwjgl.opengl.GL30;
  */
 public class VaoLoader {
 
-    public static Vao loadVAO(MeshDataObject meshData) {
+    public static Vao loadVao(MeshDataObject meshData) {
 
         //First we create all Vbos that are needed
         IndexVbo indexVbo = new IndexVbo(meshData.getIndices());
