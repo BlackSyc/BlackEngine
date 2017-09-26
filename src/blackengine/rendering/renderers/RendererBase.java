@@ -23,6 +23,7 @@
  */
 package blackengine.rendering.renderers;
 
+import blackengine.toolbox.math.ImmutableVector3;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -150,8 +151,8 @@ public abstract class RendererBase {
         GL20.glUniform1i(this.getUniformLocation(uniformName), value ? 1 : 0);
     }
 
-    protected void loadUniformVector3f(String uniformName, Vector3f vector) {
-        GL20.glUniform3f(this.getUniformLocation(uniformName), vector.x, vector.y, vector.z);
+    protected void loadUniformVector3f(String uniformName, ImmutableVector3 vector) {
+        GL20.glUniform3f(this.getUniformLocation(uniformName), vector.getX(), vector.getY(), vector.getZ());
     }
 
     protected void loadUniformVector2f(String uniformName, Vector2f vector) {

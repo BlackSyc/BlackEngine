@@ -23,6 +23,7 @@
  */
 package blackengine.gameLogic.movement;
 
+import blackengine.toolbox.math.ImmutableVector3;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -34,49 +35,49 @@ public enum MoveDirection {
     FORWARD {
 
         @Override
-        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public ImmutableVector3 calculateTranslation(float amount, ImmutableVector3 currentRotation) {
             float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY())));
             float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY())));
-            return new Vector3f(-dx, 0, -dz);
+            return new ImmutableVector3(-dx, 0, -dz);
         }
     },
     BACKWARD {
         @Override
-        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public ImmutableVector3 calculateTranslation(float amount, ImmutableVector3 currentRotation) {
             float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY())));
             float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY())));
-            return new Vector3f(dx, 0, dz);
+            return new ImmutableVector3(dx, 0, dz);
         }
     },
     LEFT {
         @Override
-        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public ImmutableVector3 calculateTranslation(float amount, ImmutableVector3 currentRotation) {
             float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
             float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
-            return new Vector3f(dx, 0, dz);
+            return new ImmutableVector3(dx, 0, dz);
         }
     },
     RIGHT {
         @Override
-        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
+        public ImmutableVector3 calculateTranslation(float amount, ImmutableVector3 currentRotation) {
             float dx = (float) (amount * Math.sin(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
             float dz = (float) (amount * Math.cos(Math.toRadians(currentRotation.getY()) - 0.5 * Math.PI));
-            return new Vector3f(-dx, 0, -dz);
+            return new ImmutableVector3(-dx, 0, -dz);
         }
     },
     UP {
         @Override
-        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
-            return new Vector3f(0, amount, 0);
+        public ImmutableVector3 calculateTranslation(float amount, ImmutableVector3 currentRotation) {
+            return new ImmutableVector3(0, amount, 0);
         }
     },
     DOWN {
         @Override
-        public Vector3f calculateTranslation(float amount, Vector3f currentRotation) {
-            return new Vector3f(0, -amount, 0);
+        public ImmutableVector3 calculateTranslation(float amount, ImmutableVector3 currentRotation) {
+            return new ImmutableVector3(0, -amount, 0);
         }
     };
 
-    public abstract Vector3f calculateTranslation(float amount, Vector3f currentRotation);
+    public abstract ImmutableVector3 calculateTranslation(float amount, ImmutableVector3 currentRotation);
 
 }

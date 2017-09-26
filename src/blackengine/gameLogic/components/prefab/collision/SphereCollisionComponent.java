@@ -25,6 +25,7 @@ package blackengine.gameLogic.components.prefab.collision;
 
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.VectorMath;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -41,13 +42,13 @@ public abstract class SphereCollisionComponent extends CollisionComponent {
 
 
     public SphereCollisionComponent(float radius) {
-        super(new Transform(new Vector3f(), new Vector3f(), new Vector3f(radius, radius, radius)));
+        super(new Transform(new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3(radius, radius, radius)));
     }
 
     @Override
     public boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
-        Vector3f otherCenter = sphereCollisionComponent.getCollisionComponentCenter();
-        Vector3f thisCenter = this.getCollisionComponentCenter();
+        ImmutableVector3 otherCenter = sphereCollisionComponent.getCollisionComponentCenter();
+        ImmutableVector3 thisCenter = this.getCollisionComponentCenter();
         float minimalDistance = this.getRadius() + sphereCollisionComponent.getRadius();
         return VectorMath.distance(otherCenter, thisCenter) < minimalDistance;
     }

@@ -27,6 +27,7 @@ import static blackengine.gameLogic.DefaultTag.NONE;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.gameLogic.exceptions.DuplicateComponentTypeException;
 import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
+import blackengine.toolbox.math.ImmutableVector3;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -194,7 +195,7 @@ public class Entity {
      * @param rotation The rotation of this particular entity.
      * @param scale The scale of this entity.
      */
-    public Entity(String name, Vector3f position, Vector3f rotation, Vector3f scale) {
+    public Entity(String name, ImmutableVector3 position, ImmutableVector3 rotation, ImmutableVector3 scale) {
         this.name = name;
         this.components = new HashMap<>();
         this.children = new HashMap<>();
@@ -209,7 +210,7 @@ public class Entity {
      * @param name The name of the entity.
      */
     public Entity(String name) {
-        this(name, new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
+        this(name, new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3(1, 1, 1));
     }
 
     /**
@@ -219,8 +220,8 @@ public class Entity {
      * @param name The name of the entity.
      * @param position The position of the entity.
      */
-    public Entity(String name, Vector3f position) {
-        this(name, position, new Vector3f(), new Vector3f(1, 1, 1));
+    public Entity(String name, ImmutableVector3 position) {
+        this(name, position, new ImmutableVector3(), new ImmutableVector3(1, 1, 1));
     }
     //</editor-fold>
 
@@ -501,7 +502,7 @@ public class Entity {
      * @param components The components that will be added to this entity.
      * @return The entity.
      */
-    public static Entity create(String name, Vector3f position, Vector3f rotation, Vector3f scale, ComponentBase... components) {
+    public static Entity create(String name, ImmutableVector3 position, ImmutableVector3 rotation, ImmutableVector3 scale, ComponentBase... components) {
         Entity entity = new Entity(name, position, rotation, scale);
         if (components != null) {
             Arrays.stream(components).forEach(x -> entity.addComponent(x));
@@ -519,7 +520,7 @@ public class Entity {
      * @param components The components that will be added to this entity.
      * @return The entity.
      */
-    public static Entity create(String name, Vector3f position, ComponentBase... components) throws DuplicateComponentTypeException {
+    public static Entity create(String name, ImmutableVector3 position, ComponentBase... components) throws DuplicateComponentTypeException {
         try {
             Entity entity = new Entity(name, position);
             if (components != null) {

@@ -76,16 +76,25 @@ public class VectorMath {
         return new Vector2f(original);
     }
 
+    public static float distance(ImmutableVector3 vector1, ImmutableVector3 vector2) {
+        float xDistance = Math.abs(vector1.getX() - vector2.getX());
+        float yDistance = Math.abs(vector1.getY() - vector2.getY());
+        float zDistance = Math.abs(vector1.getZ() - vector2.getZ());
+        float distance = (float) Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2) + Math.pow(zDistance, 2));
+
+        return distance;
+    }
+
     public static float distance(Vector3f vector1, Vector3f vector2) {
         float xDistance = Math.abs(vector1.x - vector2.x);
         float yDistance = Math.abs(vector1.y - vector2.y);
         float zDistance = Math.abs(vector1.z - vector2.z);
         float distance = (float) Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2) + Math.pow(zDistance, 2));
-        
+
         return distance;
     }
-    
-    public static Vector3f rotateEuler(Vector3f vector, Vector3f eulerRotation){
+
+    public static Vector3f rotateEuler(Vector3f vector, Vector3f eulerRotation) {
         Matrix4f rotationMatrix = MatrixMath.createRotationMatrix(eulerRotation);
         Vector4f extendedVector = new Vector4f(vector.getX(), vector.getY(), vector.getZ(), 1.0f);
         Matrix4f.transform(rotationMatrix, extendedVector, extendedVector);

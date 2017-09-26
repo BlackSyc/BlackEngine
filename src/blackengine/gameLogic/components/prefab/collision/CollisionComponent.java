@@ -26,6 +26,7 @@ package blackengine.gameLogic.components.prefab.collision;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.toolbox.math.ImmutableVector3;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,7 +79,7 @@ public abstract class CollisionComponent extends ComponentBase {
 
     protected abstract void onCollision(Entity otherEntity);
 
-    public Vector3f getCollisionComponentCenter() {
+    public ImmutableVector3 getCollisionComponentCenter() {
         return this.transform.getAbsolutePosition();
     }
 

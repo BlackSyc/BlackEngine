@@ -41,6 +41,7 @@ import blackengine.openGL.vao.VaoLoader;
 import static blackengine.openGL.vao.vbo.AttributeType.*;
 import blackengine.rendering.Camera;
 import blackengine.rendering.renderers.TargetPOVRenderer;
+import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.MatrixMath;
 import java.io.IOException;
 import java.util.HashSet;
@@ -108,7 +109,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.initializeRendering(viewMatrix);
 
         if (this.gridEnabled) {
-            Vector2f horizontalCameraTranslation = new Vector2f(camera.getPosition().x, camera.getPosition().z);
+            Vector2f horizontalCameraTranslation = new Vector2f(camera.getPosition().getX(), camera.getPosition().getZ());
             float cameraDistance = horizontalCameraTranslation.length();
             this.renderGrid(cameraDistance);
         }
@@ -125,15 +126,18 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
                 GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 x.getTexture().bindToUnit(GL13.GL_TEXTURE0);
                 this.loadUniformBool("textured", true);
-                this.loadUniformVector3f("colour", new Vector3f(1,1,1));
+                this.loadUniformVector3f("colour", new ImmutableVector3(1,1,1));
                 unbindTexture = true;
             } else {
                 GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 this.loadUniformBool("textured", false);
-                this.loadUniformVector3f("colour", new Vector3f(1,1,1));
+                this.loadUniformVector3f("colour", new ImmutableVector3(1,1,1));
             }
 
-            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getTransform().getAbsolutePosition(), x.getParent().getTransform().getAbsoluteEulerRotation(), x.getParent().getTransform().getAbsoluteScale());
+            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(
+                    x.getParent().getTransform().getAbsolutePosition(), 
+                    x.getParent().getTransform().getAbsoluteEulerRotation(), 
+                    x.getParent().getTransform().getAbsoluteScale());
             this.loadUniformMatrix("transformationMatrix", transformationMatrix);
 
             GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
@@ -147,7 +151,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
     private void renderGrid(float cameraDistance) {
         DebugRenderComponent meshComp = this.grid.getComponent(DebugRenderComponent.class);
-        this.grid.getTransform().setAbsoluteScale(new Vector3f(cameraDistance, cameraDistance, cameraDistance));
+        this.grid.getTransform().setAbsoluteScale(new ImmutableVector3(cameraDistance, cameraDistance, cameraDistance));
 
         meshComp.getVao().bind();
 
@@ -160,7 +164,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         } else {
             GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             this.loadUniformBool("textured", false);
-            this.loadUniformVector3f("colour", new Vector3f(1,1,1));
+            this.loadUniformVector3f("colour", new ImmutableVector3(1,1,1));
         }
 
         Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(
@@ -181,7 +185,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.unitCube.bind();
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         this.loadUniformBool("textured", false);
-        this.loadUniformVector3f("colour", new Vector3f(0,1,0));
+        this.loadUniformVector3f("colour", new ImmutableVector3(0,1,0));
         activeScene.flattened().filter(x -> x.containsComponent(CollisionComponent.class)).map(x -> x.getComponent(CollisionComponent.class)).forEach(x -> {
             if (x instanceof BoxCollisionComponent) {
                 Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getTransform().getAbsolutePosition(), x.getTransform().getAbsoluteEulerRotation(), x.getTransform().getAbsoluteScale());

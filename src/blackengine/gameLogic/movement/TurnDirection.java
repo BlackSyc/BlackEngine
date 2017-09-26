@@ -23,7 +23,7 @@
  */
 package blackengine.gameLogic.movement;
 
-import org.lwjgl.util.vector.Vector3f;
+import blackengine.toolbox.math.ImmutableVector3;
 
 /**
  *
@@ -33,16 +33,16 @@ public enum TurnDirection {
     
     LEFT {
         @Override
-        public Vector3f calculateRotation(float amount) {
-            return new Vector3f(0,  amount, 0);
+        public ImmutableVector3 calculateRotation(float amount) {
+            return new ImmutableVector3(0,  amount, 0);
         }
     },
     RIGHT {
         @Override
-        public Vector3f calculateRotation(float amount) {
-            return new Vector3f(0, -amount, 0);
+        public ImmutableVector3 calculateRotation(float amount) {
+            return new ImmutableVector3(0, -amount, 0);
         }
     };
-    public abstract Vector3f calculateRotation(float amount);
+    public abstract ImmutableVector3 calculateRotation(float amount);
     
 }

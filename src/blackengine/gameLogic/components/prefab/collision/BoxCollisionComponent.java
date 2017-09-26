@@ -25,8 +25,8 @@ package blackengine.gameLogic.components.prefab.collision;
 
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.Maths;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -34,8 +34,8 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public abstract class BoxCollisionComponent extends CollisionComponent {
     
-    public BoxCollisionComponent(Vector3f scale) {
-        super(new Transform(new Vector3f(), new Vector3f(), scale));
+    public BoxCollisionComponent(ImmutableVector3 scale) {
+        super(new Transform(new ImmutableVector3(), new ImmutableVector3(), scale));
     }
 
     /**

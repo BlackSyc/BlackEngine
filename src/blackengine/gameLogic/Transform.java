@@ -23,6 +23,7 @@
  */
 package blackengine.gameLogic;
 
+import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.VectorMath;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
@@ -40,16 +41,16 @@ public class Transform {
     private Disposable transformSubscription;
 
     // Both position vectors.
-    private Vector3f relativePosition;
-    private Vector3f absolutePosition;
+    private ImmutableVector3 relativePosition;
+    private ImmutableVector3 absolutePosition;
 
     // Both rotation vectors.
-    private Vector3f relativeEulerRotation;
-    private Vector3f absoluteEulerRotation;
+    private ImmutableVector3 relativeEulerRotation;
+    private ImmutableVector3 absoluteEulerRotation;
 
     // Both scale vectores.
-    private Vector3f relativeScale;
-    private Vector3f absoluteScale;
+    private ImmutableVector3 relativeScale;
+    private ImmutableVector3 absoluteScale;
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
     public Observable<Transform> getObservable() {
@@ -57,31 +58,31 @@ public class Transform {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Position">
-    public Vector3f getRelativePosition() {
+    public ImmutableVector3 getRelativePosition() {
         return relativePosition;
     }
 
-    public Vector3f getAbsolutePosition() {
+    public ImmutableVector3 getAbsolutePosition() {
         return absolutePosition;
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Rotation">
-    public Vector3f getRelativeEulerRotation() {
+    public ImmutableVector3 getRelativeEulerRotation() {
         return relativeEulerRotation;
     }
 
-    public Vector3f getAbsoluteEulerRotation() {
+    public ImmutableVector3 getAbsoluteEulerRotation() {
         return absoluteEulerRotation;
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Scale">
-    public Vector3f getRelativeScale() {
+    public ImmutableVector3 getRelativeScale() {
         return relativeScale;
     }
 
-    public Vector3f getAbsoluteScale() {
+    public ImmutableVector3 getAbsoluteScale() {
         return absoluteScale;
     }
     //</editor-fold>
@@ -95,8 +96,8 @@ public class Transform {
      *
      * @param newRelativePosition
      */
-    public void setRelativePosition(Vector3f newRelativePosition) {
-        this.relativePosition = new Vector3f(newRelativePosition);
+    public void setRelativePosition(ImmutableVector3 newRelativePosition) {
+        this.relativePosition = newRelativePosition;
         if (this.parentTransform != null) {
             this.absolutePosition = this.calculateAbsolutePosition(this.parentTransform.getAbsolutePosition(), this.parentTransform.getAbsoluteEulerRotation(), this.relativePosition);
         } else {
@@ -111,8 +112,8 @@ public class Transform {
      *
      * @param newAbsolutePosition
      */
-    public void setAbsolutePosition(Vector3f newAbsolutePosition) {
-        this.absolutePosition = new Vector3f(newAbsolutePosition);
+    public void setAbsolutePosition(ImmutableVector3 newAbsolutePosition) {
+        this.absolutePosition = newAbsolutePosition;
         if (this.parentTransform != null) {
             this.relativePosition = this.calculateRelativePosition(this.parentTransform.getAbsolutePosition(), this.parentTransform.getAbsoluteEulerRotation(), this.absolutePosition);
         } else {
@@ -129,8 +130,8 @@ public class Transform {
      *
      * @param newRelativeRotation
      */
-    public void setRelativeEulerRotation(Vector3f newRelativeRotation) {
-        this.relativeEulerRotation = new Vector3f(newRelativeRotation);
+    public void setRelativeEulerRotation(ImmutableVector3 newRelativeRotation) {
+        this.relativeEulerRotation = newRelativeRotation;
         if (this.parentTransform != null) {
             this.absoluteEulerRotation = this.calculateAbsoluteRotation(this.parentTransform.getAbsoluteEulerRotation(), this.relativeEulerRotation);
         } else {
@@ -145,8 +146,8 @@ public class Transform {
      *
      * @param newAbsoluteRotation
      */
-    public void setAbsoluteEulerRotation(Vector3f newAbsoluteRotation) {
-        this.absoluteEulerRotation = new Vector3f(newAbsoluteRotation);
+    public void setAbsoluteEulerRotation(ImmutableVector3 newAbsoluteRotation) {
+        this.absoluteEulerRotation = newAbsoluteRotation;
         if (this.parentTransform != null) {
             this.relativeEulerRotation = this.calculateRelativeRotation(this.parentTransform.getAbsoluteEulerRotation(), this.absoluteEulerRotation);
         } else {
@@ -162,8 +163,8 @@ public class Transform {
      *
      * @param newRelativeScale
      */
-    public void setRelativeScale(Vector3f newRelativeScale) {
-        this.relativeScale = new Vector3f(newRelativeScale);
+    public void setRelativeScale(ImmutableVector3 newRelativeScale) {
+        this.relativeScale = newRelativeScale;
 
         if (this.parentTransform != null) {
             this.absoluteScale = this.calculateAbsoluteScale(this.parentTransform.getAbsoluteScale(), this.relativeScale);
@@ -178,8 +179,8 @@ public class Transform {
      *
      * @param newAbsoluteScale
      */
-    public void setAbsoluteScale(Vector3f newAbsoluteScale) {
-        this.absoluteScale = new Vector3f(newAbsoluteScale);
+    public void setAbsoluteScale(ImmutableVector3 newAbsoluteScale) {
+        this.absoluteScale = newAbsoluteScale;
 
         if (this.parentTransform != null) {
             this.relativeScale = this.calculateRelativeScale(this.parentTransform.getAbsoluteScale(), this.absoluteScale);
@@ -198,7 +199,7 @@ public class Transform {
      * @param eulerRotation
      * @param scale
      */
-    public Transform(Vector3f position, Vector3f eulerRotation, Vector3f scale) {
+    public Transform(ImmutableVector3 position, ImmutableVector3 eulerRotation, ImmutableVector3 scale) {
         this.relativePosition = position;
         this.absolutePosition = position;
 
@@ -252,24 +253,20 @@ public class Transform {
         this.transformSubject.onNext(this);
     }
 
-    private Vector3f calculateAbsoluteScale(Vector3f parentsAbsoluteScale, Vector3f ownRelativeScale) {
-        return new Vector3f(parentsAbsoluteScale.getX() * ownRelativeScale.getX(),
-                parentsAbsoluteScale.getY() * ownRelativeScale.getY(),
-                parentsAbsoluteScale.getZ() * ownRelativeScale.getZ());
+    private ImmutableVector3 calculateAbsoluteScale(ImmutableVector3 parentsAbsoluteScale, ImmutableVector3 ownRelativeScale) {
+        return parentsAbsoluteScale.multiplyBy(ownRelativeScale);
     }
 
-    private Vector3f calculateRelativeScale(Vector3f parentsAbsoluteScale, Vector3f ownAbsoluteScale) {
-        return new Vector3f(ownAbsoluteScale.getX() / parentsAbsoluteScale.getX(),
-                ownAbsoluteScale.getY() / parentsAbsoluteScale.getY(),
-                ownAbsoluteScale.getZ() / parentsAbsoluteScale.getZ());
+    private ImmutableVector3 calculateRelativeScale(ImmutableVector3 parentsAbsoluteScale, ImmutableVector3 ownAbsoluteScale) {
+        return ownAbsoluteScale.divideBy(parentsAbsoluteScale);
     }
 
-    private Vector3f calculateAbsoluteRotation(Vector3f parentsAbsoluteRotation, Vector3f ownRelativeRotation) {
-        return Vector3f.add(ownRelativeRotation, parentsAbsoluteRotation, null);
+    private ImmutableVector3 calculateAbsoluteRotation(ImmutableVector3 parentsAbsoluteRotation, ImmutableVector3 ownRelativeRotation) {
+        return ownRelativeRotation.add(parentsAbsoluteRotation);
     }
 
-    private Vector3f calculateRelativeRotation(Vector3f parentsAbsoluteRotation, Vector3f ownAbsoluteRotation) {
-        return Vector3f.sub(ownAbsoluteRotation, parentsAbsoluteRotation, null);
+    private ImmutableVector3 calculateRelativeRotation(ImmutableVector3 parentsAbsoluteRotation, ImmutableVector3 ownAbsoluteRotation) {
+        return ownAbsoluteRotation.subtract(parentsAbsoluteRotation);
     }
 
     /**
@@ -279,14 +276,16 @@ public class Transform {
      * @param parentsAbsolutePosition
      * @return
      */
-    private Vector3f calculateAbsolutePosition(Vector3f parentsAbsolutePosition, Vector3f parentsAbsoluteRotation, Vector3f ownRelativePosition) {
-        Vector3f rotatedRelativePosition = VectorMath.rotateEuler(ownRelativePosition, parentsAbsoluteRotation);
-        return Vector3f.add(rotatedRelativePosition, parentsAbsolutePosition, null);
+    private ImmutableVector3 calculateAbsolutePosition(ImmutableVector3 parentsAbsolutePosition, ImmutableVector3 parentsAbsoluteRotation, ImmutableVector3 ownRelativePosition) {
+        Vector3f rotatedRelativePosition = VectorMath.rotateEuler(ownRelativePosition.createMutable(), parentsAbsoluteRotation.createMutable());
+        Vector3f mutableResult = Vector3f.add(rotatedRelativePosition, parentsAbsolutePosition.createMutable(), null);
+        return new ImmutableVector3(mutableResult);
     }
 
-    private Vector3f calculateRelativePosition(Vector3f parentsAbsolutePosition, Vector3f parentsAbsoluteRotation, Vector3f ownAbsolutePosition) {
-        Vector3f inverseRotatedAbsolutePosition = VectorMath.rotateEuler(ownAbsolutePosition, parentsAbsolutePosition.negate(null));
-        return Vector3f.sub(parentsAbsolutePosition, inverseRotatedAbsolutePosition, null);
+    private ImmutableVector3 calculateRelativePosition(ImmutableVector3 parentsAbsolutePosition, ImmutableVector3 parentsAbsoluteRotation, ImmutableVector3 ownAbsolutePosition) {
+        Vector3f inverseRotatedAbsolutePosition = VectorMath.rotateEuler(ownAbsolutePosition.createMutable(), parentsAbsolutePosition.createMutable().negate(null));
+        Vector3f mutableResult = Vector3f.sub(parentsAbsolutePosition.createMutable(), inverseRotatedAbsolutePosition, null);
+        return new ImmutableVector3(mutableResult);
     }
 
     private Disposable subscribeToParentTransform() {

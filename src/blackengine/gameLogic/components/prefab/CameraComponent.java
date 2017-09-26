@@ -28,6 +28,7 @@ import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.rendering.Camera;
 import blackengine.rendering.RenderEngine;
+import blackengine.toolbox.math.ImmutableVector3;
 import io.reactivex.disposables.Disposable;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
@@ -61,20 +62,20 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     private float roll;
 
-    private Vector3f position = new Vector3f();
+    private ImmutableVector3 position = new ImmutableVector3();
 
-    private Vector3f offset = new Vector3f();
+    private ImmutableVector3 offset = new ImmutableVector3();
 
     /**
      * The view matrix of this camera.
      */
     protected Matrix4f viewMatrix = new Matrix4f();
 
-    public Vector3f getOffset() {
+    public ImmutableVector3 getOffset() {
         return offset;
     }
 
-    public void setOffset(Vector3f offset) {
+    public void setOffset(ImmutableVector3 offset) {
         this.offset = offset;
     }
 
@@ -123,7 +124,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     @Override
     public void setParent(Entity parent){
         if(parent != null){
-            this.position = Vector3f.add(this.offset, parent.getTransform().getAbsolutePosition(), null);
+            this.position = this.offset.add(parent.getTransform().getAbsolutePosition());
             this.pitch = -parent.getTransform().getAbsoluteEulerRotation().getX();
             this.yaw = -parent.getTransform().getAbsoluteEulerRotation().getY();
             this.roll = -parent.getTransform().getAbsoluteEulerRotation().getZ();
@@ -156,15 +157,15 @@ public class CameraComponent extends ComponentBase implements Camera {
         Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
         Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
-        Vector3f negativeCameraPos = this.getPosition().negate(null);
-        Matrix4f.translate(negativeCameraPos, this.viewMatrix, this.viewMatrix);
+        ImmutableVector3 negativeCameraPos = this.getPosition().negate();
+        Matrix4f.translate(negativeCameraPos.createMutable(), this.viewMatrix, this.viewMatrix);
     }
 
-    private void updatePosition(Vector3f parentPosition) {
-        this.position = Vector3f.add(this.offset, parentPosition, null);
+    private void updatePosition(ImmutableVector3 parentPosition) {
+        this.position = this.offset.add(parentPosition);
     }
 
-    private void updateRotation(Vector3f eulerRotation) {
+    private void updateRotation(ImmutableVector3 eulerRotation) {
         this.pitch = -eulerRotation.getX();
         this.yaw = -eulerRotation.getY();
         this.roll = -eulerRotation.getZ();
@@ -197,7 +198,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     @Override
-    public Vector3f getPosition() {
+    public ImmutableVector3 getPosition() {
         return this.position;
     }
 }

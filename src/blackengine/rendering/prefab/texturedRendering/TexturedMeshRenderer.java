@@ -32,6 +32,7 @@ import blackengine.rendering.Camera;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.lighting.Light;
 import blackengine.rendering.renderers.TargetPOVRenderer;
+import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.MatrixMath;
 import blackengine.toolbox.math.VectorMath;
 import java.io.IOException;
@@ -104,7 +105,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
 
     }
     
-    protected List<Light> getLights(Vector3f position){
+    protected List<Light> getLights(ImmutableVector3 position){
         return RenderEngine.getInstance()
                     .getLightStream()
                     .sorted((x,y) -> {
@@ -125,9 +126,9 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
             lightCount++;
         }
         for (int i = lightCount; i < this.maxLights; i++) {
-            this.loadUniformVector3f("lightColour[" + i + "]", new Vector3f(0, 0, 0));
-            this.loadUniformVector3f("lightPosition[" + i + "]", new Vector3f(1000, 10000, 10000));
-            this.loadUniformVector3f("lightAttenuation[" + i + "]", new Vector3f(1, 1, 1));
+            this.loadUniformVector3f("lightColour[" + i + "]", new ImmutableVector3(0, 0, 0));
+            this.loadUniformVector3f("lightPosition[" + i + "]", new ImmutableVector3(1000, 10000, 10000));
+            this.loadUniformVector3f("lightAttenuation[" + i + "]", new ImmutableVector3(1, 1, 1));
         }
 
     }
