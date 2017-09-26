@@ -84,9 +84,4 @@ public class PointLightComponent extends ComponentBase implements PointLight {
     public void onDeactivate(){
         RenderEngine.getInstance().removeLight(this);
     }
-
-    @Override
-    public void update() {
-    }
-
 }

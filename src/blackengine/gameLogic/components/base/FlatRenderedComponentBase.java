@@ -47,10 +47,4 @@ public abstract class FlatRenderedComponentBase<T extends TargetFlatRenderer> ex
     }
 
     public abstract boolean isRendered();
-
-    @Override
-    public void update() {
-
-    }
-
 }

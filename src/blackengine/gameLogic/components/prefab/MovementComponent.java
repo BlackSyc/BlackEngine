@@ -73,13 +73,4 @@ public class MovementComponent extends ComponentBase {
         Vector3f newRotation = super.getParent().getTransform().getRelativeEulerRotation().translate(rotation.x, rotation.y, rotation.z);
         super.getParent().getTransform().setRelativeEulerRotation(newRotation);
     }
-
-    /**
-     *
-     */
-    @Override
-    public void update() {
-
-    }
-
 }

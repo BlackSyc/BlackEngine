@@ -47,9 +47,4 @@ public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> ex
     }
     
     public abstract boolean isRendered();
-    
-    @Override
-    public void update(){
-        
-    }
 }

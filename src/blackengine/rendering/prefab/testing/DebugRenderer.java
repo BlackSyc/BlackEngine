@@ -257,13 +257,13 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         Entity grid = new Entity("debug_grid");
 
         MeshDataObject md = MeshLoader.getInstance().loadResource("/blackengine/res/plane.obj");
-        Vao vao = VaoLoader.loadVAO(md);
+        Vao vao = VaoLoader.loadVao(md);
 
         ImageDataObject image = ImageLoader.getInstance().loadResource("/blackengine/res/grid.png");
         Texture texture = TextureLoader.createTexture(image);
 
         MeshDataObject unitCubeMd = MeshLoader.getInstance().loadResource("/blackengine/res/unitCube.obj");
-        Vao unitCube = VaoLoader.loadVAO(unitCubeMd);
+        Vao unitCube = VaoLoader.loadVao(unitCubeMd);
 
         DebugRenderComponent tmc = new DebugRenderComponent(vao, tmr);
         tmc.setTexture(texture);

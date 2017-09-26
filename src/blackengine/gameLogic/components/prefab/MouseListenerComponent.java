@@ -76,10 +76,6 @@ public class MouseListenerComponent extends ComponentBase {
         this.subscription.dispose();
     }
 
-    @Override
-    public void update() {
-    }
-    
     private void handleInput(MouseEvent input) {
         this.action.accept(input, this.getParent());
     }
