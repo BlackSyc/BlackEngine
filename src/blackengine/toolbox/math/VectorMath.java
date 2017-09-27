@@ -23,17 +23,14 @@
  */
 package blackengine.toolbox.math;
 
-import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 /**
  *
  * @author Blackened
  */
 public class VectorMath {
-
     public static float barryCentric(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {
         float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
         float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
@@ -41,21 +38,4 @@ public class VectorMath {
         float l3 = 1.0f - l1 - l2;
         return l1 * p1.y + l2 * p2.y + l3 * p3.y;
     }
-
-    public static Vector2f add(Vector2f original, Vector2f addition) {
-        return new Vector2f(
-                original.x + addition.x,
-                original.y + addition.y);
-    }
-
-    public static Vector2f multiply(Vector2f original, Vector2f multiplication) {
-        return new Vector2f(
-                original.x * multiplication.x,
-                original.y * multiplication.y);
-    }
-
-    public static Vector2f copyOf(Vector2f original) {
-        return new Vector2f(original);
-    }
-
 }

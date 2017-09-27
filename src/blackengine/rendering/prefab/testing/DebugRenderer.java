@@ -41,6 +41,7 @@ import blackengine.openGL.vao.VaoLoader;
 import static blackengine.openGL.vao.vbo.AttributeType.*;
 import blackengine.rendering.Camera;
 import blackengine.rendering.renderers.TargetPOVRenderer;
+import blackengine.toolbox.math.ImmutableVector2;
 import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.MatrixMath;
 import java.io.IOException;
@@ -52,7 +53,6 @@ import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import static org.lwjgl.opengl.GL11.GL_LINE;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 
 /**
  *
@@ -108,7 +108,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.initializeRendering(viewMatrix);
 
         if (this.gridEnabled) {
-            Vector2f horizontalCameraTranslation = new Vector2f(camera.getPosition().getX(), camera.getPosition().getZ());
+            ImmutableVector2 horizontalCameraTranslation = new ImmutableVector2(camera.getPosition().getX(), camera.getPosition().getZ());
             float cameraDistance = horizontalCameraTranslation.length();
             this.renderGrid(cameraDistance);
         }

@@ -78,6 +78,10 @@ public class ImmutableVector3 {
         return new ImmutableVector3(this.x, this.y, this.z);
     }
 
+    public float length() {
+        return (float) Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
+    }
+
     public float distanceTo(ImmutableVector3 vector) {
         float xDistance = Math.abs(this.x - vector.getX());
         float yDistance = Math.abs(this.y - vector.getY());
@@ -246,10 +250,10 @@ public class ImmutableVector3 {
         ImmutableVector3 result = new ImmutableVector3(extendedVector.getX(), extendedVector.getY(), extendedVector.getZ());
         return result;
     }
-    
-    public boolean equals(ImmutableVector3 other, float tolerance){
-        return Math.abs(this.getX() - other.getX()) < tolerance &&
-                Math.abs(this.getY() - other.getY()) < tolerance &&
-                Math.abs(this.getZ() - other.getZ()) < tolerance;
+
+    public boolean equals(ImmutableVector3 other, float tolerance) {
+        return Math.abs(this.getX() - other.getX()) < tolerance
+                && Math.abs(this.getY() - other.getY()) < tolerance
+                && Math.abs(this.getZ() - other.getZ()) < tolerance;
     }
 }

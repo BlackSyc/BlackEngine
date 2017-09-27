@@ -24,13 +24,13 @@
 package blackengine.dataAccess.fileLoaders;
 
 import blackengine.dataAccess.dataObjects.MeshDataObject;
+import blackengine.toolbox.math.ImmutableVector2;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Loads mesh files from different formats into memory.
@@ -56,7 +56,7 @@ public class MeshLoader extends FileLoader<MeshDataObject> {
         try (BufferedReader reader = this.createBufferedReader(inputStream)) {
 
             List<ImmutableVector3> vertexPositions = new ArrayList<>();
-            List<Vector2f> textureCoords = new ArrayList<>();
+            List<ImmutableVector2> textureCoords = new ArrayList<>();
             List<ImmutableVector3> normalVectors = new ArrayList<>();
             List<Integer> indices = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class MeshLoader extends FileLoader<MeshDataObject> {
                     ImmutableVector3 vertex = new ImmutableVector3(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
                     vertexPositions.add(vertex);
                 } else if (line.startsWith("vt ")) {
-                    Vector2f texture = new Vector2f(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]));
+                    ImmutableVector2 texture = new ImmutableVector2(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]));
                     textureCoords.add(texture);
                 } else if (line.startsWith("vn ")) {
                     ImmutableVector3 normal = new ImmutableVector3(Float.parseFloat(currentLine[1]), Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
@@ -123,12 +123,12 @@ public class MeshLoader extends FileLoader<MeshDataObject> {
 
     }
 
-    private static void processVertex(String[] vertexData, List<Integer> indices, List<Vector2f> textures, List<ImmutableVector3> normals, float[] textureArray, float[] normalsArray) {
+    private static void processVertex(String[] vertexData, List<Integer> indices, List<ImmutableVector2> textures, List<ImmutableVector3> normals, float[] textureArray, float[] normalsArray) {
         int currentVertexPointer = Integer.parseInt(vertexData[0]) - 1;
         indices.add(currentVertexPointer);
-        Vector2f currentTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
-        textureArray[currentVertexPointer * 2] = currentTex.x;
-        textureArray[currentVertexPointer * 2 + 1] = 1 - currentTex.y;
+        ImmutableVector2 currentTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
+        textureArray[currentVertexPointer * 2] = currentTex.getX();
+        textureArray[currentVertexPointer * 2 + 1] = 1 - currentTex.getY();
         ImmutableVector3 currentNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
         normalsArray[currentVertexPointer * 3] = currentNorm.getX();
         normalsArray[currentVertexPointer * 3 + 1] = currentNorm.getY();

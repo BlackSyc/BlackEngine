@@ -23,6 +23,7 @@
  */
 package blackengine.rendering.renderers;
 
+import blackengine.toolbox.math.ImmutableVector2;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,7 +37,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
 
 /**
  *
@@ -149,8 +149,8 @@ public abstract class RendererBase {
         GL20.glUniform3f(this.getUniformLocation(uniformName), vector.getX(), vector.getY(), vector.getZ());
     }
 
-    protected void loadUniformVector2f(String uniformName, Vector2f vector) {
-        GL20.glUniform2f(this.getUniformLocation(uniformName), vector.x, vector.y);
+    protected void loadUniformVector2f(String uniformName, ImmutableVector2 vector) {
+        GL20.glUniform2f(this.getUniformLocation(uniformName), vector.getX(), vector.getY());
     }
     //</editor-fold>
 

@@ -154,9 +154,9 @@ public class CameraComponent extends ComponentBase implements Camera {
     private void updateViewMatrix() {
         this.viewMatrix = new Matrix4f();
         this.viewMatrix.setIdentity();
-        Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new Vector3f(1, 0, 0), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new Vector3f(0, 1, 0), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new Vector3f(0, 0, 1), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new ImmutableVector3(1, 0, 0).mutable(), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new ImmutableVector3(0, 1, 0).mutable(), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new ImmutableVector3(0, 0, 1).mutable(), this.viewMatrix, this.viewMatrix);
         ImmutableVector3 negativeCameraPos = this.getPosition().negate();
         Matrix4f.translate(negativeCameraPos.mutable(), this.viewMatrix, this.viewMatrix);
     }
