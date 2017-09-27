@@ -18,6 +18,10 @@ public class RepeatingBehaviour extends Behaviour {
 
     private int timesPassed;
 
+    protected int getTimes() {
+        return times;
+    }
+
     protected RepeatingBehaviour(String name, Consumer<Entity> consumer, long delay, int times, float priority) {
         super(name, consumer, delay, priority);
         this.times = times;
@@ -35,6 +39,11 @@ public class RepeatingBehaviour extends Behaviour {
             this.destroy();
         }
         return false;
+    }
+
+    @Override
+    public RepeatingBehaviour clone() {
+        return new RepeatingBehaviour(this.getName(), this.getConsumer(), this.getDelay(), this.times, this.getPriority());
     }
 
 }

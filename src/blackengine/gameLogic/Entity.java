@@ -50,7 +50,7 @@ public class Entity {
     /**
      * The name of this particular entity object.
      */
-    private String name;
+    private final String name;
 
     /**
      * The parent of this entity.
@@ -96,10 +96,6 @@ public class Entity {
      */
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**

@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import blackengine.openGL.vao.vbo.IndexVbo;
 import blackengine.openGL.vao.vbo.Vbo;
+import java.util.Collections;
+import java.util.stream.Stream;
 import org.lwjgl.opengl.GL30;
 
 /**
@@ -51,7 +53,7 @@ public class Vao {
         this.vbos.addAll(Arrays.asList(vbos));
     } 
 
-    public void setVaoId(int vaoId) {
+    protected void setVaoId(int vaoId) {
         this.vaoId = vaoId;
     }
 
@@ -63,8 +65,8 @@ public class Vao {
         return vertexCount;
     }
 
-    public List<Vbo> getVbos() {
-        return vbos;
+    public Stream<Vbo> getVbos() {
+        return vbos.stream();
     }
 
     public IndexVbo getIndex() {

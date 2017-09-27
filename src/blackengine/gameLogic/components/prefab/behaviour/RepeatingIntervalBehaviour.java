@@ -18,6 +18,12 @@ public class RepeatingIntervalBehaviour extends IntervalBehaviour {
 
     private int timesPassed;
 
+    protected int getTimes() {
+        return times;
+    }
+    
+    
+
     protected RepeatingIntervalBehaviour(String name, Consumer<Entity> consumer, long delay, long interval, int times, float priority) {
         super(name, consumer, delay, interval, priority);
         this.times = times;
@@ -36,6 +42,15 @@ public class RepeatingIntervalBehaviour extends IntervalBehaviour {
             this.destroy();
         }
         return false;
+    }
+    
+    public RepeatingIntervalBehaviour clone(){       
+        return new RepeatingIntervalBehaviour(this.getName(), 
+                this.getConsumer(), 
+                this.getDelay(), 
+                this.getInterval(), 
+                this.times, 
+                this.getPriority());
     }
 
 }

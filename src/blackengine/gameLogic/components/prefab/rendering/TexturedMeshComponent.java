@@ -67,4 +67,9 @@ public class TexturedMeshComponent extends POVRendereredComponentBase<TexturedMe
         return super.getRenderer().containsRenderTarget(this);
     }
     
+    @Override
+    public TexturedMeshComponent clone(){
+        return new TexturedMeshComponent(this.getRenderer(), this.getVao(), this.getTexture());
+    }
+    
 }

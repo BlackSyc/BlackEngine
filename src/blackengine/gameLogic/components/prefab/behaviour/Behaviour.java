@@ -83,6 +83,19 @@ public class Behaviour {
     public String getName() {
         return name;
     }
+    
+    /**
+     * Getter for the consumer of this behaviour.
+     * 
+     * @return An instance of Consumer%ltEntity%gt.
+     */
+    protected Consumer<Entity> getConsumer(){
+        return this.consumer;
+    }
+    
+    protected long getDelay(){
+        return this.delay;
+    }
 
     /**
      * Getter for the destruction flag of this behaviour.
@@ -170,6 +183,11 @@ public class Behaviour {
      */
     public static BehaviourBuilder as(String name, Consumer<Entity> consumer) {
         return new BehaviourBuilder(name, consumer);
+    }
+    
+    @Override
+    public Behaviour clone(){
+        return new Behaviour(this.name, this.consumer, this.delay, this.priority);
     }
 
 }

@@ -73,4 +73,9 @@ public class MovementComponent extends ComponentBase {
         ImmutableVector3 newRotation = super.getParent().getTransform().getRelativeEulerRotation().add(rotation);
         super.getParent().getTransform().setRelativeEulerRotation(newRotation);
     }
+    
+    @Override
+    public MovementComponent clone(){
+        return new MovementComponent(this.movementSpeed, this.rotationSpeed);
+    }
 }
