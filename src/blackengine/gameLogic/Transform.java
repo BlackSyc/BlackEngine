@@ -35,7 +35,7 @@ import io.reactivex.subjects.PublishSubject;
 public class Transform {
 
     private Transform parentTransform;
-    private final PublishSubject<Transform> transformSubject = PublishSubject.create();
+    private PublishSubject<Transform> transformSubject;
     private Disposable transformSubscription;
 
     // Both position vectors.
@@ -52,6 +52,9 @@ public class Transform {
 
     //<editor-fold defaultstate="collapsed" desc="Getters">
     public Observable<Transform> getObservable() {
+        if(this.transformSubject == null){
+            this.transformSubject = PublishSubject.create();
+        }
         return this.transformSubject;
     }
 
