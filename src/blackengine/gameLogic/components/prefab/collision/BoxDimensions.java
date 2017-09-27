@@ -23,13 +23,13 @@
  */
 package blackengine.gameLogic.components.prefab.collision;
 
-import org.lwjgl.util.vector.Vector3f;
+import blackengine.toolbox.math.ImmutableVector3;
 
 /**
  *
  * @author Blackened
  */
-public class BoxDimensions extends Vector3f{
+public class BoxDimensions extends ImmutableVector3{
 
     public BoxDimensions(float width, float height, float depth) {
         super(width, height, depth);

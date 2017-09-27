@@ -26,7 +26,7 @@ package blackengine.gameLogic.components.prefab;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.lighting.PointLight;
-import org.lwjgl.util.vector.Vector3f;
+import blackengine.toolbox.math.ImmutableVector3;
 
 /**
  *
@@ -34,45 +34,45 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class PointLightComponent extends ComponentBase implements PointLight {
 
-    private Vector3f attenuation;
-    private Vector3f offSet;
-    private Vector3f colour;
+    private ImmutableVector3 attenuation;
+    private ImmutableVector3 offSet;
+    private ImmutableVector3 colour;
 
-    public void setAttenuation(Vector3f attenuation) {
+    public void setAttenuation(ImmutableVector3 attenuation) {
         this.attenuation = attenuation;
     }
 
-    public void setOffSet(Vector3f offSet) {
+    public void setOffSet(ImmutableVector3 offSet) {
         this.offSet = offSet;
     }
 
-    public void setColour(Vector3f colour) {
+    public void setColour(ImmutableVector3 colour) {
         this.colour = colour;
     }
 
     @Override
-    public Vector3f getAttenuation() {
+    public ImmutableVector3 getAttenuation() {
         return this.attenuation;
     }
 
     @Override
-    public Vector3f getPosition() {
-        return Vector3f.add(this.getParent().getTransform().getAbsolutePosition(), this.offSet, null);
+    public ImmutableVector3 getPosition() {
+        return this.getParent().getTransform().getAbsolutePosition().add(this.offSet);
     }
 
     @Override
-    public Vector3f getColour() {
+    public ImmutableVector3 getColour() {
         return this.colour;
     }
 
-    public PointLightComponent(Vector3f attenuation, Vector3f offSet, Vector3f colour) {
+    public PointLightComponent(ImmutableVector3 attenuation, ImmutableVector3 offSet, ImmutableVector3 colour) {
         this.attenuation = attenuation;
         this.offSet = offSet;
         this.colour = colour;
     }
 
-    public PointLightComponent(Vector3f attenuation, Vector3f colour) {
-        this(attenuation, new Vector3f(), colour);
+    public PointLightComponent(ImmutableVector3 attenuation, ImmutableVector3 colour) {
+        this(attenuation, new ImmutableVector3(), colour);
     }
     
     @Override
@@ -83,5 +83,10 @@ public class PointLightComponent extends ComponentBase implements PointLight {
     @Override
     public void onDeactivate(){
         RenderEngine.getInstance().removeLight(this);
+    }
+    
+    @Override
+    public PointLightComponent clone(){
+        return new PointLightComponent(this.attenuation.clone(), this.offSet.clone(), this.colour.clone());
     }
 }

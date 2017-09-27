@@ -27,7 +27,7 @@ import blackengine.gameLogic.LogicEngine;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.gameLogic.movement.MoveDirection;
 import blackengine.gameLogic.movement.TurnDirection;
-import org.lwjgl.util.vector.Vector3f;
+import blackengine.toolbox.math.ImmutableVector3;
 
 /**
  * An instance of this class will provide its parent with the ability to move.
@@ -53,24 +53,29 @@ public class MovementComponent extends ComponentBase {
     }
 
     public void move(MoveDirection direction) {
-        Vector3f currentRotation = this.getParent().getTransform().getRelativeEulerRotation();
-        Vector3f translation = direction.calculateTranslation(this.movementSpeed * LogicEngine.getInstance().getTimer().getDelta(), currentRotation);
+        ImmutableVector3 currentRotation = this.getParent().getTransform().getRelativeEulerRotation();
+        ImmutableVector3 translation = direction.calculateTranslation(this.movementSpeed * LogicEngine.getInstance().getTimer().getDelta(), currentRotation);
         this.moveAbsolute(translation);
     }
 
-    public void moveAbsolute(Vector3f translation) {
-        Vector3f currentPosition = this.getParent().getTransform().getRelativePosition();
-        Vector3f newPosition = currentPosition.translate(translation.x, translation.y, translation.z);
+    public void moveAbsolute(ImmutableVector3 translation) {
+        ImmutableVector3 currentPosition = this.getParent().getTransform().getRelativePosition();
+        ImmutableVector3 newPosition = currentPosition.add(translation);
         this.getParent().getTransform().setRelativePosition(newPosition);
     }
 
     public void turn(TurnDirection direction) {
-        Vector3f translation = direction.calculateRotation(this.rotationSpeed * LogicEngine.getInstance().getTimer().getDelta());
+        ImmutableVector3 translation = direction.calculateRotation(this.rotationSpeed * LogicEngine.getInstance().getTimer().getDelta());
         this.turnAbsolute(translation);
     }
 
-    public void turnAbsolute(Vector3f rotation) {
-        Vector3f newRotation = super.getParent().getTransform().getRelativeEulerRotation().translate(rotation.x, rotation.y, rotation.z);
+    public void turnAbsolute(ImmutableVector3 rotation) {
+        ImmutableVector3 newRotation = super.getParent().getTransform().getRelativeEulerRotation().add(rotation);
         super.getParent().getTransform().setRelativeEulerRotation(newRotation);
+    }
+    
+    @Override
+    public MovementComponent clone(){
+        return new MovementComponent(this.movementSpeed, this.rotationSpeed);
     }
 }

@@ -32,8 +32,8 @@ import blackengine.rendering.Camera;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.lighting.Light;
 import blackengine.rendering.renderers.TargetPOVRenderer;
+import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.MatrixMath;
-import blackengine.toolbox.math.VectorMath;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +42,6 @@ import java.util.stream.Collectors;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -104,12 +103,12 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
 
     }
     
-    protected List<Light> getLights(Vector3f position){
+    protected List<Light> getLights(ImmutableVector3 position){
         return RenderEngine.getInstance()
                     .getLightStream()
                     .sorted((x,y) -> {
-                        float distanceX = VectorMath.distance(x.getPosition(), position);
-                        float distanceY = VectorMath.distance(y.getPosition(), position);
+                        float distanceX = x.getPosition().distanceTo(position);
+                        float distanceY = y.getPosition().distanceTo(position);
                         return Float.compare(distanceX, distanceY);
                     })
                     .limit(this.maxLights)
@@ -125,9 +124,9 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
             lightCount++;
         }
         for (int i = lightCount; i < this.maxLights; i++) {
-            this.loadUniformVector3f("lightColour[" + i + "]", new Vector3f(0, 0, 0));
-            this.loadUniformVector3f("lightPosition[" + i + "]", new Vector3f(1000, 10000, 10000));
-            this.loadUniformVector3f("lightAttenuation[" + i + "]", new Vector3f(1, 1, 1));
+            this.loadUniformVector3f("lightColour[" + i + "]", new ImmutableVector3(0, 0, 0));
+            this.loadUniformVector3f("lightPosition[" + i + "]", new ImmutableVector3(1000, 10000, 10000));
+            this.loadUniformVector3f("lightAttenuation[" + i + "]", new ImmutableVector3(1, 1, 1));
         }
 
     }

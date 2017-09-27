@@ -23,8 +23,8 @@
  */
 package blackengine.rendering;
 
+import blackengine.toolbox.math.ImmutableVector3;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -34,7 +34,7 @@ public interface Camera {
     
     public Matrix4f getViewMatrix();
     
-    public Vector3f getPosition();
+    public ImmutableVector3 getPosition();
     
     public double getYaw();
     

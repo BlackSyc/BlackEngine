@@ -86,6 +86,11 @@ public class DebugRenderComponent extends POVRendereredComponentBase<DebugRender
     public void onDeactivate() {
         super.getRenderer().removeRenderTarget(this);
     }
+    
+    @Override
+    public DebugRenderComponent clone(){
+        return new DebugRenderComponent(this.vao, this.getRenderer());
+    }
 
     
 }

@@ -23,7 +23,7 @@
  */
 package blackengine.rendering.lighting;
 
-import org.lwjgl.util.vector.Vector3f;
+import blackengine.toolbox.math.ImmutableVector3;
 
 /**
  *
@@ -31,8 +31,8 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public interface Light {
     
-    public Vector3f getAttenuation();
-    public Vector3f getPosition();
-    public Vector3f getColour();
+    public ImmutableVector3 getAttenuation();
+    public ImmutableVector3 getPosition();
+    public ImmutableVector3 getColour();
     
 }

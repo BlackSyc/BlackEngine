@@ -18,6 +18,10 @@ public class IntervalBehaviour extends Behaviour {
     private long interval;
 
     private long lastTick;
+    
+    protected long getInterval(){
+        return this.interval;
+    }
 
     protected IntervalBehaviour(String name, Consumer<Entity> consumer, long delay, long interval, float priority) {
         super(name, consumer, delay, priority);
@@ -34,6 +38,11 @@ public class IntervalBehaviour extends Behaviour {
             }
         }
         return false;
+    }
+    
+    @Override
+    public IntervalBehaviour clone(){
+        return new IntervalBehaviour(this.getName(), this.getConsumer(), this.getDelay(), this.interval, super.getPriority());
     }
 
 }

@@ -26,6 +26,7 @@ package blackengine.gameLogic.components.prefab.behaviour;
 import blackengine.gameLogic.components.base.ComponentBase;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * An instance of this component class executes behaviours that have been added
@@ -123,6 +124,11 @@ public class BehaviourComponent extends ComponentBase {
     public void update() {
         this.behaviours.removeIf(x -> x.isDestroyed());
         this.behaviours.forEach(x -> x.tick());
+    }
+    
+    @Override
+    public BehaviourComponent clone(){
+        return new BehaviourComponent((Behaviour[])this.behaviours.stream().map(x -> x.clone()).toArray());
     }
 
 }
