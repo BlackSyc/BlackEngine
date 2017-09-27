@@ -24,6 +24,7 @@
 package gameLogic.entity;
 
 import blackengine.gameLogic.Entity;
+import blackengine.toolbox.math.ImmutableVector3;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -31,7 +32,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -61,87 +61,87 @@ public class TransformTest {
     @Test
     public void testChildScaling(){
         // For both entities, the relative and absolute scale should be the same when they do not have a parent.
-        Entity parent = new Entity("parent", new Vector3f(), new Vector3f(), new Vector3f(2,2,4));
-        Entity child = new Entity("child", new Vector3f(), new Vector3f(), new Vector3f(0.5f,0.5f,0.5f));
+        Entity parent = new Entity("parent", new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3(2,2,4));
+        Entity child = new Entity("child", new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3(0.5f,0.5f,0.5f));
         
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getRelativeScale());
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getRelativeScale(), 0.0001f));
         
-        assertEquals(new Vector3f(0.5f,0.5f,0.5f), child.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(0.5f,0.5f,0.5f), child.getTransform().getRelativeScale());
+        assertTrue(new ImmutableVector3(0.5f,0.5f,0.5f).equals(child.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(0.5f,0.5f,0.5f).equals(child.getTransform().getRelativeScale(), 0.0001f));
         
         
         // After adding the child to the parent, the relative and absolute of the parent remains unchanged,
         // but the absolute of the child should be with respect to the parent.
         parent.addChild(child);
         
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getRelativeScale());
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getRelativeScale(), 0.0001f));
         
-        assertEquals(new Vector3f(1f,1f,2f), child.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(0.5f,0.5f,0.5f), child.getTransform().getRelativeScale());
+        assertTrue(new ImmutableVector3(1f,1f,2f).equals(child.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(0.5f,0.5f,0.5f).equals(child.getTransform().getRelativeScale(), 0.0001f));
         
         // When changing the scale of the parent, both (the relative and absolute) scales should stay the same
         // as the parent itself does not have a parent.
-        parent.getTransform().setAbsoluteScale(new Vector3f(3,3,6));
+        parent.getTransform().setAbsoluteScale(new ImmutableVector3(3,3,6));
         
-        assertEquals(new Vector3f(3,3,6), parent.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(3,3,6), parent.getTransform().getRelativeScale());
+        assertTrue(new ImmutableVector3(3,3,6).equals(parent.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(3,3,6).equals(parent.getTransform().getRelativeScale(), 0.0001f));
         
         // The childs absolute scale however, should have changed. The relative scale should remain the same.
-        assertEquals(new Vector3f(1.5f,1.5f,3f), child.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(0.5f,0.5f,0.5f), child.getTransform().getRelativeScale());
+        assertTrue(new ImmutableVector3(1.5f,1.5f,3f).equals(child.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(0.5f,0.5f,0.5f).equals(child.getTransform().getRelativeScale(), 0.0001f));
         
         // The same should happen when we change the relative scale of the parent back.
-        parent.getTransform().setRelativeScale(new Vector3f(2,2,4));
+        parent.getTransform().setRelativeScale(new ImmutableVector3(2,2,4));
         
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getRelativeScale());
-        assertEquals(new Vector3f(1f,1f,2f), child.getTransform().getAbsoluteScale());
-        assertEquals(new Vector3f(0.5f,0.5f,0.5f), child.getTransform().getRelativeScale());
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getRelativeScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(1f,1f,2f).equals(child.getTransform().getAbsoluteScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(0.5f,0.5f,0.5f).equals(child.getTransform().getRelativeScale(), 0.0001f));
         
         // If we now change the relative scale of the child, its absolute scale should change as well, and the 
         // parents scales should remain unchanged.
-        child.getTransform().setRelativeScale(new Vector3f(1,1,1));
+        child.getTransform().setRelativeScale(new ImmutableVector3(1,1,1));
         
-        assertEquals(new Vector3f(1,1,1), child.getTransform().getRelativeScale());
-        assertEquals(new Vector3f(2,2,4), child.getTransform().getAbsoluteScale());
+        assertTrue(new ImmutableVector3(1,1,1).equals(child.getTransform().getRelativeScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(2,2,4).equals(child.getTransform().getAbsoluteScale(), 0.0001f));
         
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getRelativeScale());
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getAbsoluteScale());
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getRelativeScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getAbsoluteScale(), 0.0001f));
         
         // If we change the absolute scale of the child, its relative scale should change as well, and the 
         // parents scales should remain unchanged.
-        child.getTransform().setAbsoluteScale(new Vector3f(1,1,2));
+        child.getTransform().setAbsoluteScale(new ImmutableVector3(1,1,2));
         
-        assertEquals(new Vector3f(0.5f,0.5f,0.5f), child.getTransform().getRelativeScale());
-        assertEquals(new Vector3f(1,1,2), child.getTransform().getAbsoluteScale());
+        assertTrue(new ImmutableVector3(0.5f,0.5f,0.5f).equals(child.getTransform().getRelativeScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(1,1,2).equals(child.getTransform().getAbsoluteScale(), 0.0001f));
         
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getRelativeScale());
-        assertEquals(new Vector3f(2,2,4), parent.getTransform().getAbsoluteScale());
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getRelativeScale(), 0.0001f));
+        assertTrue(new ImmutableVector3(2,2,4).equals(parent.getTransform().getAbsoluteScale(), 0.0001f));
         
     }
     
     @Test
     public void testChildPositioning(){
-        Entity parent = new Entity("parent", new Vector3f(), new Vector3f(), new Vector3f(1,1,1));
-        Entity child = new Entity("child", new Vector3f(1,0,0), new Vector3f(), new Vector3f(1,1,1));
+        Entity parent = new Entity("parent", new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3(1,1,1));
+        Entity child = new Entity("child", new ImmutableVector3(1,0,0), new ImmutableVector3(), new ImmutableVector3(1,1,1));
         
         parent.addChild(child);
         
-        parent.getTransform().setAbsoluteEulerRotation(new Vector3f(0,90,0));
+        parent.getTransform().setAbsoluteEulerRotation(new ImmutableVector3(0,90,0));
         
-        assertTrue(areEqual(new Vector3f(0,0,-1), child.getTransform().getAbsolutePosition()));
+        assertTrue(areEqual(new ImmutableVector3(0,0,-1), child.getTransform().getAbsolutePosition()));
         
-        parent.getTransform().setAbsoluteEulerRotation(new Vector3f(0,0,0));
+        parent.getTransform().setAbsoluteEulerRotation(new ImmutableVector3(0,0,0));
         
-        assertTrue(areEqual(new Vector3f(1,0,0), child.getTransform().getAbsolutePosition()));
+        assertTrue(areEqual(new ImmutableVector3(1,0,0), child.getTransform().getAbsolutePosition()));
     }
     
-    private boolean areEqual(Vector3f left, Vector3f right){
-        return Math.abs(left.x - right.x) < 0.001f &&
-                Math.abs(left.y - right.y) < 0.001f &&
-                Math.abs(left.z - right.z) < 0.001f;
+    private boolean areEqual(ImmutableVector3 left, ImmutableVector3 right){
+        return Math.abs(left.getX() - right.getX()) < 0.001f &&
+                Math.abs(left.getX() - right.getX()) < 0.001f &&
+                Math.abs(left.getX() - right.getX()) < 0.001f;
     }
 
 }

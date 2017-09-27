@@ -23,7 +23,8 @@
  */
 package blackengine.rendering.lighting;
 
-import org.lwjgl.util.vector.Vector3f;
+import blackengine.toolbox.math.ImmutableVector3;
+
 
 /**
  *
@@ -31,7 +32,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public interface SpotLight extends Light{
     
-    public Vector3f getDirection();
+    public ImmutableVector3 getDirection();
     
     public float getTheta();
     

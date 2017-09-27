@@ -34,7 +34,6 @@ import blackengine.rendering.lighting.Light;
 import blackengine.rendering.renderers.TargetPOVRenderer;
 import blackengine.toolbox.math.ImmutableVector3;
 import blackengine.toolbox.math.MatrixMath;
-import blackengine.toolbox.math.VectorMath;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -43,7 +42,6 @@ import java.util.stream.Collectors;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -109,8 +107,8 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
         return RenderEngine.getInstance()
                     .getLightStream()
                     .sorted((x,y) -> {
-                        float distanceX = VectorMath.distance(x.getPosition(), position);
-                        float distanceY = VectorMath.distance(y.getPosition(), position);
+                        float distanceX = x.getPosition().distanceTo(position);
+                        float distanceY = y.getPosition().distanceTo(position);
                         return Float.compare(distanceX, distanceY);
                     })
                     .limit(this.maxLights)

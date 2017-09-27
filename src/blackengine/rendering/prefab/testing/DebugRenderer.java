@@ -53,7 +53,6 @@ import static org.lwjgl.opengl.GL11.GL_LINE;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *

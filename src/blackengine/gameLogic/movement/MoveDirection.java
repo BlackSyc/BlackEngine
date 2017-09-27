@@ -24,7 +24,6 @@
 package blackengine.gameLogic.movement;
 
 import blackengine.toolbox.math.ImmutableVector3;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *

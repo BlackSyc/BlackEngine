@@ -28,7 +28,6 @@ import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.gameLogic.movement.MoveDirection;
 import blackengine.gameLogic.movement.TurnDirection;
 import blackengine.toolbox.math.ImmutableVector3;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * An instance of this class will provide its parent with the ability to move.

@@ -27,7 +27,6 @@ import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.lighting.PointLight;
 import blackengine.toolbox.math.ImmutableVector3;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *

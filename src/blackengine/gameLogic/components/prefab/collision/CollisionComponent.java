@@ -29,8 +29,6 @@ import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *

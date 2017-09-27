@@ -29,12 +29,10 @@ import blackengine.gameLogic.exceptions.DuplicateComponentTypeException;
 import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * An instance of this class represents an entity in 3D space. This entity can

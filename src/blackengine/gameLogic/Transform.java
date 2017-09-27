@@ -24,11 +24,9 @@
 package blackengine.gameLogic;
 
 import blackengine.toolbox.math.ImmutableVector3;
-import blackengine.toolbox.math.VectorMath;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -277,15 +275,15 @@ public class Transform {
      * @return
      */
     private ImmutableVector3 calculateAbsolutePosition(ImmutableVector3 parentsAbsolutePosition, ImmutableVector3 parentsAbsoluteRotation, ImmutableVector3 ownRelativePosition) {
-        Vector3f rotatedRelativePosition = VectorMath.rotateEuler(ownRelativePosition.createMutable(), parentsAbsoluteRotation.createMutable());
-        Vector3f mutableResult = Vector3f.add(rotatedRelativePosition, parentsAbsolutePosition.createMutable(), null);
-        return new ImmutableVector3(mutableResult);
+        ImmutableVector3 rotatedRelativePosition = ownRelativePosition.rotate(parentsAbsoluteRotation);
+        ImmutableVector3 result = rotatedRelativePosition.add(parentsAbsolutePosition);
+        return result;
     }
 
     private ImmutableVector3 calculateRelativePosition(ImmutableVector3 parentsAbsolutePosition, ImmutableVector3 parentsAbsoluteRotation, ImmutableVector3 ownAbsolutePosition) {
-        Vector3f inverseRotatedAbsolutePosition = VectorMath.rotateEuler(ownAbsolutePosition.createMutable(), parentsAbsolutePosition.createMutable().negate(null));
-        Vector3f mutableResult = Vector3f.sub(parentsAbsolutePosition.createMutable(), inverseRotatedAbsolutePosition, null);
-        return new ImmutableVector3(mutableResult);
+        ImmutableVector3 inverseRotatedAbsolutePosition = ownAbsolutePosition.rotate(parentsAbsolutePosition.negate());
+        ImmutableVector3 result = parentsAbsolutePosition.subtract(inverseRotatedAbsolutePosition);
+        return result;
     }
 
     private Disposable subscribeToParentTransform() {
