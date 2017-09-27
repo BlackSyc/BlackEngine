@@ -23,9 +23,11 @@
  */
 package blackengine.gameLogic;
 
+import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  *
@@ -93,9 +95,13 @@ public abstract class GameElement {
     public boolean isActive() {
         return active;
     }
-    
-    public Iterator<Entity> getEntitiesByTag(Tag tag){
-        return this.entities.values().stream().filter(x -> x.getTag().equals(tag)).iterator();
+
+    public Stream<Entity> getEntitiesByTag(Tag tag) {
+        return this.entities.values().stream().filter(x -> x.getTag().equals(tag));
+    }
+
+    public Stream<Entity> getAllEntities() {
+        return this.entities.values().stream();
     }
 
     /**
@@ -109,8 +115,17 @@ public abstract class GameElement {
     public void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
     }
-
     //</editor-fold>
+
+    /**
+     * Creates a flat stream of all entities and their children recursively.
+     *
+     * @return
+     */
+    public Stream<Entity> flattened() {
+        return this.getAllEntities().flatMap(x -> x.flattened());
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Default constructor for creating a new instance of scene.
@@ -149,17 +164,20 @@ public abstract class GameElement {
 
     /**
      * Adds an entity to this scene. If one with the same name was already
-     * present, that one will be destroyed and replaced with the new one.
+     * present, this will throw a new DuplicateEntityNameException.
      *
      * @param entity The entity that will be added to this scene.
+     * @throws blackengine.gameLogic.exceptions.DuplicateEntityNameException
      */
-    public void addEntity(Entity entity) {
+    public void addEntity(Entity entity) throws DuplicateEntityNameException {
         if (entity != null) {
             if (this.containsEntity(entity.getName())) {
-                this.destroyEntity(entity.getName());
+                throw new DuplicateEntityNameException();
+            } else {
+                this.entities.put(entity.getName(), entity);
+                entity.setGameElement(this);
             }
-            this.entities.put(entity.getName(), entity);
-            entity.setGameElement(this);
+
         }
     }
 
@@ -195,6 +213,7 @@ public abstract class GameElement {
      */
     public void update() {
         this.entities.values().forEach(x -> x.update());
+        this.entities.values().forEach(x -> x.lateUpdate());
 
         this.removeEntitiesFlaggedForDestruction();
     }

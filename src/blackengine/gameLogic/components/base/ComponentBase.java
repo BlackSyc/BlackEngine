@@ -26,7 +26,15 @@ package blackengine.gameLogic.components.base;
 import blackengine.gameLogic.Entity;
 
 /**
- * The base of all components used for the entity system of BlackEngine.
+ * The base of all components used for the entity system of BlackEngine. If the
+ * implementing class is registered using the
+ * {@link blackengine.gameLogic.LogicEngine#registerComponent(java.lang.Class, java.lang.Float) registerComponent(Class, Float)}
+ * method, the component will be 'Active'. Active components will be updated
+ * using their {@link #update() update()} and {@link #lateUpdate() lateUpdate()}
+ * methods in order of their priority every frame by their parent
+ * {@link blackengine.gameLogic.Entity Entity}. Passive components will not be
+ * updated using their {@link #update() update()} or
+ * {@link #lateUpdate() lateUpdate()} methods.
  *
  * @author Blackened
  */
@@ -86,14 +94,11 @@ public abstract class ComponentBase {
     }
 
     /**
-     * Deactivates this component, sets its parent to null and flags for
-     * destruction.
+     * Deactivates this component, sets its flags for destruction.
      */
     public void destroy() {
         this.deactivate();
-        this.parent = null;
         this.destroyed = true;
-
     }
 
     /**
@@ -101,17 +106,31 @@ public abstract class ComponentBase {
      * ComponentBase was registered in the
      * {@link blackengine.gameLogic.LogicEngine LogicEngine}.
      */
-    public abstract void update();
+    public void update(){
+        
+    }
+
+    /**
+     * Gets called after the {@link #update() update()} method;
+     */
+    public void lateUpdate() {
+
+    }
 
     /**
      * Activates this component by settings its active flag to true and calling
      * {@link #onActivate() onActivate()}.
      */
     public final void activate() {
-        this.onActivate();
+        if (!this.active) {
+            this.onActivate();
+        }
         this.active = true;
     }
 
+    /**
+     * Gets called whenever this component is activated.
+     */
     public void onActivate() {
 
     }
@@ -121,10 +140,15 @@ public abstract class ComponentBase {
      * calling {@link #onDeactivate() onDeactivate()}.
      */
     public final void deactivate() {
-        this.onDeactivate();
+        if (this.active) {
+            this.onDeactivate();
+        }
         this.active = false;
     }
 
+    /**
+     * Gets called whenever this component is deactivated.
+     */
     public void onDeactivate() {
 
     }

@@ -21,12 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
+package blackengine.rendering.renderers;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,15 +74,10 @@ public abstract class RendererBase {
 
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
-     * Default constructor for creating a new instance of RenderBase. Loads the
-     * vertex shader and fragment shader to OpenGL, binds the attributes and
-     * retrieves uniform variable locations.
+     * Default constructor for creating a new instance of RenderBase.
      *
-     * @param vertexFile
-     * @param fragmentFile
      */
-    public RendererBase(String vertexFile, String fragmentFile) {
-        this.load(vertexFile, fragmentFile);
+    public RendererBase() {
     }
     //</editor-fold>
 
@@ -148,12 +145,16 @@ public abstract class RendererBase {
         matrixBuffer.flip();
         GL20.glUniformMatrix4(uniformLocation, false, matrixBuffer);
     }
+    
+    protected void loadUniformBool(String uniformName, boolean value){
+        GL20.glUniform1i(this.getUniformLocation(uniformName), value ? 1 : 0);
+    }
 
     protected void loadUniformVector3f(String uniformName, Vector3f vector) {
         GL20.glUniform3f(this.getUniformLocation(uniformName), vector.x, vector.y, vector.z);
     }
-    
-    protected void loadUniformVector2f(String uniformName, Vector2f vector){
+
+    protected void loadUniformVector2f(String uniformName, Vector2f vector) {
         GL20.glUniform2f(this.getUniformLocation(uniformName), vector.x, vector.y);
     }
     //</editor-fold>
@@ -163,10 +164,10 @@ public abstract class RendererBase {
      * Loads the shader program with its shaders to OpenGL, and calls the
      * bindAttributes method.
      */
-    private void load(String vertexFile, String fragmentFile) {
+    public final void load(String vertexSource, String fragmentSource) throws IOException {
         List<String> uniformVariables = new ArrayList<>();
-        uniformVariables.addAll(this.loadShader(vertexFile, GL20.GL_VERTEX_SHADER));
-        uniformVariables.addAll(this.loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER));
+        uniformVariables.addAll(this.loadShader(vertexSource, GL20.GL_VERTEX_SHADER));
+        uniformVariables.addAll(this.loadShader(fragmentSource, GL20.GL_FRAGMENT_SHADER));
 
         this.programID = GL20.glCreateProgram();
         GL20.glAttachShader(programID, vertexShaderID);
@@ -232,29 +233,13 @@ public abstract class RendererBase {
      * @param shaderFile
      * @return
      */
-    private List<String> loadShader(String shaderFile, int shaderType) {
-        List<String> uniformVariables = new ArrayList<>();
-        StringBuilder shaderSource = new StringBuilder();
+    private List<String> loadShader(String shaderSource, int shaderType) throws IOException {
 
-        try (InputStream is = Class.class.getResourceAsStream(shaderFile)) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                shaderSource.append(line).append("\n");
-                if (line.startsWith("uniform")) {
-                    String[] uniformInformation = line.split(" ");
-                    uniformVariables.add(uniformInformation[2].replace(";", ""));
-                }
-            }
-            reader.close();
-        } catch (IOException ex) {
-            Logger.getLogger(RendererBase.class.getName()).log(Level.SEVERE, null, ex);
-        }
         int shaderID = GL20.glCreateShader(shaderType);
         GL20.glShaderSource(shaderID, shaderSource);
         GL20.glCompileShader(shaderID);
         if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-            System.out.println("Shader '" + shaderFile + "' did not compile! Compile Status: " + GL20.GL_COMPILE_STATUS);
+            System.out.println("Shader '" + shaderSource + "' did not compile! Compile Status: " + GL20.GL_COMPILE_STATUS);
         }
         switch (shaderType) {
             case GL20.GL_VERTEX_SHADER:
@@ -266,6 +251,20 @@ public abstract class RendererBase {
             default:
                 System.out.println("Shadertype is not implemented yet!");
                 break;
+        }
+        return this.extractUniforms(shaderSource);
+    }
+
+    private List<String> extractUniforms(String shaderSource) throws IOException {
+        List<String> uniformVariables = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new StringReader(shaderSource))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("uniform")) {
+                    String[] uniformInformation = line.split(" ");
+                    uniformVariables.add(uniformInformation[2].replace(";", ""));
+                }
+            }
         }
         return uniformVariables;
     }

@@ -23,7 +23,7 @@
  */
 package blackengine.gameLogic.components.base;
 
-import blackengine.rendering.TargetPOVRenderer;
+import blackengine.rendering.renderers.TargetPOVRenderer;
 
 /**
  *
@@ -47,9 +47,4 @@ public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> ex
     }
     
     public abstract boolean isRendered();
-    
-    @Override
-    public void update(){
-        
-    }
 }

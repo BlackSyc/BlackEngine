@@ -24,6 +24,10 @@
 package blackengine.userInput.exceptions;
 
 /**
+ * An instance of InputEngineNotCreatedException may be thrown when an input
+ * operation is performed without calling
+ * {@link blackengine.userInput.InputManager#createEngine() createEngine()} from
+ * the InputManager.
  *
  * @author Blackened
  */

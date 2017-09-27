@@ -23,6 +23,8 @@
  */
 package blackengine.gameLogic;
 
+import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
+
 
 /**
  * An instance of this class represents a scene in the game.
@@ -35,8 +37,9 @@ public class Scene extends GameElement {
     
     private Entity player;
     
-    public void setPlayer(Entity player){
+    public void setPlayer(Entity player) throws DuplicateEntityNameException{
         super.addEntity(player);
+        
         this.player = player;
     }
 

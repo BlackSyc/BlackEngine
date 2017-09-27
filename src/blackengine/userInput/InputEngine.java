@@ -24,15 +24,16 @@
 package blackengine.userInput;
 
 import blackengine.userInput.exceptions.InputEngineNotCreatedException;
+import io.reactivex.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import rx.Observable;
 
 /**
- * Engine singleton for input management.
+ * Engine singleton for input management. Can be used to retrieve the mouse
+ * event observable or action observable.
  *
  * @author Blackened
  * @param <T> The type of action returned from the key mapper.
@@ -47,11 +48,6 @@ public class InputEngine<T extends Object> {
             return INSTANCE;
         }
         throw new InputEngineNotCreatedException();
-    }
-
-    private InputEngine(Observable<T> actionObservable, Observable<MouseEvent> mouseObservable) {
-        this.actionObservable = actionObservable;
-        this.mouseObservable = mouseObservable;
     }
 
     protected static void create(Observable<? extends Object> actionObservable, Observable<MouseEvent> mouseObservable) {
@@ -78,20 +74,67 @@ public class InputEngine<T extends Object> {
 
     private float mouseSensitivity = 1;
 
+    /**
+     * Getter for the mouse sensitivity.
+     *
+     * @return A float representing the mouse sensitivity.
+     */
     public float getMouseSensitivity() {
         return mouseSensitivity;
     }
 
+    /**
+     * Setter for the mouse sensitivity.
+     *
+     * @param mouseSensitivity A float representing the mouse sensitivity.
+     */
     public void setMouseSensitivity(float mouseSensitivity) {
         this.mouseSensitivity = mouseSensitivity;
     }
 
+    /**
+     * Getter for the action observable. This observable can be subscribed to by
+     * components or other classes to listen to action requests.
+     *
+     * @return An instance of Observable&lt;T&gt;.
+     */
     public Observable<T> getActionObservable() {
         return actionObservable;
     }
 
+    /**
+     * Getter for the mouse event observable. This observable can be subscribed
+     * to by components or other classes to listen to mouse events.
+     *
+     * @return An instance of
+     * Observable&lt;{@link blackengine.userInput.MouseEvent MouseEvent}&gt;.
+     */
     public Observable<MouseEvent> getMouseObservable() {
         return mouseObservable;
+    }
+
+    private InputEngine(Observable<T> actionObservable, Observable<MouseEvent> mouseObservable) {
+        this.actionObservable = actionObservable;
+        this.mouseObservable = mouseObservable;
+    }
+
+    /**
+     * Makes the cursor invisible and keeps it in its position. Mouse events act
+     * as though the mouse was not grabbed.
+     *
+     * @param value True if the cursor should be hidden, false otherwise.
+     */
+    public void setMouseGrabbed(boolean value) {
+        Mouse.setGrabbed(value);
+    }
+
+    /**
+     * Retrieves whether the cursor is hidden or not.
+     *
+     * @return True if the cursor is hidden, false otherwise.
+     */
+    public boolean isMouseGrabbed() {
+        return Mouse.isGrabbed();
     }
 
 }

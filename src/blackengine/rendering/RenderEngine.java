@@ -23,15 +23,21 @@
  */
 package blackengine.rendering;
 
+import blackengine.rendering.renderers.POVRendererBase;
+import blackengine.rendering.renderers.FlatRendererBase;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
+import blackengine.rendering.lighting.Light;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 /**
  * Engine singleton for rendering management.
+ *
  * @author Blackened
  */
 public class RenderEngine {
@@ -52,14 +58,15 @@ public class RenderEngine {
 
     private RenderEngine() {
         this.masterRenderer = new MasterRenderer();
+        this.lights = new ArrayList<>();
     }
-    
-    protected void destroy(){
+
+    protected void destroy() {
         this.masterRenderer.destroy();
         INSTANCE = null;
     }
-
     //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Master Renderer">
     private MasterRenderer masterRenderer;
 
@@ -136,4 +143,45 @@ public class RenderEngine {
     }
     //</editor-fold>
 
+    // <editor-fold  defaultstate="collapsed" desc="Lighting">
+    /**
+     * A list of all lights that can be used for rendering.
+     */
+    private final ArrayList<Light> lights;
+
+    /**
+     * Retrieves a stream of all lights that can be used for rendering.
+     *
+     * @return
+     */
+    public Stream<Light> getLightStream() {
+        return lights.stream();
+    }
+
+    /**
+     * Adds a light to the render engine.
+     *
+     * @param light An instance of Light that can be used for rendering.
+     */
+    public void addLight(Light light) {
+        this.lights.add(light);
+    }
+
+    /**
+     * Removes a light from the render engine.
+     *
+     * @param light An instance of Light that will no longer be used for
+     * rendering.
+     */
+    public void removeLight(Light light) {
+        this.lights.remove(light);
+    }
+
+    /**
+     * Removes all lights from the render engine.
+     */
+    public void removeAllLights() {
+        this.lights.clear();
+    }
+    //</editor-fold>
 }

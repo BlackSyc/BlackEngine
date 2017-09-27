@@ -23,11 +23,14 @@
  */
 package blackengine.rendering;
 
+import blackengine.rendering.renderers.POVRendererBase;
+import blackengine.rendering.renderers.FlatRendererBase;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  * An instance of this class will deal with all rendering logic by coordinating
@@ -57,6 +60,16 @@ public class MasterRenderer {
     private float width = 0;
     
     private float height = 0;
+    
+    private Vector3f clearColour;
+
+    public Vector3f getClearColour() {
+        return clearColour;
+    }
+
+    public void setClearColour(Vector3f clearColour) {
+        this.clearColour = clearColour;
+    }    
 
     public float getWidth() {
         return width;
@@ -127,6 +140,7 @@ public class MasterRenderer {
     public MasterRenderer() {
         this.povRenderers = new HashMap<>();
         this.flatRenderers = new HashMap<>();
+        this.clearColour = new Vector3f();
     }
 
     /**
@@ -232,7 +246,7 @@ public class MasterRenderer {
             while (iter.hasNext()) {
                 Class<? extends POVRendererBase> rendererClass = iter.next();
                 if (this.containsPOVRendererByClass(rendererClass)) {
-                    this.getPOVRenderer(rendererClass).render(this.mainCamera.getViewMatrix());
+                    this.getPOVRenderer(rendererClass).render(this.mainCamera);
                 }
             }
         }
@@ -256,8 +270,7 @@ public class MasterRenderer {
 
     private void prepareForRendering() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0, 0, 0, 1);
-
+        GL11.glClearColor(this.clearColour.x, this.clearColour.y, this.clearColour.z, 1);
     }
 
 }

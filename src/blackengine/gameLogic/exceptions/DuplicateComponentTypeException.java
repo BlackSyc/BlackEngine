@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,36 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
-
-import org.lwjgl.util.vector.Matrix4f;
+package blackengine.gameLogic.exceptions;
 
 /**
  *
  * @author Blackened
  */
-public abstract class POVRendererBase extends RendererBase {
+public class DuplicateComponentTypeException extends RuntimeException {
 
-    private Matrix4f projectionMatrix;
-
-    public Matrix4f getProjectionMatrix() {
-        return projectionMatrix;
+    public DuplicateComponentTypeException() {
+        super("Entity already contains a component of this type.");
     }
-
-    public void setProjectionMatrix(Matrix4f projectionMatrix) {
-        this.projectionMatrix = projectionMatrix;
-    }
-
-    public POVRendererBase(String vertexFile, String fragmentFile) {
-        super(vertexFile, fragmentFile);
-    }
-
-    /**
-     * Render the targets.
-     *
-     * @param viewMatrix The view matrix of the camera to calculate the position
-     * of 3d elements on screen.
-     */
-    public abstract void render(Matrix4f viewMatrix);
 
 }

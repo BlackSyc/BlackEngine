@@ -21,7 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
+package blackengine.rendering.renderers;
+
 
 
 /**
@@ -33,11 +34,8 @@ public abstract class TargetPOVRenderer<T> extends POVRendererBase {
     
     /**
      * 
-     * @param vertexFile
-     * @param fragmentFile 
      */
-    public TargetPOVRenderer(String vertexFile, String fragmentFile) {
-        super(vertexFile, fragmentFile);
+    public TargetPOVRenderer() {
     }
     
     /**

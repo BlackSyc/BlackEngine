@@ -41,41 +41,31 @@ public class ImageLoader extends FileLoader<ImageDataObject> {
     }
 
     @Override
-    public ImageDataObject loadFromFile(String filePath) throws IOException {
-        String extension = this.getFileExtension(filePath);
-
+    protected ImageDataObject loadData(InputStream inputStream, String extension) throws IOException{
         switch (extension) {
             case ".png":
-                return this.loadImageDataFromPNGFile(filePath);
+                return this.loadImageDataFromPNG(inputStream);
             default:
                 throw new UnsupportedOperationException("File extension ('" + extension + "') not (yet) supported for loading an image data object!");
         }
     }
 
-    private ImageDataObject loadImageDataFromPNGFile(String file) throws IOException {
-        if (this.cache.containsKey(file)) {
-            return this.cache.get(file);
-        } else {
-            int width = 0;
-            int height = 0;
-            ByteBuffer buffer = null;
+    private ImageDataObject loadImageDataFromPNG(InputStream inputStream) throws IOException {
 
-            try (InputStream inputStream = this.createFileInputStream(file)) {
+        int width = 0;
+        int height = 0;
+        ByteBuffer buffer = null;
 
-                PNGDecoder decoder = new PNGDecoder(inputStream);
+        PNGDecoder decoder = new PNGDecoder(inputStream);
 
-                width = decoder.getWidth();
-                height = decoder.getHeight();
-                buffer = ByteBuffer.allocateDirect(4 * width * height);
-                decoder.decode(buffer, width * 4, PNGDecoder.Format.RGBA);
-                buffer.flip();
-                inputStream.close();
-                
-                ImageDataObject imageDataObject = new ImageDataObject(buffer, width, height);
-                this.cache.put(file, imageDataObject);
-                return imageDataObject;
-            } 
-        }
+        width = decoder.getWidth();
+        height = decoder.getHeight();
+        buffer = ByteBuffer.allocateDirect(4 * width * height);
+        decoder.decode(buffer, width * 4, PNGDecoder.Format.RGBA);
+        buffer.flip();
+
+        return new ImageDataObject(buffer, width, height);
+
     }
 
     public static ImageLoader getInstance() {
@@ -84,4 +74,5 @@ public class ImageLoader extends FileLoader<ImageDataObject> {
         }
         return instance;
     }
+
 }

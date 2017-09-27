@@ -24,6 +24,9 @@
 package blackengine.dataAccess.fileLoaders;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,43 +69,76 @@ public abstract class FileLoader<T> {
         }
     }
 
-    /**
-     * Creates an instance of {@link java.io.BufferedReader BufferedReader} from
-     * a file path.
-     *
-     * @param filePath The file path that will be used to create a buffered
-     * reader object.
-     * @return An instance of {@link java.io.BufferedReader BufferedReader}
-     * referencing the specified file path.
-     */
-    protected BufferedReader createBufferedReader(String filePath) {
-        InputStreamReader isr = new InputStreamReader(this.createFileInputStream(filePath));
+    protected BufferedReader createBufferedReader(InputStream inputStream) {
+        InputStreamReader isr = new InputStreamReader(inputStream);
         return new BufferedReader(isr);
     }
 
-    /**
-     * Creates an instance of {@link java.io.InputStream InputStream} from a
-     * file path.
-     *
-     * @param filePath The file path that will be used to create an input stream
-     * object.
-     * @return An instance of {@link java.io.InputStream InputStream}
-     * referencing the specified file path.
-     */
-    protected final InputStream createFileInputStream(String filePath) {
-        return Class.class.getResourceAsStream(filePath);
+    protected final InputStream createResourceInputStream(String resourcePath) {
+        return Class.class.getResourceAsStream(resourcePath);
+    }
+
+    protected final InputStream createFileInputStream(String filePath) throws FileNotFoundException {
+        return new FileInputStream(filePath);
     }
 
     /**
-     * An implementation of this method should load in data object of type T
-     * from a file path.
+     * An implementation of this method should do all logic necessary for
+     * specifically loading a file to an instance of T.
      *
-     * @param filePath The file path used to load in the data that will be
-     * represented in the data object.
-     * @return An instance of T containing the data loaded in from the file.
-     * @throws IOException throws an IO Exception when the file could not be
-     * read.
+     * @param inputStream The input stream that can be used to read data from
+     * the file or resource.
+     * @param extension The extension the file or resource has.
+     * @return
+     * @throws IOException
      */
-    public abstract T loadFromFile(String filePath) throws IOException;
+    protected abstract T loadData(InputStream inputStream, String extension) throws IOException;
+
+    /**
+     * Checks its internal cache for previously loaded resources, otherwise
+     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String)} loadData(...).
+     *
+     * @param resourcePath
+     * @return
+     * @throws IOException
+     */
+    public final T loadResource(String resourcePath) throws IOException {
+        if (this.cache.containsKey(resourcePath)) {
+            return this.cache.get(resourcePath);
+        }
+        T data = this.loadData(this.createResourceInputStream(resourcePath), this.getFileExtension(resourcePath));
+        this.cache.put(resourcePath, data);
+        return data;
+    }
+
+    /**
+     * Checks its internal cache for previously loaded files, otherwise
+     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String)} loadData(...).
+     *
+     * @param filePath The <b> absolute </b> path to the file.
+     * @return
+     * @throws IOException
+     */
+    public final T loadFile(String filePath) throws IOException {
+        if (this.cache.containsKey(filePath)) {
+            return this.cache.get(filePath);
+        }
+        T data = this.loadData(this.createFileInputStream(filePath), this.getFileExtension(filePath));
+        this.cache.put(filePath, data);
+        return data;
+
+    }
+
+    /**
+     * Checks its internal cache for previously loaded files, otherwise
+     * creates an input stream and calls {@link #loadData(java.io.InputStream, java.lang.String)} loadData(...).
+    
+     * @param file The file to be loaded.
+     * @return
+     * @throws IOException 
+     */
+    public final T loadFile(File file) throws IOException {
+        return this.loadFile(file.getAbsolutePath());
+    }
 
 }

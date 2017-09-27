@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,22 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
+package blackengine.gameLogic.components.prefab.rendering;
+
+import blackengine.gameLogic.components.base.POVRendereredComponentBase;
+import blackengine.openGL.texture.Texture;
+import blackengine.openGL.vao.Vao;
+import blackengine.rendering.prefab.texturedRendering.TexturedMeshRenderer;
 
 /**
  *
  * @author Blackened
  */
-public abstract class FlatRendererBase extends RendererBase {
-
-    public FlatRendererBase(String vertexFile, String fragmentFile) {
-        super(vertexFile, fragmentFile);
+public class TexturedMeshComponent extends POVRendereredComponentBase<TexturedMeshRenderer>{
+    
+    private Vao vao;
+    
+    private Texture texture;
+    
+    public Vao getVao() {
+        return vao;
     }
 
-    /**
-     * Render the targets.
-     *
-     */
-    public abstract void render();
+    public Texture getTexture() {
+        return texture;
+    }
 
+    public TexturedMeshComponent(TexturedMeshRenderer renderer, Vao vao, Texture texture) {
+        super(renderer);
+        this.vao = vao;
+        this.texture = texture;
+    }
+
+    @Override
+    public void onActivate() {
+        super.getRenderer().addRenderTarget(this);
+    }
+
+    @Override
+    public void onDeactivate() {
+        super.getRenderer().removeRenderTarget(this);
+    }
+
+    @Override
+    public boolean isRendered() {
+        return super.getRenderer().containsRenderTarget(this);
+    }
+    
 }

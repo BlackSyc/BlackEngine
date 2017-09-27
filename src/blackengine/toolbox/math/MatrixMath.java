@@ -58,17 +58,17 @@ public class MatrixMath {
      * properties.
      *
      * @param translation The position.
-     * @param rotation The Euler rotation.
+     * @param eulerRotation The Euler rotation in degrees.
      * @param scale The scale.
      * @return A new transformation matrix.
      */
-    public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, float scale) {
+    public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f eulerRotation, float scale) {
         Matrix4f matrix = new Matrix4f();
         matrix.setIdentity();
         Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.rotate(rotation.x, new Vector3f(1, 0, 0), matrix, matrix);
-        Matrix4f.rotate(rotation.y, new Vector3f(0, 1, 0), matrix, matrix);
-        Matrix4f.rotate(rotation.z, new Vector3f(0, 0, 1), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.x), new Vector3f(1, 0, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.y), new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.z), new Vector3f(0, 0, 1), matrix, matrix);
         Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
         return matrix;
     }
@@ -78,19 +78,27 @@ public class MatrixMath {
      * properties.
      *
      * @param translation The position.
-     * @param rotation The Euler rotation.
+     * @param eulerRotation The Euler rotation in degrees.
      * @param scale The scale.
      * @return A new transformation matrix.
      */
-    public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scale) {
+    public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f eulerRotation, Vector3f scale) {
         Matrix4f matrix = new Matrix4f();
         matrix.setIdentity();
         Matrix4f.translate(translation, matrix, matrix);
-        Matrix4f.rotate(rotation.x, new Vector3f(1, 0, 0), matrix, matrix);
-        Matrix4f.rotate(rotation.y, new Vector3f(0, 1, 0), matrix, matrix);
-        Matrix4f.rotate(rotation.z, new Vector3f(0, 0, 1), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.x), new Vector3f(1, 0, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.y), new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.z), new Vector3f(0, 0, 1), matrix, matrix);
         Matrix4f.scale(scale, matrix, matrix);
         return matrix;
     }
-
+    
+    public static Matrix4f createRotationMatrix(Vector3f eulerRotation){
+        Matrix4f matrix = new Matrix4f();
+        matrix.setIdentity();
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.x), new Vector3f(1, 0, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.y), new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.z), new Vector3f(0, 0, 1), matrix, matrix);
+        return matrix;
+    }
 }

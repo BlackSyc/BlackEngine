@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -26,35 +26,10 @@ package blackengine.rendering;
 /**
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class TargetFlatRenderer<T> extends FlatRendererBase{
-        
-    /**
-     * 
-     * @param vertexFile
-     * @param fragmentFile 
-     */
-    public TargetFlatRenderer(String vertexFile, String fragmentFile) {
-        super(vertexFile, fragmentFile);
-    }
+public enum ShaderType {
     
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void addRenderTarget(T renderTarget);
+    VERTEX_SHADER,
+    FRAGMENT_SHADER
     
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void removeRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     * @return 
-     */
-    public abstract boolean containsRenderTarget(T renderTarget);
 }

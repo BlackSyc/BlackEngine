@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,49 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.prefab;
-
-import blackengine.gameLogic.components.base.POVRendereredComponentBase;
-import blackengine.openGL.vao.Vao;
-import blackengine.rendering.prefab.TestMeshComponentRenderer;
+package blackengine.gameLogic.exceptions;
 
 /**
  *
  * @author Blackened
  */
-public class TestMeshComponent extends POVRendereredComponentBase<TestMeshComponentRenderer>{
+public class DuplicateEntityNameException extends RuntimeException{
     
-    private Vao vao;
-    
-
-    public Vao getVao() {
-        return vao;
+    public DuplicateEntityNameException(){
+        super("Entity with this name is already present in this parent.");
     }
-    
-    public TestMeshComponent(Vao vao, TestMeshComponentRenderer renderer) {
-        super(renderer);
-        
-        this.vao = vao;
-    }
-        
-
-    @Override
-    public boolean isRendered() {
-        if(super.getRenderer() != null){
-            super.getRenderer().containsRenderTarget(this);
-        }
-        return false;
-    }
-
-    @Override
-    public void onActivate() {
-        super.getRenderer().addRenderTarget(this);
-    }
-
-    @Override
-    public void onDeactivate() {
-        super.getRenderer().removeRenderTarget(this);
-    }
-
     
 }

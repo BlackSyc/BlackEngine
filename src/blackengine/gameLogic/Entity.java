@@ -25,9 +25,14 @@ package blackengine.gameLogic;
 
 import static blackengine.gameLogic.DefaultTag.NONE;
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.gameLogic.exceptions.DuplicateComponentTypeException;
+import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -41,13 +46,12 @@ import org.lwjgl.util.vector.Vector3f;
 public class Entity {
 
     //<editor-fold defaultstate="collapsed" desc="Properties">
-    
     private Tag tag;
-    
+
     /**
      * The name of this particular entity object.
      */
-    private final String name;
+    private String name;
 
     /**
      * The parent of this entity.
@@ -70,25 +74,18 @@ public class Entity {
     private final Map<String, Entity> children;
 
     /**
-     * The position of this entity in 3D space.
+     * The transform of this Entity.
      */
-    private Vector3f position;
-
-    /**
-     * The rotation of this entity.
-     */
-    private Vector3f rotation;
-
-    /**
-     * The scale of this entity.
-     */
-    private Vector3f scale;
+    private Transform transform;
 
     /**
      * All components belonging to this entity, mapped to their mapping class.
      */
     private final Map<Class<? extends ComponentBase>, ComponentBase> components;
 
+    /**
+     * A boolean representing whether this entity was activated or not.
+     */
     private boolean active = false;
     //</editor-fold>
 
@@ -102,6 +99,10 @@ public class Entity {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Getter for the parent of this entity.
      *
@@ -109,6 +110,17 @@ public class Entity {
      */
     public Entity getParent() {
         return parent;
+    }
+
+    /**
+     * Getter for a stream of all children entities.
+     *
+     * @return An instance of
+     * Stream%lt{@link blackengine.gameLogic.Entity Entity}%gt containing all
+     * children of this entity.
+     */
+    public Stream<Entity> getChildren() {
+        return children.values().stream();
     }
 
     /**
@@ -130,59 +142,8 @@ public class Entity {
         return destroyed;
     }
 
-    /**
-     * Getter for the relative 3D position of this entity.
-     *
-     * @return A new instance of Vector3f with the relative 3D position of this
-     * entity.
-     */
-    public Vector3f getRelativePosition() {
-        return new Vector3f(position);
-    }
-
-    /**
-     * Getter for the absolute 3D position of this entity.
-     *
-     * @return A new instance of Vector3f with the absolute 3D position of this
-     * entity.
-     */
-    public Vector3f getAbsolutePosition() {
-        if (this.getParent() != null) {
-            return new Vector3f(
-                    this.position.x + this.getParent().getAbsolutePosition().x,
-                    this.position.y + this.getParent().getAbsolutePosition().y,
-                    this.position.z + this.getParent().getAbsolutePosition().z);
-        }
-        return new Vector3f(this.position);
-    }
-
-    /**
-     * Getter for the rotation of this entity.
-     *
-     * @return An instance of Vector3f with the euler rotation of this entity.
-     */
-    public Vector3f getRotation() {
-        return rotation;
-    }
-
-    /**
-     * Getter for the scale of this entity.
-     *
-     * @return An instance of Vector3f representing the scale on each axis for
-     * this entity.
-     */
-    public Vector3f getScale() {
-        return scale;
-    }
-
-    /**
-     * Setter for the scale of this entity.
-     *
-     * @param scale An instance of Vector3f that will represent the scale on
-     * each axis for this entity.
-     */
-    public void setScale(Vector3f scale) {
-        this.scale = scale;
+    public Transform getTransform() {
+        return transform;
     }
 
     /**
@@ -191,7 +152,13 @@ public class Entity {
      * @param parent The parent of this entity.
      */
     public void setParent(Entity parent) {
+        if (parent == null) {
+            this.parent = null;
+            this.transform.stopListening();
+            return;
+        }
         this.parent = parent;
+        this.transform.listenTo(parent.getTransform());
     }
 
     /**
@@ -205,42 +172,6 @@ public class Entity {
         this.gameElement = gameElement;
     }
 
-    /**
-     * Setter for the relative 3D position of this entity.
-     *
-     * @param position An instance of Vector3f containing the new relative
-     * position for this entity in 3D space.
-     */
-    public void setRelativePosition(Vector3f position) {
-        this.position = new Vector3f(position);
-    }
-
-    /**
-     * Setter for the absolute 3D position of this entity.
-     *
-     * @param newPosition An instance of Vector3f containing the new absolute
-     * position for this entity in 3D space.
-     */
-    public void setAbsolutePosition(Vector3f newPosition) {
-        if (this.getParent() != null) {
-            this.position = new Vector3f(newPosition.x - this.getParent().getAbsolutePosition().x,
-                    newPosition.y - this.getParent().getAbsolutePosition().y,
-                    newPosition.z - this.getParent().getAbsolutePosition().z);
-        } else {
-            this.position = new Vector3f(newPosition);
-        }
-    }
-
-    /**
-     * Setter for the rotation of this entity.
-     *
-     * @param rotation An instance of Vector3f containing the new euler rotation
-     * for this entity.
-     */
-    public void setRotation(Vector3f rotation) {
-        this.rotation = rotation;
-    }
-
     public Tag getTag() {
         return tag;
     }
@@ -251,10 +182,6 @@ public class Entity {
 
     public boolean isActive() {
         return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
     //</editor-fold>
 
@@ -269,12 +196,10 @@ public class Entity {
      */
     public Entity(String name, Vector3f position, Vector3f rotation, Vector3f scale) {
         this.name = name;
-        this.position = position;
-        this.rotation = rotation;
-        this.scale = scale;
         this.components = new HashMap<>();
         this.children = new HashMap<>();
         this.tag = NONE;
+        this.transform = new Transform(position, rotation, scale);
     }
 
     /**
@@ -295,10 +220,10 @@ public class Entity {
      * @param position The position of the entity.
      */
     public Entity(String name, Vector3f position) {
-        this(name, position, new Vector3f(), new Vector3f());
+        this(name, position, new Vector3f(), new Vector3f(1, 1, 1));
     }
-
     //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Public Methods">
     /**
      * Verifies whether a child with the specified name is present in this
@@ -324,19 +249,40 @@ public class Entity {
     }
 
     /**
+     * Creates a flat stream of all children and (recursively) their children.
+     *
+     * @return A stream containing all this entities children and their children
+     * (recursively).
+     */
+    public Stream<Entity> flattened() {
+        return Stream.concat(
+                Stream.of(this),
+                this.children.values()
+                        .stream()
+                        .flatMap(Entity::flattened));
+    }
+
+    /**
      * Adds a child entity to this entity. If one with the same name was already
-     * present, that one will be destroyed and replaced with the new one.
+     * present, a
+     * {@link blackengine.gameLogic.exceptions.DuplicateEntityNameException DuplicateEntityNameException}
+     * will be thrown. If the parent entity was flagged active, the child will
+     * be activated as well.
      *
      * @param child An entity that will be added to this entity as a child.
      */
-    public void addChild(Entity child) {
+    public void addChild(Entity child) throws DuplicateEntityNameException {
         if (child != null) {
-
             if (this.containsChild(child.getName())) {
-                this.destroyChild(child.getName());
+                throw new DuplicateEntityNameException();
+            } else {
+                this.children.put(child.getName(), child);
+                child.setParent(this);
+                if (this.active) {
+                    child.activate();
+                }
             }
-            this.children.put(child.getName(), child);
-            child.setParent(this);
+
         }
     }
 
@@ -394,19 +340,36 @@ public class Entity {
     }
 
     /**
+     * Retrieves a stream of all components in the entity's component
+     * collection.
+     *
+     * @return A collection of all the components.
+     */
+    public Stream<ComponentBase> getAllComponents() {
+        return this.components.values().stream();
+    }
+
+    /**
      * Adds a component to this entity if a component with this mapping was not
-     * yet present. If one was already present, the existing one will be
-     * destroyed and replaced.
+     * yet present. If one was already present, a
+     * {@link blackengine.gameLogic.exceptions.DuplicateComponentTypeException DuplicateComponentTypeException}
+     * will be thrown. If the entity is flagged active, the component will be
+     * activated as well.
      *
      * @param component The component to be added to this entity.
      */
-    public void addComponent(ComponentBase component) {
+    public void addComponent(ComponentBase component) throws DuplicateComponentTypeException {
         if (component != null) {
             if (this.containsComponent(component.getMapping())) {
-                this.getComponent(component.getMapping()).destroy();
+                throw new DuplicateComponentTypeException();
+            } else {
+                component.setParent(this);
+                this.components.put(component.getMapping(), component);
+                if (this.active) {
+                    component.activate();
+                }
             }
-            component.setParent(this);
-            this.components.put(component.getMapping(), component);
+
         }
     }
 
@@ -440,11 +403,28 @@ public class Entity {
     }
 
     /**
-     * Updates all children entities and components. Removes all components and
-     * children that are flagged for destruction.
+     * Updates all children entities and components.
      */
     public void update() {
-        // Update all components that are present in the order presented by the
+        Iterator<Class<? extends ComponentBase>> iter = LogicEngine.getInstance().getComponentIterator();
+
+        while (iter.hasNext()) {
+            Class<? extends ComponentBase> componentClass = iter.next();
+            if (this.components.containsKey(componentClass)) {
+                this.components.get(componentClass).update();
+            }
+        }
+
+        // Update all children.
+        this.children.values().forEach(x -> x.update());
+    }
+
+    /**
+     * Gets called after the {@link #update() update()} method. Also removes all
+     * components and children that have been flagged for destruction.
+     */
+    public void lateUpdate() {
+        // LateUpdate all components that are present in the order presented by the
         // order iterator. Removes the components if they are flagged for 
         // destruction.
         Iterator<Class<? extends ComponentBase>> iter = LogicEngine.getInstance().getComponentIterator();
@@ -453,7 +433,7 @@ public class Entity {
             Class<? extends ComponentBase> componentClass = iter.next();
             if (this.components.containsKey(componentClass)) {
                 ComponentBase currentComponent = this.components.get(componentClass);
-                currentComponent.update();
+                currentComponent.lateUpdate();
                 if (currentComponent.isDestroyed()) {
                     this.components.remove(currentComponent.getMapping());
                 }
@@ -461,7 +441,7 @@ public class Entity {
         }
 
         // Update all children.
-        this.children.values().forEach(x -> x.update());
+        this.children.values().forEach(x -> x.lateUpdate());
 
         // Remove all children that are flagged for destruction.
         this.removeChildrenFlaggedForDestruction();
@@ -488,6 +468,7 @@ public class Entity {
         this.removeChildrenFlaggedForDestruction();
         this.components.values().forEach(x -> x.destroy());
         this.removeComponentsFlaggedForDestruction();
+        this.transform.destroy();
         this.destroyed = true;
 
     }
@@ -506,6 +487,50 @@ public class Entity {
      */
     private void removeChildrenFlaggedForDestruction() {
         this.children.entrySet().removeIf(x -> x.getValue().isDestroyed());
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Static Methods">
+    /**
+     * Creates an instance of Entity, and activates it and its components.
+     *
+     * @param name The name of the entity.
+     * @param position The position of the entity.
+     * @param rotation The rotation of the entity.
+     * @param scale The scale of the entity.
+     * @param components The components that will be added to this entity.
+     * @return The entity.
+     */
+    public static Entity create(String name, Vector3f position, Vector3f rotation, Vector3f scale, ComponentBase... components) {
+        Entity entity = new Entity(name, position, rotation, scale);
+        if (components != null) {
+            Arrays.stream(components).forEach(x -> entity.addComponent(x));
+        }
+        entity.activate();
+
+        return entity;
+    }
+
+    /**
+     * Creates an instance of Entity, and activates it and its components.
+     *
+     * @param name The name of the entity.
+     * @param position The position of the entity.
+     * @param components The components that will be added to this entity.
+     * @return The entity.
+     */
+    public static Entity create(String name, Vector3f position, ComponentBase... components) throws DuplicateComponentTypeException {
+        try {
+            Entity entity = new Entity(name, position);
+            if (components != null) {
+                Arrays.stream(components).forEach(x -> entity.addComponent(x));
+            }
+            entity.activate();
+
+            return entity;
+        } catch (DuplicateComponentTypeException ex) {
+            throw ex;
+        }
     }
 
     //</editor-fold>
