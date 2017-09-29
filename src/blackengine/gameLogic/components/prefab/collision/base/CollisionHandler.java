@@ -35,12 +35,12 @@ import blackengine.gameLogic.components.prefab.collision.SphereCollisionComponen
  */
 public interface CollisionHandler {
 
-    public boolean handleCollisionWith(BoxCollisionComponent bcc);
+    public void handleCollisionWith(BoxCollisionComponent bcc);
 
-    public boolean handleCollisionWith(MeshCollisionComponent mcc);
+    public void handleCollisionWith(MeshCollisionComponent mcc);
 
-    public boolean handleCollisionWith(PlaneCollisionComponent pcc);
+    public void handleCollisionWith(PlaneCollisionComponent pcc);
 
-    public boolean handleCollisionWith(SphereCollisionComponent scc);
+    public void handleCollisionWith(SphereCollisionComponent scc);
 
 }

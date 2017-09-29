@@ -8,7 +8,6 @@ package blackengine.gameLogic.components.prefab.collision;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionChecker;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent;
 
-
 /**
  *
  * @author Blackened
@@ -46,33 +45,33 @@ public class BoxCollisionComponent extends CollisionComponent {
     }
 
     @Override
-    public boolean dispatchCollisionCheck(CollisionChecker cm) {
+    public void handleCollisionWith(BoxCollisionComponent bcc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleCollisionWith(MeshCollisionComponent mcc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleCollisionWith(PlaneCollisionComponent pcc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleCollisionWith(SphereCollisionComponent scc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public final boolean dispatchCollisionCheck(CollisionChecker cm) {
         return cm.isCollidingWith(this);
     }
 
     @Override
-    public void dispatchCollisionHandling(CollisionComponent cc) {
+    public final void dispatchCollisionHandling(CollisionComponent cc) {
         cc.handleCollisionWith(this);
-    }
-
-    @Override
-    public boolean handleCollisionWith(BoxCollisionComponent bcc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean handleCollisionWith(MeshCollisionComponent mcc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean handleCollisionWith(PlaneCollisionComponent pcc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean handleCollisionWith(SphereCollisionComponent scc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
