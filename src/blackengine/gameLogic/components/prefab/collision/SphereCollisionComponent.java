@@ -1,69 +1,110 @@
 /*
- * The MIT License
- *
- * Copyright 2017 Blackened.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package blackengine.gameLogic.components.prefab.collision;
 
 import blackengine.gameLogic.Transform;
-import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.gameLogic.components.prefab.collision.base.CollisionChecker;
+import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent;
 import blackengine.toolbox.math.ImmutableVector3;
 
 /**
  *
  * @author Blackened
  */
-public abstract class SphereCollisionComponent extends CollisionComponent {
+public class SphereCollisionComponent extends CollisionComponent {
 
+    private float radius;
+
+    public void setRadius(float radius) {
+        this.radius = radius;
+        super.getTransform().setAbsoluteScale(new ImmutableVector3(radius, radius, radius));
+    }
 
     public float getRadius() {
-        return this.getTransform().getAbsoluteScale().getX();
+        return radius;
     }
-
 
     public SphereCollisionComponent(float radius) {
-        super(new Transform(new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3(radius, radius, radius)));
+        this(radius, 1);
+    }
+
+    public SphereCollisionComponent(float radius, float weight) {
+        super(new Transform(new ImmutableVector3(),
+                new ImmutableVector3(),
+                new ImmutableVector3(radius, radius, radius)), weight);
+        this.radius = radius;
     }
 
     @Override
-    public boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
-        ImmutableVector3 otherCenter = sphereCollisionComponent.getCollisionComponentCenter();
-        ImmutableVector3 thisCenter = this.getCollisionComponentCenter();
-        float minimalDistance = this.getRadius() + sphereCollisionComponent.getRadius();
-        return thisCenter.distanceTo(otherCenter) < minimalDistance;
-    }
-    
-    @Override
-    public boolean isColliding(BoxCollisionComponent boxCollisionComponent){
-        return false;
-    }
-    
-    @Override
-    public boolean isColliding(PlaneCollisionComponent planeCollisionComponent){
-        return false;
+    public final boolean isCollidingWith(BoxCollisionComponent bcc) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Class<? extends ComponentBase> getMapping() {
-        return CollisionComponent.class;
+    public final boolean isCollidingWith(SphereCollisionComponent scc) {
+        ImmutableVector3 otherPosition = scc.getTransform().getAbsolutePosition();
+        float distance = this.getTransform().getAbsolutePosition().distanceTo(otherPosition);
+        return distance < this.getRadius() + scc.getRadius();
     }
 
+    @Override
+    public final boolean isCollidingWith(PlaneCollisionComponent pcc) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public final boolean isCollidingWith(MeshCollisionComponent mcc) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void handleCollisionWith(BoxCollisionComponent bcc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleCollisionWith(MeshCollisionComponent mcc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleCollisionWith(PlaneCollisionComponent pcc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleCollisionWith(SphereCollisionComponent scc) {
+        if (this.getWeight() > 0) {
+            ImmutableVector3 otherPosition = scc.getTransform().getAbsolutePosition();
+            float requiredDistance = this.getRadius() + scc.getRadius();
+            float actualDistance = this.getTransform().getAbsolutePosition().distanceTo(otherPosition);
+            float absoluteDistanceToMove = requiredDistance - actualDistance;
+            ImmutableVector3 directionToMove = this.getTransform().getAbsolutePosition().subtract(otherPosition).normalize();
+
+            ImmutableVector3 translation;
+            if (scc.hasHandledCollisionWith(this) || scc.getWeight() <= 0) {
+                translation = directionToMove.multiplyBy(absoluteDistanceToMove);
+            } else {
+                float weightedDistanceToMove = (absoluteDistanceToMove / (this.getWeight() + scc.getWeight())) * this.getWeight();
+                translation = directionToMove.multiplyBy(weightedDistanceToMove);
+            }
+
+            ImmutableVector3 originalPosition = this.getParent().getTransform().getAbsolutePosition();
+            this.getParent().getTransform().setAbsolutePosition(originalPosition.add(translation));
+        }
+        this.setColliding(true);
+    }
+
+    @Override
+    public boolean dispatchCollisionCheck(CollisionChecker cm) {
+        return cm.isCollidingWith(this);
+    }
+
+    @Override
+    public final void dispatchCollisionHandling(CollisionComponent cc) {
+        cc.handleCollisionWith(this);
+    }
 }

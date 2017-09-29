@@ -32,7 +32,8 @@ import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.GameElement;
 import blackengine.gameLogic.GameManager;
 import blackengine.gameLogic.components.prefab.collision.BoxCollisionComponent;
-import blackengine.gameLogic.components.prefab.collision.CollisionComponent;
+import blackengine.gameLogic.components.prefab.collision.SphereCollisionComponent;
+import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent;
 import blackengine.gameLogic.components.prefab.rendering.DebugRenderComponent;
 import blackengine.openGL.texture.Texture;
 import blackengine.openGL.texture.TextureLoader;
@@ -64,7 +65,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
     private Entity grid;
 
-    private Vao unitCube;
+    private Vao unitSphere;
 
     private boolean gridEnabled = false;
 
@@ -77,7 +78,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
     }
 
     public void setUnitCube(Vao unitCube) {
-        this.unitCube = unitCube;
+        this.unitSphere = unitCube;
     }
 
     public boolean isGridEnabled() {
@@ -133,10 +134,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
                 this.loadUniformVector3f("colour", new ImmutableVector3(1,1,1));
             }
 
-            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(
-                    x.getParent().getTransform().getAbsolutePosition(), 
-                    x.getParent().getTransform().getAbsoluteEulerRotation(), 
-                    x.getParent().getTransform().getAbsoluteScale());
+            Matrix4f transformationMatrix = x.getParent().getTransform().createTransformationMatrix();
             this.loadUniformMatrix("transformationMatrix", transformationMatrix);
 
             GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
@@ -166,10 +164,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
             this.loadUniformVector3f("colour", new ImmutableVector3(1,1,1));
         }
 
-        Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(
-                this.grid.getTransform().getAbsolutePosition(),
-                this.grid.getTransform().getAbsoluteEulerRotation(),
-                this.grid.getTransform().getAbsoluteScale());
+        Matrix4f transformationMatrix = this.grid.getTransform().createTransformationMatrix();
         this.loadUniformMatrix("transformationMatrix", transformationMatrix);
 
         GL11.glDrawElements(GL11.GL_TRIANGLES, meshComp.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
@@ -181,16 +176,24 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
     private void renderColliders() {
         GameElement activeScene = this.gameManager.getActiveScene();
-        this.unitCube.bind();
+        this.unitSphere.bind();
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         this.loadUniformBool("textured", false);
-        this.loadUniformVector3f("colour", new ImmutableVector3(0,1,0));
-        activeScene.flattened().filter(x -> x.containsComponent(CollisionComponent.class)).map(x -> x.getComponent(CollisionComponent.class)).forEach(x -> {
-            if (x instanceof BoxCollisionComponent) {
-                Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getTransform().getAbsolutePosition(), x.getTransform().getAbsoluteEulerRotation(), x.getTransform().getAbsoluteScale());
+        
+        activeScene.flattened()
+                .filter(x -> x.containsComponent(CollisionComponent.class))
+                .map(x -> x.getComponent(CollisionComponent.class))
+                .filter(x -> x instanceof SphereCollisionComponent)
+                .forEach(x -> {
+                    if(x.isColliding()){
+                        this.loadUniformVector3f("colour", new ImmutableVector3(1,0,0));
+                    }
+                        else{
+                        this.loadUniformVector3f("colour", new ImmutableVector3(0,1,0));
+                    }
+                Matrix4f transformationMatrix = x.getTransform().createTransformationMatrix();
                 this.loadUniformMatrix("transformationMatrix", transformationMatrix);
-                GL11.glDrawElements(GL11.GL_TRIANGLES, unitCube.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-            }
+                GL11.glDrawElements(GL11.GL_TRIANGLES, unitSphere.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         });
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -265,7 +268,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         ImageDataObject image = ImageLoader.getInstance().loadResource("/blackengine/res/grid.png");
         Texture texture = TextureLoader.createTexture(image);
 
-        MeshDataObject unitCubeMd = MeshLoader.getInstance().loadResource("/blackengine/res/unitCube.obj");
+        MeshDataObject unitCubeMd = MeshLoader.getInstance().loadResource("/blackengine/res/unitSphere.obj");
         Vao unitCube = VaoLoader.loadVao(unitCubeMd);
 
         DebugRenderComponent tmc = new DebugRenderComponent(vao, tmr);

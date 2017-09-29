@@ -79,7 +79,7 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
         this.targets.forEach(x -> {
             x.getVao().bind();
             x.getTexture().bindToUnit(GL13.GL_TEXTURE0);
-            Matrix4f transformationMatrix = MatrixMath.createTransformationMatrix(x.getParent().getTransform().getAbsolutePosition(), x.getParent().getTransform().getAbsoluteEulerRotation(), x.getParent().getTransform().getAbsoluteScale());
+            Matrix4f transformationMatrix = x.getParent().getTransform().createTransformationMatrix();
             this.loadUniformMatrix("transformationMatrix", transformationMatrix);
             this.loadUniformLights(this.getLights(camera.getPosition()));
             GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);

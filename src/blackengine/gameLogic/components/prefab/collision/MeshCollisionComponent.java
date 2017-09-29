@@ -12,9 +12,9 @@ import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent
  *
  * @author Blackened
  */
-public class PlaneCollisionComponent extends CollisionComponent {
+public class MeshCollisionComponent extends CollisionComponent {
 
-    public PlaneCollisionComponent() {
+    public MeshCollisionComponent() {
         super();
     }
 

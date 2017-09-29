@@ -27,6 +27,8 @@ import blackengine.toolbox.math.ImmutableVector3;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  *
@@ -208,9 +210,36 @@ public class Transform {
         this.absoluteScale = scale;
     }
 
+    /**
+     * Constructor for creating a new instance of Transform where all properties
+     * are empty vectors.
+     *
+     */
+    public Transform() {
+        this.relativePosition = new ImmutableVector3();
+        this.absolutePosition = new ImmutableVector3();
+
+        this.relativeEulerRotation = new ImmutableVector3();
+        this.absoluteEulerRotation = new ImmutableVector3();
+
+        this.relativeScale = new ImmutableVector3();
+        this.absoluteScale = new ImmutableVector3();
+    }
+
     public void destroy() {
         this.stopListening();
         this.transformSubject.onComplete();
+    }
+
+    public Matrix4f createTransformationMatrix() {
+        Matrix4f matrix = new Matrix4f();
+        matrix.setIdentity();
+        Matrix4f.translate(this.getAbsolutePosition().mutable(), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getAbsoluteEulerRotation().getX()), new Vector3f(1, 0, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getAbsoluteEulerRotation().getY()), new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(this.getAbsoluteEulerRotation().getZ()), new Vector3f(0, 0, 1), matrix, matrix);
+        Matrix4f.scale(this.getAbsoluteScale().mutable(), matrix, matrix);
+        return matrix;
     }
 
     /**

@@ -90,22 +90,26 @@ public final class ImmutableVector3 {
 
         return distance;
     }
-    
+
+    public ImmutableVector3 normalize() {
+        float length = this.length();
+        return new ImmutableVector3(this.getX() / length, this.getY() / length, this.getZ() / length);
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Setting">
-    public ImmutableVector3 setX(float newX){
+    public ImmutableVector3 setX(float newX) {
         return new ImmutableVector3(newX, this.getX(), this.getZ());
     }
-    
-    public ImmutableVector3 setY(float newY){
+
+    public ImmutableVector3 setY(float newY) {
         return new ImmutableVector3(this.getX(), newY, this.getZ());
     }
-    
-    public ImmutableVector3 setZ(float newZ){
+
+    public ImmutableVector3 setZ(float newZ) {
         return new ImmutableVector3(this.getX(), this.getY(), newZ);
     }
-    
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Addition">
     public ImmutableVector3 add(ImmutableVector3 addition) {
         return new ImmutableVector3(this.x + addition.getX(),
