@@ -22,8 +22,20 @@ public abstract class CollisionComponent extends ComponentBase
 
     private final Transform transform;
     
+    private boolean colliding = false;
+
     // possibly add momentum later?
     private float weight;
+
+    public boolean isColliding() {
+        return colliding;
+    }
+
+    protected final void setColliding(boolean colliding) {
+        this.colliding = colliding;
+    }
+    
+    
 
     public float getWeight() {
         return weight;
@@ -43,21 +55,26 @@ public abstract class CollisionComponent extends ComponentBase
     }
 
     public CollisionComponent() {
-        this(new Transform());
+        this(new Transform(), 1);
     }
-    
-    public CollisionComponent(Transform offsetTransform){
+
+    public CollisionComponent(Transform offsetTransform, float weight) {
         this.transform = offsetTransform;
         this.collidingComponentCache = new ArrayList<>();
         this.weight = 1;
     }
-    
-    public boolean hasHandledCollisionWith(CollisionComponent cc){
+
+    public CollisionComponent(Transform offsetTransform) {
+        this(offsetTransform, 1);
+    }
+
+    public boolean hasHandledCollisionWith(CollisionComponent cc) {
         return !this.collidingComponentCache.contains(cc);
     }
 
     @Override
     public final void update() {
+        this.setColliding(false);
         this.addCollisionsToCache();
     }
 

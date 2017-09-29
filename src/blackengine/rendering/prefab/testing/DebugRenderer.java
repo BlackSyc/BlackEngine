@@ -179,12 +179,18 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.unitSphere.bind();
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         this.loadUniformBool("textured", false);
-        this.loadUniformVector3f("colour", new ImmutableVector3(0,1,0));
+        
         activeScene.flattened()
                 .filter(x -> x.containsComponent(CollisionComponent.class))
                 .map(x -> x.getComponent(CollisionComponent.class))
                 .filter(x -> x instanceof SphereCollisionComponent)
                 .forEach(x -> {
+                    if(x.isColliding()){
+                        this.loadUniformVector3f("colour", new ImmutableVector3(1,0,0));
+                    }
+                        else{
+                        this.loadUniformVector3f("colour", new ImmutableVector3(0,1,0));
+                    }
                 Matrix4f transformationMatrix = x.getTransform().createTransformationMatrix();
                 this.loadUniformMatrix("transformationMatrix", transformationMatrix);
                 GL11.glDrawElements(GL11.GL_TRIANGLES, unitSphere.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);

@@ -28,9 +28,13 @@ public class SphereCollisionComponent extends CollisionComponent {
     }
 
     public SphereCollisionComponent(float radius) {
+        this(radius, 1);
+    }
+
+    public SphereCollisionComponent(float radius, float weight) {
         super(new Transform(new ImmutableVector3(),
                 new ImmutableVector3(),
-                new ImmutableVector3(radius, radius, radius)));
+                new ImmutableVector3(radius, radius, radius)), weight);
         this.radius = radius;
     }
 
@@ -73,29 +77,23 @@ public class SphereCollisionComponent extends CollisionComponent {
 
     @Override
     public void handleCollisionWith(SphereCollisionComponent scc) {
-//        ImmutableVector3 otherPosition = scc.getTransform().getAbsolutePosition();
-//        float requiredDistance = this.getRadius() + scc.getRadius();
-//        float actualDistance = this.getTransform().getAbsolutePosition().distanceTo(otherPosition);
-//        float absoluteDistanceToMove = requiredDistance - actualDistance;
-//        ImmutableVector3 directionToMove = otherPosition.subtract(this.getTransform().getAbsolutePosition()).normalize();
+        ImmutableVector3 otherPosition = scc.getTransform().getAbsolutePosition();
+        float requiredDistance = this.getRadius() + scc.getRadius();
+        float actualDistance = this.getTransform().getAbsolutePosition().distanceTo(otherPosition);
+        float absoluteDistanceToMove = requiredDistance - actualDistance;
+        ImmutableVector3 directionToMove = this.getTransform().getAbsolutePosition().subtract(otherPosition).normalize();
 
-        //NO WEIGHT YET
+        ImmutableVector3 translation;
         if (scc.hasHandledCollisionWith(this)) {
-            return;
+            translation = directionToMove.multiplyBy(absoluteDistanceToMove);
         } else {
-            ImmutableVector3 otherPosition = scc.getTransform().getAbsolutePosition();
-            float requiredDistance = this.getRadius() + scc.getRadius();
-            float actualDistance = this.getTransform().getAbsolutePosition().distanceTo(otherPosition);
-            float absoluteDistanceToMove = requiredDistance - actualDistance;
-            ImmutableVector3 directionToMove = this.getTransform().getAbsolutePosition().subtract(otherPosition).normalize();
-
-            // TODO: add weight into absoluteDistanceToMove
-            ImmutableVector3 translation = directionToMove.multiplyBy(absoluteDistanceToMove);
-            
-            ImmutableVector3 originalPosition = this.getParent().getTransform().getRelativePosition();
-            this.getParent().getTransform().setRelativePosition(originalPosition.add(translation));
-
+            float weightedDistanceToMove = (absoluteDistanceToMove / (this.getWeight() + scc.getWeight())) * this.getWeight();
+            translation = directionToMove.multiplyBy(weightedDistanceToMove);
         }
+
+        ImmutableVector3 originalPosition = this.getParent().getTransform().getAbsolutePosition();
+        this.getParent().getTransform().setAbsolutePosition(originalPosition.add(translation));
+        this.setColliding(true);
 
     }
 
