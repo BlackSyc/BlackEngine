@@ -14,27 +14,27 @@ import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent
  */
 public class PlaneCollisionComponent extends CollisionComponent {
 
-    public PlaneCollisionComponent(String name) {
-        super(name);
+    public PlaneCollisionComponent() {
+        super();
     }
 
     @Override
-    public boolean isCollidingWith(BoxCollisionComponent bcc) {
+    public final boolean isCollidingWith(BoxCollisionComponent bcc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isCollidingWith(SphereCollisionComponent scc) {
+    public final boolean isCollidingWith(SphereCollisionComponent scc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isCollidingWith(PlaneCollisionComponent pcc) {
+    public final boolean isCollidingWith(PlaneCollisionComponent pcc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isCollidingWith(MeshCollisionComponent mcc) {
+    public final boolean isCollidingWith(MeshCollisionComponent mcc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

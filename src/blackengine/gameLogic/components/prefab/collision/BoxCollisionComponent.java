@@ -5,6 +5,7 @@
  */
 package blackengine.gameLogic.components.prefab.collision;
 
+import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionChecker;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent;
 
@@ -14,8 +15,12 @@ import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent
  */
 public class BoxCollisionComponent extends CollisionComponent {
 
-    public BoxCollisionComponent(String name) {
-        super(name);
+    public BoxCollisionComponent() {
+        super();
+    }
+    
+    public BoxCollisionComponent(Transform offsetTransform){
+        super(offsetTransform);
     }
 
     /**
@@ -25,22 +30,22 @@ public class BoxCollisionComponent extends CollisionComponent {
      * @return
      */
     @Override
-    public boolean isCollidingWith(BoxCollisionComponent bcc) {
+    public final boolean isCollidingWith(BoxCollisionComponent bcc) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public boolean isCollidingWith(SphereCollisionComponent scc) {
+    public final boolean isCollidingWith(SphereCollisionComponent scc) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public boolean isCollidingWith(PlaneCollisionComponent pcc) {
+    public final boolean isCollidingWith(PlaneCollisionComponent pcc) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public boolean isCollidingWith(MeshCollisionComponent mcc) {
+    public final boolean isCollidingWith(MeshCollisionComponent mcc) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -73,5 +78,4 @@ public class BoxCollisionComponent extends CollisionComponent {
     public final void dispatchCollisionHandling(CollisionComponent cc) {
         cc.handleCollisionWith(this);
     }
-
 }

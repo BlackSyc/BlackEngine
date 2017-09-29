@@ -21,6 +21,17 @@ public abstract class CollisionComponent extends ComponentBase
     private final List<CollisionComponent> collidingComponentCache;
 
     private final Transform transform;
+    
+    // possibly add momentum later?
+    private float weight;
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
 
     public Transform getTransform() {
         return transform;
@@ -31,9 +42,18 @@ public abstract class CollisionComponent extends ComponentBase
         this.transform.listenTo(this.getParent().getTransform());
     }
 
-    public CollisionComponent(String name) {
-        this.transform = new Transform();
+    public CollisionComponent() {
+        this(new Transform());
+    }
+    
+    public CollisionComponent(Transform offsetTransform){
+        this.transform = offsetTransform;
         this.collidingComponentCache = new ArrayList<>();
+        this.weight = 1;
+    }
+    
+    public boolean hasHandledCollisionWith(CollisionComponent cc){
+        return !this.collidingComponentCache.contains(cc);
     }
 
     @Override
@@ -59,6 +79,11 @@ public abstract class CollisionComponent extends ComponentBase
         this.collidingComponentCache
                 .forEach(x -> x.dispatchCollisionHandling(this));
         this.collidingComponentCache.clear();
+    }
+
+    @Override
+    public final Class<? extends ComponentBase> getMapping() {
+        return CollisionComponent.class;
     }
 
 }
