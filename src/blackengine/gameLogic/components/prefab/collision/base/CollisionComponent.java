@@ -7,34 +7,58 @@ package blackengine.gameLogic.components.prefab.collision.base;
 
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
-import blackengine.toolbox.math.ImmutableVector3;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Blackened
  */
-public abstract class CollisionComponent extends ComponentBase implements CollisionChecker, CollisionCheckDispatcher{
-    
-    private final String name;
-    
+public abstract class CollisionComponent extends ComponentBase
+        implements CollisionChecker, CollisionCheckDispatcher,
+        CollisionHandler, CollisionHandlingDispatcher {
+
+    private final List<CollisionComponent> collidingComponentCache;
+
     private final Transform transform;
 
-    public String getName() {
-        return name;
+    public Transform getTransform() {
+        return transform;
+    }
+
+    @Override
+    public void onActivate() {
+        this.transform.listenTo(this.getParent().getTransform());
     }
 
     public CollisionComponent(String name) {
-        this.transform = new Transform(new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3());
-        this.name = name;
+        this.transform = new Transform();
+        this.collidingComponentCache = new ArrayList<>();
     }
-    
+
     @Override
-    public void update(){
-        //TODO
+    public final void update() {
+        this.addCollisionsToCache();
     }
-    
-    
-    
-    
-    
+
+    private void addCollisionsToCache() {
+        this.getParent().getGameElement().flattened()
+                .filter(x -> x != this.getParent())
+                .filter(x -> x.containsComponent(CollisionComponent.class))
+                .map(x -> x.getComponent(CollisionComponent.class))
+                .filter(x -> !this.collidingComponentCache.contains(x))
+                .filter(x -> x.dispatchCollisionCheck(this))
+                .forEach(x -> {
+                    this.collidingComponentCache.add(x);
+                    x.collidingComponentCache.add(this);
+                });
+    }
+
+    @Override
+    public final void lateUpdate() {
+        this.collidingComponentCache
+                .forEach(x -> x.dispatchCollisionHandling(this));
+        this.collidingComponentCache.clear();
+    }
+
 }

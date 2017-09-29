@@ -210,12 +210,28 @@ public class Transform {
         this.absoluteScale = scale;
     }
 
+    /**
+     * Constructor for creating a new instance of Transform where all properties
+     * are empty vectors.
+     *
+     */
+    public Transform() {
+        this.relativePosition = new ImmutableVector3();
+        this.absolutePosition = new ImmutableVector3();
+
+        this.relativeEulerRotation = new ImmutableVector3();
+        this.absoluteEulerRotation = new ImmutableVector3();
+
+        this.relativeScale = new ImmutableVector3();
+        this.absoluteScale = new ImmutableVector3();
+    }
+
     public void destroy() {
         this.stopListening();
         this.transformSubject.onComplete();
     }
-    
-    public Matrix4f createTransformationMatrix(){
+
+    public Matrix4f createTransformationMatrix() {
         Matrix4f matrix = new Matrix4f();
         matrix.setIdentity();
         Matrix4f.translate(this.getAbsolutePosition().mutable(), matrix, matrix);
