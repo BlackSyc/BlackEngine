@@ -77,24 +77,25 @@ public class SphereCollisionComponent extends CollisionComponent {
 
     @Override
     public void handleCollisionWith(SphereCollisionComponent scc) {
-        ImmutableVector3 otherPosition = scc.getTransform().getAbsolutePosition();
-        float requiredDistance = this.getRadius() + scc.getRadius();
-        float actualDistance = this.getTransform().getAbsolutePosition().distanceTo(otherPosition);
-        float absoluteDistanceToMove = requiredDistance - actualDistance;
-        ImmutableVector3 directionToMove = this.getTransform().getAbsolutePosition().subtract(otherPosition).normalize();
+        if (this.getWeight() > 0) {
+            ImmutableVector3 otherPosition = scc.getTransform().getAbsolutePosition();
+            float requiredDistance = this.getRadius() + scc.getRadius();
+            float actualDistance = this.getTransform().getAbsolutePosition().distanceTo(otherPosition);
+            float absoluteDistanceToMove = requiredDistance - actualDistance;
+            ImmutableVector3 directionToMove = this.getTransform().getAbsolutePosition().subtract(otherPosition).normalize();
 
-        ImmutableVector3 translation;
-        if (scc.hasHandledCollisionWith(this)) {
-            translation = directionToMove.multiplyBy(absoluteDistanceToMove);
-        } else {
-            float weightedDistanceToMove = (absoluteDistanceToMove / (this.getWeight() + scc.getWeight())) * this.getWeight();
-            translation = directionToMove.multiplyBy(weightedDistanceToMove);
+            ImmutableVector3 translation;
+            if (scc.hasHandledCollisionWith(this) || scc.getWeight() <= 0) {
+                translation = directionToMove.multiplyBy(absoluteDistanceToMove);
+            } else {
+                float weightedDistanceToMove = (absoluteDistanceToMove / (this.getWeight() + scc.getWeight())) * this.getWeight();
+                translation = directionToMove.multiplyBy(weightedDistanceToMove);
+            }
+
+            ImmutableVector3 originalPosition = this.getParent().getTransform().getAbsolutePosition();
+            this.getParent().getTransform().setAbsolutePosition(originalPosition.add(translation));
         }
-
-        ImmutableVector3 originalPosition = this.getParent().getTransform().getAbsolutePosition();
-        this.getParent().getTransform().setAbsolutePosition(originalPosition.add(translation));
         this.setColliding(true);
-
     }
 
     @Override
