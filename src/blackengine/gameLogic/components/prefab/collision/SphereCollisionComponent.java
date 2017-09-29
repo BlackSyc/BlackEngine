@@ -1,69 +1,48 @@
 /*
- * The MIT License
- *
- * Copyright 2017 Blackened.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package blackengine.gameLogic.components.prefab.collision;
 
-import blackengine.gameLogic.Transform;
-import blackengine.gameLogic.components.base.ComponentBase;
-import blackengine.toolbox.math.ImmutableVector3;
+import blackengine.gameLogic.components.prefab.collision.base.CollisionChecker;
+import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent;
+
 
 /**
  *
  * @author Blackened
  */
-public abstract class SphereCollisionComponent extends CollisionComponent {
+public class SphereCollisionComponent extends CollisionComponent{
 
-
-    public float getRadius() {
-        return this.getTransform().getAbsoluteScale().getX();
-    }
-
-
-    public SphereCollisionComponent(float radius) {
-        super(new Transform(new ImmutableVector3(), new ImmutableVector3(), new ImmutableVector3(radius, radius, radius)));
+    public SphereCollisionComponent(String name) {
+        super(name);
     }
 
     @Override
-    public boolean isColliding(SphereCollisionComponent sphereCollisionComponent) {
-        ImmutableVector3 otherCenter = sphereCollisionComponent.getCollisionComponentCenter();
-        ImmutableVector3 thisCenter = this.getCollisionComponentCenter();
-        float minimalDistance = this.getRadius() + sphereCollisionComponent.getRadius();
-        return thisCenter.distanceTo(otherCenter) < minimalDistance;
+    public boolean isCollidingWith(BoxCollisionComponent bcc) {
+        System.out.println("Checked if this scc (" + super.getName() + ") was colliding with other bcc (" + bcc.getName() + ").");
+        return true;
+    }
+
+    @Override
+    public boolean isCollidingWith(SphereCollisionComponent scc) {
+        System.out.println("Checked if this scc (" + super.getName() + ") was colliding with other scc (" + scc.getName() + ").");
+        return true;
+    }
+
+    @Override
+    public boolean isCollidingWith(PlaneCollisionComponent pcc) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isCollidingWith(MeshCollisionComponent mcc) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override
-    public boolean isColliding(BoxCollisionComponent boxCollisionComponent){
-        return false;
+    public boolean dispatchCollisionCheck(CollisionChecker cm) {
+        return cm.isCollidingWith(this);
     }
-    
-    @Override
-    public boolean isColliding(PlaneCollisionComponent planeCollisionComponent){
-        return false;
-    }
-
-    @Override
-    public Class<? extends ComponentBase> getMapping() {
-        return CollisionComponent.class;
-    }
-
 }

@@ -13,9 +13,9 @@ import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent
  *
  * @author Blackened
  */
-public class PlaneCollisionComponent extends CollisionComponent{
+public class MeshCollisionComponent extends CollisionComponent{
 
-    public PlaneCollisionComponent(String name) {
+    public MeshCollisionComponent(String name) {
         super(name);
     }
 
@@ -30,6 +30,11 @@ public class PlaneCollisionComponent extends CollisionComponent{
     }
 
     @Override
+    public boolean dispatchCollisionCheck(CollisionChecker cm) {
+        return cm.isCollidingWith(this);
+    }
+
+    @Override
     public boolean isCollidingWith(PlaneCollisionComponent pcc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -39,8 +44,4 @@ public class PlaneCollisionComponent extends CollisionComponent{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
-    public boolean dispatchCollisionCheck(CollisionChecker cm) {
-        return cm.isCollidingWith(this);
-    }
 }

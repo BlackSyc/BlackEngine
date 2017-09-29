@@ -72,26 +72,6 @@ public class MatrixMath {
         Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
         return matrix;
     }
-
-    /**
-     * Creates a matrix that contains the translation, rotation and scale
-     * properties.
-     *
-     * @param translation The position.
-     * @param eulerRotation The Euler rotation in degrees.
-     * @param scale The scale.
-     * @return A new transformation matrix.
-     */
-    public static Matrix4f createTransformationMatrix(ImmutableVector3 translation, ImmutableVector3 eulerRotation, ImmutableVector3 scale) {
-        Matrix4f matrix = new Matrix4f();
-        matrix.setIdentity();
-        Matrix4f.translate(translation.mutable(), matrix, matrix);
-        Matrix4f.rotate((float) Math.toRadians(eulerRotation.getX()), new Vector3f(1, 0, 0), matrix, matrix);
-        Matrix4f.rotate((float) Math.toRadians(eulerRotation.getY()), new Vector3f(0, 1, 0), matrix, matrix);
-        Matrix4f.rotate((float) Math.toRadians(eulerRotation.getZ()), new Vector3f(0, 0, 1), matrix, matrix);
-        Matrix4f.scale(scale.mutable(), matrix, matrix);
-        return matrix;
-    }
     
     public static Matrix4f createRotationMatrix(ImmutableVector3 eulerRotation) {
         Matrix4f matrix = new Matrix4f();
