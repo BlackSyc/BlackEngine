@@ -31,7 +31,7 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Blackened
  */
-public class ImmutableVector3 {
+public final class ImmutableVector3 {
 
     private final float x;
 
@@ -90,6 +90,21 @@ public class ImmutableVector3 {
 
         return distance;
     }
+    
+    //<editor-fold defaultstate="collapsed" desc="Setting">
+    public ImmutableVector3 setX(float newX){
+        return new ImmutableVector3(newX, this.getX(), this.getZ());
+    }
+    
+    public ImmutableVector3 setY(float newY){
+        return new ImmutableVector3(this.getX(), newY, this.getZ());
+    }
+    
+    public ImmutableVector3 setZ(float newZ){
+        return new ImmutableVector3(this.getX(), this.getY(), newZ);
+    }
+    
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Addition">
     public ImmutableVector3 add(ImmutableVector3 addition) {
