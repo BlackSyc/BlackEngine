@@ -53,6 +53,7 @@ import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import static org.lwjgl.opengl.GL11.GL_LINE;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
@@ -63,11 +64,11 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
     private Set<DebugRenderComponent> renderTargets;
 
-    private Entity grid;
-
     private Vao unitSphere;
 
     private Vao unitCube;
+    
+    private int gridVao;
 
     private boolean gridEnabled = false;
 
@@ -75,10 +76,10 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
     private GameManager gameManager;
 
-    public void setGrid(Entity grid) {
-        this.grid = grid;
+    public void setGridVao(int gridVao) {
+        this.gridVao = gridVao;
     }
-
+    
     public void setUnitSphere(Vao unitSphere) {
         this.unitSphere = unitSphere;
     }
@@ -115,9 +116,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.initializeRendering(viewMatrix);
 
         if (this.gridEnabled) {
-            ImmutableVector2 horizontalCameraTranslation = new ImmutableVector2(camera.getPosition().getX(), camera.getPosition().getZ());
-            float cameraDistance = horizontalCameraTranslation.length();
-            this.renderGrid(cameraDistance);
+            this.renderGrid();
         }
 
         if (this.renderCollidersEnabled) {
@@ -153,32 +152,15 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.finalizeRendering();
     }
 
-    private void renderGrid(float cameraDistance) {
-        DebugRenderComponent meshComp = this.grid.getComponent(DebugRenderComponent.class);
-        this.grid.getTransform().setAbsoluteScale(new ImmutableVector3(cameraDistance, cameraDistance, cameraDistance));
-
-        meshComp.getVao().bind();
-
-        boolean unbindTexture = false;
-        if (!meshComp.isWireFrameEnabled()) {
-            GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            meshComp.getTexture().bindToUnit(GL13.GL_TEXTURE0);
-            this.loadUniformBool("textured", true);
-            unbindTexture = true;
-        } else {
-            GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            this.loadUniformBool("textured", false);
-            this.loadUniformVector3f("colour", new ImmutableVector3(1, 1, 1));
-        }
-
-        Matrix4f transformationMatrix = this.grid.getTransform().createTransformationMatrix();
-        this.loadUniformMatrix("transformationMatrix", transformationMatrix);
-
-        GL11.glDrawElements(GL11.GL_TRIANGLES, meshComp.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        if (unbindTexture) {
-            meshComp.getTexture().unbind();
-        }
-        meshComp.getVao().unbind();
+    private void renderGrid() {
+//        GL30.glBindVertexArray(this.gridVao);
+//        
+//        //RENDER SHIT
+//        
+//        
+//        
+//        GL30.glBindVertexArray(0);
+        
     }
 
     private void renderSphereColliders() {
@@ -291,8 +273,6 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
         tmr.load(vertexSource, fragmentSource);
 
-        Entity grid = new Entity("debug_grid");
-
         MeshDataObject md = MeshLoader.getInstance().loadResource("/blackengine/res/plane.obj");
         Vao vao = VaoLoader.loadVao(md);
 
@@ -304,18 +284,23 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
         MeshDataObject unitCubeMd = MeshLoader.getInstance().loadResource("/blackengine/res/unitCube.obj");
         Vao unitCube = VaoLoader.loadVao(unitCubeMd);
+        
+        
 
-        DebugRenderComponent tmc = new DebugRenderComponent(vao, tmr);
-        tmc.setTexture(texture);
-        tmc.setWireFrameEnabled(false);
-        grid.addComponent(tmc);
-
-        tmr.setGrid(grid);
         tmr.setUnitSphere(unitSphere);
         tmr.setUnitCube(unitCube);
 
         return tmr;
     }
+    
+//    private static int createGridVao(){
+//        final int vaoID = GL30.glGenVertexArrays();
+//        GL30.glBindVertexArray(vaoID);
+//        
+//        
+//        
+//        
+//    }
 
     public static DebugRenderer createEmpty(GameManager gameManager) {
         return new DebugRenderer(gameManager);

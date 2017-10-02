@@ -47,9 +47,9 @@ public class SphereCollisionComponent extends CollisionComponent {
         
         ImmutableVector3 immutableDirectionVector = rotatedDirectionVector.subtract(radiusSubtraction);
         
-        boolean xAxisOverlapping = immutableDirectionVector.getX() < bcc.getTransform().getAbsoluteScale().divideBy(2).getX();
-        boolean yAxisOverlapping = immutableDirectionVector.getY() < bcc.getTransform().getAbsoluteScale().divideBy(2).getY();
-        boolean zAxisOverlapping = immutableDirectionVector.getZ() < bcc.getTransform().getAbsoluteScale().divideBy(2).getZ();
+        boolean xAxisOverlapping = immutableDirectionVector.getX() < bcc.getRelativeCorner2().getX() && immutableDirectionVector.getX() > bcc.getRelativeCorner1().getX();
+        boolean yAxisOverlapping = immutableDirectionVector.getY() < bcc.getRelativeCorner2().getY() && immutableDirectionVector.getY() > bcc.getRelativeCorner1().getY();
+        boolean zAxisOverlapping = immutableDirectionVector.getZ() < bcc.getRelativeCorner2().getZ() && immutableDirectionVector.getZ() > bcc.getRelativeCorner1().getZ();
         
         return xAxisOverlapping && yAxisOverlapping && zAxisOverlapping;
     }

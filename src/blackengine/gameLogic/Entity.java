@@ -327,6 +327,7 @@ public class Entity {
         Entity child = this.children.get(name);
         this.removeChildReference(name);
         child.removeParentReference();
+        child.getTransform().stopListening();
         return child;
     }
 
@@ -339,6 +340,7 @@ public class Entity {
     public Entity detachChild(Entity child) {
         this.removeChildReference(child.getName());
         child.removeParentReference();
+        child.getTransform().stopListening();
         return child;
     }
 
@@ -352,6 +354,7 @@ public class Entity {
     public void destroyChild(String name) {
         Entity child = this.getChild(name);
         if (child != null) {
+            child.getTransform().stopListening();
             child.destroy();
             this.removeChildrenFlaggedForDestruction();
         }

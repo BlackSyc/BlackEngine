@@ -52,9 +52,9 @@ public class BoxCollisionComponent extends CollisionComponent {
         
         ImmutableVector3 immutableDirectionVector = rotatedDirectionVector.subtract(radiusSubtraction);
         
-        boolean xAxisOverlapping = immutableDirectionVector.getX() < this.getRelativeCorner2().getX();
-        boolean yAxisOverlapping = immutableDirectionVector.getY() < this.getRelativeCorner2().getY();
-        boolean zAxisOverlapping = immutableDirectionVector.getZ() < this.getRelativeCorner2().getZ();
+        boolean xAxisOverlapping = immutableDirectionVector.getX() < this.getRelativeCorner2().getX() && immutableDirectionVector.getX() > this.getRelativeCorner1().getX();
+        boolean yAxisOverlapping = immutableDirectionVector.getY() < this.getRelativeCorner2().getY() && immutableDirectionVector.getY() > this.getRelativeCorner1().getY();
+        boolean zAxisOverlapping = immutableDirectionVector.getZ() < this.getRelativeCorner2().getZ() && immutableDirectionVector.getZ() > this.getRelativeCorner1().getZ();
         
         return xAxisOverlapping && yAxisOverlapping && zAxisOverlapping;
     }
