@@ -8,12 +8,21 @@ package blackengine.gameLogic.components.prefab.collision;
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionChecker;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent;
+import blackengine.toolbox.math.ImmutableVector3;
 
 /**
  *
  * @author Blackened
  */
 public class BoxCollisionComponent extends CollisionComponent {
+    
+    public ImmutableVector3 getRelativeCorner1(){
+        return this.getTransform().getAbsoluteScale().divideBy(2).negate();
+    }
+    
+    public ImmutableVector3 getRelativeCorner2(){
+        return this.getTransform().getAbsoluteScale().divideBy(2);
+    }
 
     public BoxCollisionComponent() {
         super();
@@ -36,7 +45,18 @@ public class BoxCollisionComponent extends CollisionComponent {
 
     @Override
     public final boolean isCollidingWith(SphereCollisionComponent scc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ImmutableVector3 directionVector = scc.getTransform().getAbsolutePosition().subtract(this.getTransform().getAbsolutePosition());
+        ImmutableVector3 rotatedDirectionVector = directionVector.rotate(this.getTransform().getAbsoluteEulerRotation());
+        
+        ImmutableVector3 radiusSubtraction = scc.getTransform().getAbsoluteScale();
+        
+        ImmutableVector3 immutableDirectionVector = rotatedDirectionVector.subtract(radiusSubtraction);
+        
+        boolean xAxisOverlapping = immutableDirectionVector.getX() < this.getRelativeCorner2().getX();
+        boolean yAxisOverlapping = immutableDirectionVector.getY() < this.getRelativeCorner2().getY();
+        boolean zAxisOverlapping = immutableDirectionVector.getZ() < this.getRelativeCorner2().getZ();
+        
+        return xAxisOverlapping && yAxisOverlapping && zAxisOverlapping;
     }
 
     @Override
@@ -66,7 +86,7 @@ public class BoxCollisionComponent extends CollisionComponent {
 
     @Override
     public void handleCollisionWith(SphereCollisionComponent scc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.setColliding(true);
     }
 
     @Override

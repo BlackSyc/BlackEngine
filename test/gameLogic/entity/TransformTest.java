@@ -138,6 +138,21 @@ public class TransformTest {
         assertTrue(areEqual(new ImmutableVector3(1,0,0), child.getTransform().getAbsolutePosition()));
     }
     
+    @Test
+    public void testRicksDing(){
+        Entity parent = Entity.create("parent", new ImmutableVector3(1,1,1));
+        assertTrue(parent.getTransform().getAbsolutePosition().equals(new ImmutableVector3(1,1,1), 0.001f));
+        
+        Entity child = Entity.create("child", new ImmutableVector3(0,-5,0));
+        assertTrue(child.getTransform().getAbsolutePosition().equals(new ImmutableVector3(0,-5,0), 0.001f));
+        
+        parent.addChild(child);
+        assertTrue(parent.getTransform().getAbsolutePosition().equals(new ImmutableVector3(1,1,1), 0.001f));
+        assertTrue(child.getTransform().getAbsolutePosition().equals(new ImmutableVector3(1,-4,1), 0.001f));
+        
+        
+    }
+    
     private boolean areEqual(ImmutableVector3 left, ImmutableVector3 right){
         return Math.abs(left.getX() - right.getX()) < 0.001f &&
                 Math.abs(left.getX() - right.getX()) < 0.001f &&

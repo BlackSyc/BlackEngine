@@ -222,8 +222,8 @@ public class Transform {
         this.relativeEulerRotation = new ImmutableVector3();
         this.absoluteEulerRotation = new ImmutableVector3();
 
-        this.relativeScale = new ImmutableVector3();
-        this.absoluteScale = new ImmutableVector3();
+        this.relativeScale = new ImmutableVector3(1,1,1);
+        this.absoluteScale = new ImmutableVector3(1,1,1);
     }
 
     public void destroy() {

@@ -40,7 +40,18 @@ public class SphereCollisionComponent extends CollisionComponent {
 
     @Override
     public final boolean isCollidingWith(BoxCollisionComponent bcc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+                ImmutableVector3 directionVector = this.getTransform().getAbsolutePosition().subtract(bcc.getTransform().getAbsolutePosition());
+        ImmutableVector3 rotatedDirectionVector = directionVector.rotate(bcc.getTransform().getAbsoluteEulerRotation());
+        
+        ImmutableVector3 radiusSubtraction = this.getTransform().getAbsoluteScale();
+        
+        ImmutableVector3 immutableDirectionVector = rotatedDirectionVector.subtract(radiusSubtraction);
+        
+        boolean xAxisOverlapping = immutableDirectionVector.getX() < bcc.getTransform().getAbsoluteScale().divideBy(2).getX();
+        boolean yAxisOverlapping = immutableDirectionVector.getY() < bcc.getTransform().getAbsoluteScale().divideBy(2).getY();
+        boolean zAxisOverlapping = immutableDirectionVector.getZ() < bcc.getTransform().getAbsoluteScale().divideBy(2).getZ();
+        
+        return xAxisOverlapping && yAxisOverlapping && zAxisOverlapping;
     }
 
     @Override
@@ -62,7 +73,7 @@ public class SphereCollisionComponent extends CollisionComponent {
 
     @Override
     public void handleCollisionWith(BoxCollisionComponent bcc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.setColliding(true);
     }
 
     @Override
