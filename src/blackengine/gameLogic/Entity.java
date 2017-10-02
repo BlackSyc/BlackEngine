@@ -142,18 +142,21 @@ public class Entity {
     }
 
     /**
-     * Setter for the parent of this entity.
+     * Setter for the parent of this entity. If this entity already had a parent
+     * set, this entity will be detached from its original parent, and added as
+     * a child to the newly provided parent.
      *
-     * @param parent The parent of this entity.
+     * @param newParent The parent of this entity.
      */
-    public void setParent(Entity parent) {
-        if (parent == null) {
-            this.parent = null;
+    public void setParent(Entity newParent) {
+        if (this.parent != null) {
+            this.parent.children.remove(this.getName());
             this.transform.stopListening();
-            return;
         }
-        this.parent = parent;
-        this.transform.listenTo(parent.getTransform());
+        if (newParent != null) {
+            this.transform.listenTo(newParent.getTransform());
+        }
+        this.parent = newParent;
     }
 
     /**
@@ -289,7 +292,6 @@ public class Entity {
      */
     public Entity detachChild(String name) {
         Entity child = this.children.get(name);
-        this.children.remove(name);
         child.setParent(null);
         return child;
     }
