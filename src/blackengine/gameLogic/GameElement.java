@@ -25,8 +25,8 @@ package blackengine.gameLogic;
 
 import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -126,6 +126,32 @@ public abstract class GameElement {
         return this.getAllEntities().flatMap(x -> x.flattened());
     }
 
+    /**
+     * Retrieves an entity found at the provided path.
+     *
+     * @param path The path of the entity to find.
+     * @return
+     */
+    public Optional<Entity> getEntity(String path) {
+        if (!path.contains("/")) {
+            return Optional.of(this.entities.get(path));
+        }
+        String firstChild = path.substring(0, path.indexOf("/"));
+        Entity child = this.entities.get(firstChild);
+        return child.getEntity(path.substring(path.indexOf("/") + 1));
+    }
+
+    /**
+     * Finds all entities in the sub-hierarchy of this Entity with the provided
+     * name.
+     *
+     * @param name The name of the entities that will be returned if any.
+     * @return A stream of entities with the provided name.
+     */
+    public Stream<Entity> findAll(String name) {
+        return this.flattened().filter(x -> x.getName().equals(name));
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Default constructor for creating a new instance of scene.
@@ -149,17 +175,6 @@ public abstract class GameElement {
      */
     public boolean containsEntity(String name) {
         return this.entities.containsKey(name);
-    }
-
-    /**
-     * Retrieves a specific entity by its name from this scene.
-     *
-     * @param name The name of the entity to be retrieved.
-     * @return The entity with the specified name, or null if none was present
-     * in the scene.
-     */
-    public Entity getEntity(String name) {
-        return this.entities.get(name);
     }
 
     /**
@@ -189,7 +204,7 @@ public abstract class GameElement {
      * null otherwise.
      */
     public Entity detachEntity(String name) {
-        Entity entity = this.getEntity(name);
+        Entity entity = this.getEntity(name).get();
         this.entities.remove(name);
         entity.setGameElement(null);
         return entity;

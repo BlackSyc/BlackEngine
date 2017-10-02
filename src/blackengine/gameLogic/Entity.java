@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -148,15 +149,17 @@ public class Entity {
      *
      * @param newParent The parent of this entity.
      */
-    public void setParent(Entity newParent) {
+    private void setParent(Entity newParent) {
         if (this.parent != null) {
-            this.parent.children.remove(this.getName());
+            this.parent.removeChildReference(this.getName());
+            this.removeParentReference();
             this.transform.stopListening();
         }
+
         if (newParent != null) {
             this.transform.listenTo(newParent.getTransform());
+            this.parent = newParent;
         }
-        this.parent = newParent;
     }
 
     /**
@@ -247,6 +250,32 @@ public class Entity {
     }
 
     /**
+     * Retrieves an entity found at the provided path.
+     *
+     * @param path The path of the entity to find.
+     * @return
+     */
+    public Optional<Entity> getEntity(String path) {
+        if (!path.contains("/")) {
+            return Optional.of(this.children.get(path));
+        }
+        String firstChild = path.substring(0, path.indexOf("/"));
+        Entity child = this.children.get(firstChild);
+        return child.getEntity(path.substring(path.indexOf("/") + 1));
+    }
+
+    /**
+     * Finds all entities in the sub-hierarchy of this Entity with the provided
+     * name.
+     *
+     * @param name The name of the entities that will be returned if any.
+     * @return A stream of entities with the provided name.
+     */
+    public Stream<Entity> findAll(String name) {
+        return this.flattened().filter(x -> x.getName().equals(name));
+    }
+
+    /**
      * Creates a flat stream of all children and (recursively) their children.
      *
      * @return A stream containing all this entities children and their children
@@ -292,7 +321,20 @@ public class Entity {
      */
     public Entity detachChild(String name) {
         Entity child = this.children.get(name);
-        child.setParent(null);
+        this.removeChildReference(name);
+        child.removeParentReference();
+        return child;
+    }
+
+    /**
+     * Detaches a child from this entity and returns it.
+     *
+     * @param child The child that will be removed from this parent entity.
+     * @return The child that was removed from this entity.
+     */
+    public Entity detachChild(Entity child) {
+        this.removeChildReference(child.getName());
+        child.removeParentReference();
         return child;
     }
 
@@ -484,6 +526,14 @@ public class Entity {
      */
     private void removeChildrenFlaggedForDestruction() {
         this.children.entrySet().removeIf(x -> x.getValue().isDestroyed());
+    }
+
+    private void removeChildReference(String childName) {
+        this.children.remove(childName);
+    }
+
+    private void removeParentReference() {
+        this.parent = null;
     }
     //</editor-fold>
 
