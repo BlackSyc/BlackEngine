@@ -27,6 +27,7 @@ import static blackengine.gameLogic.DefaultTag.NONE;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.gameLogic.exceptions.DuplicateComponentTypeException;
 import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
+import blackengine.gameLogic.exceptions.RecursiveEntityRelationException;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -300,6 +301,9 @@ public class Entity {
      */
     public void addChild(Entity child) throws DuplicateEntityNameException {
         if (child != null) {
+            if(child == this){
+                throw new RecursiveEntityRelationException();
+            }
             if (this.containsChild(child.getName())) {
                 throw new DuplicateEntityNameException();
             } else {
