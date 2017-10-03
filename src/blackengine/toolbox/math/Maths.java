@@ -33,4 +33,8 @@ public class Maths {
         return value >= Math.min(bound1, bound2) && value <= Math.max(bound1, bound2);
     }
 
+    public static float clamp(float value, float min, float max) {
+        return value > min ? Math.min(value, max) : min;
+    }
+
 }

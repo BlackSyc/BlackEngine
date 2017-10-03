@@ -9,6 +9,7 @@ import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionChecker;
 import blackengine.gameLogic.components.prefab.collision.base.CollisionComponent;
 import blackengine.toolbox.math.ImmutableVector3;
+import blackengine.toolbox.math.Maths;
 
 /**
  *
@@ -40,18 +41,21 @@ public class SphereCollisionComponent extends CollisionComponent {
 
     @Override
     public final boolean isCollidingWith(BoxCollisionComponent bcc) {
-                ImmutableVector3 directionVector = this.getTransform().getAbsolutePosition().subtract(bcc.getTransform().getAbsolutePosition());
-        ImmutableVector3 rotatedDirectionVector = directionVector.rotate(bcc.getTransform().getAbsoluteEulerRotation());
+        // Firstly, transform the sphere's position to the relative space of this box.
+        ImmutableVector3 absoluteSpherePosition = this.getTransform().getAbsolutePosition();
+        ImmutableVector3 relativeSpherePosition = absoluteSpherePosition
+                .subtract(bcc.getTransform().getAbsolutePosition())
+                .rotate(bcc.getTransform().getAbsoluteEulerRotation());
         
-        ImmutableVector3 radiusSubtraction = this.getTransform().getAbsoluteScale();
+        // Then, get closest point on edge of box to sphere.
+        float x = Maths.clamp(relativeSpherePosition.getX(), bcc.getRelativeCorner1().getX(), bcc.getRelativeCorner2().getX());
+        float y = Maths.clamp(relativeSpherePosition.getY(), bcc.getRelativeCorner1().getY(), bcc.getRelativeCorner2().getY());
+        float z = Maths.clamp(relativeSpherePosition.getZ(), bcc.getRelativeCorner1().getZ(), bcc.getRelativeCorner2().getZ());
+        ImmutableVector3 boxEdgePoint = new ImmutableVector3(x, y, z);
         
-        ImmutableVector3 immutableDirectionVector = rotatedDirectionVector.subtract(radiusSubtraction);
-        
-        boolean xAxisOverlapping = immutableDirectionVector.getX() < bcc.getRelativeCorner2().getX() && immutableDirectionVector.getX() > bcc.getRelativeCorner1().getX();
-        boolean yAxisOverlapping = immutableDirectionVector.getY() < bcc.getRelativeCorner2().getY() && immutableDirectionVector.getY() > bcc.getRelativeCorner1().getY();
-        boolean zAxisOverlapping = immutableDirectionVector.getZ() < bcc.getRelativeCorner2().getZ() && immutableDirectionVector.getZ() > bcc.getRelativeCorner1().getZ();
-        
-        return xAxisOverlapping && yAxisOverlapping && zAxisOverlapping;
+        // Lastly, check if that point is within the radius of the sphere.
+        float edgePointToSphereCenter = boxEdgePoint.distanceTo(relativeSpherePosition);
+        return edgePointToSphereCenter < this.getRadius();
     }
 
     @Override
