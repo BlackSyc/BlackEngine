@@ -50,7 +50,7 @@ public class BoxCollisionComponent extends CollisionComponent {
         ImmutableVector3 absoluteSpherePosition = scc.getTransform().getAbsolutePosition();
         ImmutableVector3 relativeSpherePosition = absoluteSpherePosition
                 .subtract(this.getTransform().getAbsolutePosition())
-                .rotate(this.getTransform().getAbsoluteEulerRotation());
+                .rotateInverse(this.getTransform().getAbsoluteEulerRotation().negate());
         
         // Then, get closest point on edge of box to sphere.
         float x = Maths.clamp(relativeSpherePosition.getX(), this.getRelativeCorner1().getX(), this.getRelativeCorner2().getX());

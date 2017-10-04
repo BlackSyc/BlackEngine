@@ -72,13 +72,34 @@ public class MatrixMath {
         Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
         return matrix;
     }
-    
+
+    /**
+     * Creates a rotation matrix using the euler angles in the order of X, Y, Z.
+     *
+     * @param eulerRotation
+     * @return
+     */
     public static Matrix4f createRotationMatrix(ImmutableVector3 eulerRotation) {
         Matrix4f matrix = new Matrix4f();
         matrix.setIdentity();
         Matrix4f.rotate((float) Math.toRadians(eulerRotation.getX()), new Vector3f(1, 0, 0), matrix, matrix);
         Matrix4f.rotate((float) Math.toRadians(eulerRotation.getY()), new Vector3f(0, 1, 0), matrix, matrix);
         Matrix4f.rotate((float) Math.toRadians(eulerRotation.getZ()), new Vector3f(0, 0, 1), matrix, matrix);
+        return matrix;
+    }
+
+    /**
+     * Creates a rotation matrix using the euler angles in the order of Z, Y, X.
+     *
+     * @param eulerRotation
+     * @return
+     */
+    public static Matrix4f createInverseRotationMatrix(ImmutableVector3 eulerRotation) {
+        Matrix4f matrix = new Matrix4f();
+        matrix.setIdentity();
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.getZ()), new Vector3f(0, 0, 1), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.getY()), new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(eulerRotation.getX()), new Vector3f(1, 0, 0), matrix, matrix);
         return matrix;
     }
 }

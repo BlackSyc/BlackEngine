@@ -262,8 +262,28 @@ public final class ImmutableVector3 {
     }
     //</editor-fold>
 
+    /**
+     * Rotates the vector given the euler angles in the order of X, Y, Z.
+     *
+     * @param eulerRotation
+     * @return
+     */
     public ImmutableVector3 rotate(ImmutableVector3 eulerRotation) {
         Matrix4f rotationMatrix = MatrixMath.createRotationMatrix(eulerRotation);
+        Vector4f extendedVector = new Vector4f(this.getX(), this.getY(), this.getZ(), 1.0f);
+        Matrix4f.transform(rotationMatrix, extendedVector, extendedVector);
+        ImmutableVector3 result = new ImmutableVector3(extendedVector.getX(), extendedVector.getY(), extendedVector.getZ());
+        return result;
+    }
+    
+    /**
+     * Rotates the vector given the euler angles in the order of Z, Y, X.
+     *
+     * @param eulerRotation
+     * @return
+     */
+    public ImmutableVector3 rotateInverse(ImmutableVector3 eulerRotation) {
+        Matrix4f rotationMatrix = MatrixMath.createInverseRotationMatrix(eulerRotation);
         Vector4f extendedVector = new Vector4f(this.getX(), this.getY(), this.getZ(), 1.0f);
         Matrix4f.transform(rotationMatrix, extendedVector, extendedVector);
         ImmutableVector3 result = new ImmutableVector3(extendedVector.getX(), extendedVector.getY(), extendedVector.getZ());
