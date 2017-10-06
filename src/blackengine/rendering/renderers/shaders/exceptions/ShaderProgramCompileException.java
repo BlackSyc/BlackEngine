@@ -21,31 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders;
+package blackengine.rendering.renderers.shaders.exceptions;
 
-import blackengine.rendering.renderers.shaders.exceptions.ShaderCompileException;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
+import blackengine.rendering.renderers.ShaderProgram;
 
 /**
  *
  * @author Blackened
  */
-public final class FragmentShader extends Shader{
+public class ShaderProgramCompileException extends RuntimeException{
 
-    public FragmentShader(String name, String shaderSource) {
-        super(name, shaderSource);
+    public ShaderProgramCompileException(Class<? extends ShaderProgram> clazz) {
+        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
     }
-
-    @Override
-    protected int create(String shaderSource) {
-        int shaderId = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
-        GL20.glShaderSource(shaderId, shaderSource);
-        GL20.glCompileShader(shaderId);
-        if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-            throw new ShaderCompileException("Fragment shader " + this.getName() + " did not compile. OpenGL compile status: " + GL20.GL_COMPILE_STATUS);
-        }
-        return shaderId;
-    }
+    
+    
     
 }

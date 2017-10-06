@@ -21,23 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders;
-
-import java.util.HashMap;
+package blackengine.rendering.renderers.shaders.exceptions;
 
 /**
  *
  * @author Blackened
  */
-public class ShaderProgram {
-    
-    private int programId;
-    
-    private HashMap<String, Integer> uniformLocations;
-    
-    private VertexShader vertexShader;
-    
-    private FragmentShader fragmentShader;
+public class NoSuchAttributeException extends RuntimeException{
+
+    public NoSuchAttributeException(String attributeName) {
+        super("Attribute with name " + attributeName + " was not found.");
+    }
+
     
     
     

@@ -23,19 +23,29 @@
  */
 package blackengine.rendering.renderers.shaders;
 
+import blackengine.rendering.renderers.shaders.exceptions.ShaderCompileException;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+
 /**
  *
  * @author Blackened
  */
-public class VertexShader extends Shader{
+public final class VertexShader extends Shader {
 
-    public VertexShader(String shaderSource) {
-        super(shaderSource);
+    public VertexShader(String name, String shaderSource) {
+        super(name, shaderSource);
     }
 
     @Override
-    protected void create(String shaderSource) {
-        
+    protected int create(String shaderSource) {
+        int shaderId = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
+        GL20.glShaderSource(shaderId, shaderSource);
+        GL20.glCompileShader(shaderId);
+        if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            throw new ShaderCompileException("Vertex shader " + this.getName() + " did not compile. OpenGL compile status: " + GL20.GL_COMPILE_STATUS);
+        }
+        return shaderId;
     }
-    
+
 }
