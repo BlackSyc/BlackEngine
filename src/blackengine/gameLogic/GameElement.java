@@ -187,7 +187,7 @@ public abstract class GameElement {
     public void addEntity(Entity entity) throws DuplicateEntityNameException {
         if (entity != null) {
             if (this.containsEntity(entity.getName())) {
-                throw new DuplicateEntityNameException();
+                throw new DuplicateEntityNameException(entity.getName());
             } else {
                 this.entities.put(entity.getName(), entity);
                 entity.setGameElement(this);

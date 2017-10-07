@@ -27,10 +27,10 @@ package blackengine.gameLogic.exceptions;
  *
  * @author Blackened
  */
-public class DuplicateEntityNameException extends RuntimeException{
-    
-    public DuplicateEntityNameException(){
-        super("Entity with this name is already present in this parent.");
+public class DuplicateEntityNameException extends RuntimeException {
+
+    public DuplicateEntityNameException(String name) {
+        super("Entity with name '" + name + "' is already present in this parent.");
     }
-    
+
 }

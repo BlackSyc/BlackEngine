@@ -305,7 +305,7 @@ public class Entity {
                 throw new RecursiveEntityRelationException();
             }
             if (this.containsChild(child.getName())) {
-                throw new DuplicateEntityNameException();
+                throw new DuplicateEntityNameException(child.getName());
             } else {
                 this.children.put(child.getName(), child);
                 child.setParent(this);
