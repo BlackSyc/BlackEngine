@@ -76,10 +76,7 @@ public class TexturedMeshRenderer extends RendererBase<TexturedMeshComponent> {
 
     @Override
     public void initialize() {
-        this.shaderProgram.start();
-        this.shaderProgram.loadUniformMatrix("projectionMatrix", RenderEngine.getInstance().getProjectionMatrix());
-        this.shaderProgram.stop();
-
+        this.shaderProgram.initialize();
     }
 
     protected List<Light> getLights(ImmutableVector3 position) {
@@ -138,6 +135,16 @@ public class TexturedMeshRenderer extends RendererBase<TexturedMeshComponent> {
                 super.bindAttribute("position", VERTEX_POSITIONS.getValue());
                 super.bindAttribute("textureCoords", TEXTURE_COORDS.getValue());
                 super.bindAttribute("normal", NORMAL_VECTORS.getValue());
+            }
+
+            @Override
+            public void onInitialize() {
+                this.loadUniformMatrix("projectionMatrix", RenderEngine.getInstance().getProjectionMatrix());
+            }
+
+            @Override
+            public void onDestroy() {
+                
             }
         });
     }

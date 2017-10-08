@@ -24,20 +24,6 @@
 package blackengine.rendering.renderers;
 
 import blackengine.gameLogic.components.base.RenderedComponent;
-import blackengine.toolbox.math.ImmutableVector2;
-import blackengine.toolbox.math.ImmutableVector3;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.util.vector.Matrix4f;
 
 /**
  *

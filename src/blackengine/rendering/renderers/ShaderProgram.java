@@ -26,17 +26,16 @@ package blackengine.rendering.renderers;
 import blackengine.rendering.renderers.shaders.FragmentShader;
 import blackengine.rendering.renderers.shaders.VertexShader;
 import blackengine.rendering.renderers.shaders.exceptions.NoSuchAttributeException;
-import blackengine.rendering.renderers.shaders.exceptions.ShaderProgramCompileException;
+import blackengine.rendering.renderers.shaders.exceptions.ShaderProgramAlreadyInitializedException;
 import blackengine.rendering.renderers.shaders.exceptions.UniformVariableNameNotFound;
 import blackengine.toolbox.math.ImmutableVector2;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -50,7 +49,7 @@ public abstract class ShaderProgram {
     /**
      * The ID of this shader program used for reference with the graphics card.
      */
-    private final int programId;
+    private int programId = -1;
 
     /**
      * A HashMap that contains all uniform variable names (and uniform array
@@ -73,7 +72,7 @@ public abstract class ShaderProgram {
      */
     private final FragmentShader fragmentShader;
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Default constructor for creating a new instance of ShaderProgram.
@@ -82,24 +81,13 @@ public abstract class ShaderProgram {
      * @param fragmentShader The fragment shader that will be used.
      */
     public ShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
-        this.programId = GL20.glCreateProgram();
 
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
 
-        this.vertexShader.attachTo(this.programId);
-        this.fragmentShader.attachTo(this.programId);
+        this.knownAttributeNames = new ArrayList<>();
+        this.uniformLocations = new HashMap<>();
 
-        this.knownAttributeNames = Stream
-                .concat(this.vertexShader.getAttributeNames(),
-                        this.fragmentShader.getAttributeNames())
-                .collect(Collectors.toList());
-
-        this.validate();
-
-        this.uniformLocations = this.loadUniformLocation(Stream
-                .concat(this.vertexShader.getUniformNames(),
-                        this.fragmentShader.getUniformNames()));
     }
     //</editor-fold>
 
@@ -117,8 +105,45 @@ public abstract class ShaderProgram {
     public void stop() {
         GL20.glUseProgram(0);
     }
-    
-    public void destroy(){
+
+    /**
+     * Gets called after the initialization has taken place, while the shader
+     * program is still running.
+     */
+    public abstract void onInitialize();
+
+    /**
+     * Gets called just before the destroy method is called, while the shader
+     * program is still running.
+     */
+    public abstract void onDestroy();
+
+    public final void initialize() {
+        if (this.programId != -1) {
+            throw new ShaderProgramAlreadyInitializedException(this);
+        }
+        this.programId = GL20.glCreateProgram();
+
+        this.vertexShader.attachTo(this.programId);
+        this.fragmentShader.attachTo(this.programId);
+
+        Stream.concat(this.vertexShader.getAttributeNames(),
+                this.fragmentShader.getAttributeNames())
+                .forEach(x -> this.knownAttributeNames.add(x));
+
+        this.validate();
+
+        this.start();
+        this.uniformLocations.putAll(this.loadUniformLocation(Stream
+                .concat(this.vertexShader.getUniformNames(),
+                        this.fragmentShader.getUniformNames())));
+
+        this.onInitialize();
+        this.stop();
+    }
+
+    public void destroy() {
+        this.onDestroy();
         this.vertexShader.destroy();
         this.fragmentShader.destroy();
         GL20.glDeleteProgram(this.programId);
@@ -233,12 +258,10 @@ public abstract class ShaderProgram {
      * location.
      */
     private HashMap<String, Integer> loadUniformLocation(Stream<String> uniformNames) {
-        this.start();
         HashMap<String, Integer> map = new HashMap<>();
         uniformNames.forEach(x -> {
             map.put(x, this.loadUniformLocation(x));
         });
-        this.stop();
         return map;
     }
 

@@ -39,7 +39,6 @@ import blackengine.openGL.texture.TextureLoader;
 import blackengine.openGL.vao.Vao;
 import blackengine.openGL.vao.VaoLoader;
 import static blackengine.openGL.vao.vbo.AttributeType.*;
-import blackengine.rendering.Camera;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.renderers.RendererBase;
 import blackengine.rendering.renderers.ShaderProgram;
@@ -216,9 +215,7 @@ public class DebugRenderer extends RendererBase<DebugRenderComponent> {
      */
     @Override
     public void initialize() {
-        this.shaderProgram.start();
-        super.shaderProgram.loadUniformMatrix("projectionMatrix", RenderEngine.getInstance().getProjectionMatrix());
-        this.shaderProgram.stop();
+        this.shaderProgram.initialize();
     }
 
     @Override
@@ -257,6 +254,16 @@ public class DebugRenderer extends RendererBase<DebugRenderComponent> {
             @Override
             public void bindAttributes() {
                 super.bindAttribute("position", VERTEX_POSITIONS.getValue());
+            }
+
+            @Override
+            public void onInitialize() {
+                this.loadUniformMatrix("projectionMatrix", RenderEngine.getInstance().getProjectionMatrix());
+            }
+
+            @Override
+            public void onDestroy() {
+                
             }
         });
         

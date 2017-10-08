@@ -21,15 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering;
+package blackengine.rendering.renderers.shaders.exceptions;
+
+import blackengine.rendering.renderers.ShaderProgram;
 
 /**
  *
  * @author Blackened
  */
-public enum ShaderType {
-    
-    VERTEX_SHADER,
-    FRAGMENT_SHADER
+public class ShaderProgramAlreadyInitializedException extends RuntimeException{
+
+    public ShaderProgramAlreadyInitializedException(ShaderProgram shaderProgram) {
+        super("Shader program '" + shaderProgram.toString() + "' has already been initialized.");
+    }
     
 }

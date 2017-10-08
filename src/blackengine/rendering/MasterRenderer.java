@@ -44,11 +44,6 @@ public class MasterRenderer {
     private Map<Class<? extends RendererBase>, RendererBase> renderers;
 
     /**
-     * The projection matrix used in this MasterRenderer.
-     */
-    private Matrix4f projectionMatrix;
-
-    /**
      * Retrieves a POV renderer of the specified class if it is present in this
      * master renderer.
      *
@@ -77,6 +72,7 @@ public class MasterRenderer {
             this.getRenderer(renderer.getClass()).destroy();
         }
         this.renderers.put(renderer.getClass(), renderer);
+        renderer.initialize();
     }
 
     /**

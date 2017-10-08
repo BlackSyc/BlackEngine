@@ -82,9 +82,6 @@ public class RenderEngine {
     public Matrix4f getProjectionMatrix() {
         return projectionMatrix;
     }
-    
-    
-
     public Camera getMainCamera() {
         return mainCamera;
     }

@@ -239,6 +239,13 @@ public abstract class Shader {
     private static List<String> extractUniformNames(String shaderSource) {
         return Stream.of(shaderSource.split(System.lineSeparator()))
                 .filter(x -> x.startsWith("uniform"))
+                .map(x -> {
+                    String[] stringArray = x.split(" ");
+                    String uniformNameWithSemiColon = stringArray[stringArray.length - 1];
+                    String uniformName = uniformNameWithSemiColon.substring(0, uniformNameWithSemiColon.length() - 1);
+                    
+                    return uniformName;
+                })
                 .flatMap(x -> {
                     if (x.contains("[")) {
                         return extractUniformArrayNames(x);
