@@ -23,13 +23,14 @@
  */
 package blackengine.toolbox.math;
 
+import java.io.Serializable;
 import org.lwjgl.util.vector.Vector2f;
 
 /**
  *
  * @author Blackened
  */
-public class ImmutableVector2 {
+public class ImmutableVector2 implements Serializable{
 
     private float x;
 

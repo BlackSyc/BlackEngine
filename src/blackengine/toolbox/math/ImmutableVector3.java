@@ -23,6 +23,7 @@
  */
 package blackengine.toolbox.math;
 
+import java.io.Serializable;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -31,7 +32,7 @@ import org.lwjgl.util.vector.Vector4f;
  *
  * @author Blackened
  */
-public final class ImmutableVector3 {
+public final class ImmutableVector3 implements Serializable{
 
     private final float x;
 
