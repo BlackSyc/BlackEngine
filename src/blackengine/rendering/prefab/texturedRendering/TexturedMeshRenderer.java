@@ -28,12 +28,13 @@ import blackengine.gameLogic.components.prefab.rendering.TexturedMeshComponent;
 import static blackengine.openGL.vao.vbo.AttributeType.NORMAL_VECTORS;
 import static blackengine.openGL.vao.vbo.AttributeType.TEXTURE_COORDS;
 import static blackengine.openGL.vao.vbo.AttributeType.VERTEX_POSITIONS;
-import blackengine.rendering.Camera;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.lighting.Light;
-import blackengine.rendering.renderers.TargetPOVRenderer;
+import blackengine.rendering.renderers.RendererBase;
+import blackengine.rendering.renderers.ShaderProgram;
+import blackengine.rendering.renderers.shaders.FragmentShader;
+import blackengine.rendering.renderers.shaders.VertexShader;
 import blackengine.toolbox.math.ImmutableVector3;
-import blackengine.toolbox.math.MatrixMath;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -47,13 +48,14 @@ import org.lwjgl.util.vector.Matrix4f;
  *
  * @author Blackened
  */
-public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponent> {
+public class TexturedMeshRenderer extends RendererBase<TexturedMeshComponent> {
 
     protected Set<TexturedMeshComponent> targets;
 
     protected int maxLights = 6;
 
-    protected TexturedMeshRenderer() {
+    protected TexturedMeshRenderer(ShaderProgram shaderProgram) {
+        super(shaderProgram);
         this.targets = new HashSet<>();
     }
 
@@ -73,60 +75,37 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
     }
 
     @Override
-    public void render(Camera camera) {
-        Matrix4f viewMatrix = camera.getViewMatrix();
-        this.initializeRendering(viewMatrix);
-        this.targets.forEach(x -> {
-            x.getVao().bind();
-            x.getTexture().bindToUnit(GL13.GL_TEXTURE0);
-            Matrix4f transformationMatrix = x.getParent().getTransform().createTransformationMatrix();
-            this.loadUniformMatrix("transformationMatrix", transformationMatrix);
-            this.loadUniformLights(this.getLights(camera.getPosition()));
-            GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-            x.getVao().unbind();
-        });
-        this.finalizeRendering();
-    }
-
-    @Override
-    public void bindAttributes() {
-        super.bindAttribute(VERTEX_POSITIONS.getValue(), "position");
-        super.bindAttribute(TEXTURE_COORDS.getValue(), "texCoords");
-        super.bindAttribute(NORMAL_VECTORS.getValue(), "normal");
-    }
-
-    @Override
     public void initialize() {
-        this.start();
-        super.loadUniformMatrix("projectionMatrix", super.getProjectionMatrix());
-        this.stop();
+        this.shaderProgram.start();
+        this.shaderProgram.loadUniformMatrix("projectionMatrix", RenderEngine.getInstance().getProjectionMatrix());
+        this.shaderProgram.stop();
 
     }
-    
-    protected List<Light> getLights(ImmutableVector3 position){
+
+    protected List<Light> getLights(ImmutableVector3 position) {
         return RenderEngine.getInstance()
-                    .getLightStream()
-                    .sorted((x,y) -> {
-                        float distanceX = x.getPosition().distanceTo(position);
-                        float distanceY = y.getPosition().distanceTo(position);
-                        return Float.compare(distanceX, distanceY);
-                    })
-                    .limit(this.maxLights)
-                    .collect(Collectors.toList());
+                .getLightStream()
+                .sorted((x, y) -> {
+                    float distanceX = x.getPosition().distanceTo(position);
+                    float distanceY = y.getPosition().distanceTo(position);
+                    return Float.compare(distanceX, distanceY);
+                })
+                .limit(this.maxLights)
+                .collect(Collectors.toList());
     }
 
     protected void loadUniformLights(List<Light> lights) {
         int lightCount = 0;
         for (int i = 0; i < lights.size(); i++) {
-            this.loadUniformVector3f("lightColour[" + i + "]", lights.get(i).getColour());
-            this.loadUniformVector3f("lightPosition[" + i + "]", lights.get(i).getPosition());
-            this.loadUniformVector3f("lightAttenuation[" + i + "]", lights.get(i).getAttenuation());
+            this.shaderProgram.loadUniformVector3f("lightColour[" + i + "]", lights.get(i).getColour());
+            this.shaderProgram.loadUniformVector3f("lightPosition[" + i + "]", lights.get(i).getPosition());
+            this.shaderProgram.loadUniformVector3f("lightAttenuation[" + i + "]", lights.get(i).getAttenuation());
             lightCount++;
         }
         for (int i = lightCount; i < this.maxLights; i++) {
-            this.loadUniformVector3f("lightColour[" + i + "]", new ImmutableVector3(0, 0, 0));
-            this.loadUniformVector3f("lightPosition[" + i + "]", new ImmutableVector3(1000, 10000, 10000));
-            this.loadUniformVector3f("lightAttenuation[" + i + "]", new ImmutableVector3(1, 1, 1));
+            this.shaderProgram.loadUniformVector3f("lightColour[" + i + "]", new ImmutableVector3(0, 0, 0));
+            this.shaderProgram.loadUniformVector3f("lightPosition[" + i + "]", new ImmutableVector3(1000, 10000, 10000));
+            this.shaderProgram.loadUniformVector3f("lightAttenuation[" + i + "]", new ImmutableVector3(1, 1, 1));
         }
 
     }
@@ -135,29 +114,55 @@ public class TexturedMeshRenderer extends TargetPOVRenderer<TexturedMeshComponen
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        this.start();
-        this.loadUniformMatrix("viewMatrix", viewMatrix);
+        this.shaderProgram.start();
+        this.shaderProgram.loadUniformMatrix("viewMatrix", viewMatrix);
     }
 
     protected void finalizeRendering() {
-        this.stop();
+        this.shaderProgram.stop();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_BLEND);
     }
 
     public static TexturedMeshRenderer createDefault() throws IOException {
-        TexturedMeshRenderer tmr = new TexturedMeshRenderer();
 
         String vertexSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/texturedRendering/vertexShader.glsl");
+        VertexShader vertexShader = new VertexShader("texturedMeshVertex", vertexSource);
+
         String fragmentSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/texturedRendering/fragmentShader.glsl");
+        FragmentShader fragmentShader = new FragmentShader("texturedMeshFragment", fragmentSource);
 
-        tmr.load(vertexSource, fragmentSource);
-
-        return tmr;
+        return new TexturedMeshRenderer(new ShaderProgram(vertexShader, fragmentShader) {
+            @Override
+            protected void bindAttributes() {
+                super.bindAttribute("position", VERTEX_POSITIONS.getValue());
+                super.bindAttribute("textureCoords", TEXTURE_COORDS.getValue());
+                super.bindAttribute("normal", NORMAL_VECTORS.getValue());
+            }
+        });
     }
 
-    public static TexturedMeshRenderer createEmpty() {
-        return new TexturedMeshRenderer();
+    @Override
+    public void render() {
+        Matrix4f viewMatrix = RenderEngine.getInstance().getMainCamera().getViewMatrix();
+        this.initializeRendering(viewMatrix);
+        this.targets.forEach(x -> {
+            x.getVao().bind();
+            x.getTexture().bindToUnit(GL13.GL_TEXTURE0);
+            Matrix4f transformationMatrix = x.getParent().getTransform().createTransformationMatrix();
+            this.shaderProgram.loadUniformMatrix("transformationMatrix", transformationMatrix);
+            this.loadUniformLights(this.getLights(RenderEngine.getInstance().getMainCamera().getPosition()));
+            GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+            x.getVao().unbind();
+        });
+        this.finalizeRendering();
+    }
+
+    @Override
+    public void destroy() {
+        this.targets.forEach(x -> x.destroy());
+        this.targets.clear();
+        this.shaderProgram.destroy();
     }
 
 }

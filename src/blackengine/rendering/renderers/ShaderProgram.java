@@ -117,6 +117,12 @@ public abstract class ShaderProgram {
     public void stop() {
         GL20.glUseProgram(0);
     }
+    
+    public void destroy(){
+        this.vertexShader.destroy();
+        this.fragmentShader.destroy();
+        GL20.glDeleteProgram(this.programId);
+    }
 
     /**
      * Loads a matrix to the uniform variable in the specified location by
@@ -212,9 +218,9 @@ public abstract class ShaderProgram {
 
         GL20.glLinkProgram(this.programId);
         GL20.glValidateProgram(this.programId);
-        if (GL20.glGetProgrami(this.programId, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) {
-            throw new ShaderProgramCompileException(this.getClass());
-        }
+//        if (GL20.glGetProgrami(this.programId, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) {
+//            throw new ShaderProgramCompileException(this.getClass());
+//        }
     }
 
     /**

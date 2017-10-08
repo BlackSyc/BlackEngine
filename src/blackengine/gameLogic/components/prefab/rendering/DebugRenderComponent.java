@@ -23,7 +23,7 @@
  */
 package blackengine.gameLogic.components.prefab.rendering;
 
-import blackengine.gameLogic.components.base.POVRendereredComponentBase;
+import blackengine.gameLogic.components.base.RenderedComponent;
 import blackengine.openGL.texture.Texture;
 import blackengine.openGL.vao.Vao;
 import blackengine.rendering.prefab.testing.DebugRenderer;
@@ -32,7 +32,7 @@ import blackengine.rendering.prefab.testing.DebugRenderer;
  *
  * @author Blackened
  */
-public class DebugRenderComponent extends POVRendereredComponentBase<DebugRenderer>{
+public class DebugRenderComponent extends RenderedComponent<DebugRenderer>{
     
     private Vao vao;
     

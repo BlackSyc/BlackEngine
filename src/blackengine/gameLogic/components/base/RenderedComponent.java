@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.gameLogic.components.base;
 
+import blackengine.rendering.renderers.RendererBase;
 
 
 /**
@@ -30,32 +31,21 @@ package blackengine.rendering.renderers;
  * @author Blackened
  * @param <T>
  */
-public abstract class TargetPOVRenderer<T> extends POVRendererBase {
-    
-    /**
-     * 
-     */
-    public TargetPOVRenderer() {
+public abstract class RenderedComponent<T extends RendererBase<? extends RenderedComponent>> extends ComponentBase {
+
+    private T renderer;
+
+    public T getRenderer() {
+        return renderer;
     }
     
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void addRenderTarget(T renderTarget);
+    public void setRenderer(T renderer){
+        this.renderer = renderer;
+    }
+
+    public RenderedComponent(T renderer) {
+        this.renderer = renderer;
+    }
     
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void removeRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     * @return 
-     */
-    public abstract boolean containsRenderTarget(T renderTarget);
-    
-    
+    public abstract boolean isRendered();
 }

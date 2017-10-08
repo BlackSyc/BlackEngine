@@ -23,10 +23,9 @@
  */
 package blackengine.rendering;
 
-import blackengine.rendering.renderers.POVRendererBase;
-import blackengine.rendering.renderers.FlatRendererBase;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
+import blackengine.rendering.renderers.RendererBase;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,6 +33,7 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Stream;
+import org.lwjgl.util.vector.Matrix4f;
 
 /**
  * Engine singleton for rendering management.
@@ -74,6 +74,24 @@ public class RenderEngine {
         return this.masterRenderer;
     }
     //</editor-fold>
+    
+    private Camera mainCamera;
+    
+    private Matrix4f projectionMatrix = new Matrix4f();
+
+    public Matrix4f getProjectionMatrix() {
+        return projectionMatrix;
+    }
+    
+    
+
+    public Camera getMainCamera() {
+        return mainCamera;
+    }
+
+    public void setMainCamera(Camera mainCamera) {
+        this.mainCamera = mainCamera;
+    }
 
     //<editor-fold  defaultstate="collapsed" desc="Settings">
     private boolean anisotropicFilteringEnabled = true;
@@ -84,64 +102,59 @@ public class RenderEngine {
     //</editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Renderer registration">
-    private HashMap<Class<? extends POVRendererBase>, Float> povPriorityMap = new HashMap<>();
+    private HashMap<Class<? extends RendererBase>, Float> rendererOrder = new HashMap<>();
 
-    private final SortedSet<Class<? extends POVRendererBase>> POV_RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends POVRendererBase>>() {
+    private final SortedSet<Class<? extends RendererBase>> RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends RendererBase>>() {
 
         @Override
-        public int compare(Class<? extends POVRendererBase> o1, Class<? extends POVRendererBase> o2) {
-            return povPriorityMap.get(o1)
-                    .compareTo(povPriorityMap.get(o2));
+        public int compare(Class<? extends RendererBase> o1, Class<? extends RendererBase> o2) {
+            return rendererOrder.get(o1)
+                    .compareTo(rendererOrder.get(o2));
         }
     });
 
-    private HashMap<Class<? extends FlatRendererBase>, Float> flatPriorityMap = new HashMap<>();
 
-    private final SortedSet<Class<? extends FlatRendererBase>> FLAT_RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends FlatRendererBase>>() {
-
-        @Override
-        public int compare(Class<? extends FlatRendererBase> o1, Class<? extends FlatRendererBase> o2) {
-            return flatPriorityMap.get(o1)
-                    .compareTo(flatPriorityMap.get(o2));
-        }
-    });
-
-    public HashMap<Class<? extends POVRendererBase>, Float> getPOVPriorityMap() {
-        return this.povPriorityMap;
+    public HashMap<Class<? extends RendererBase>, Float> getPOVPriorityMap() {
+        return this.rendererOrder;
     }
 
-    public HashMap<Class<? extends FlatRendererBase>, Float> getFlatPriorityMap() {
-        return this.flatPriorityMap;
+    public void registerRenderer(Class<? extends RendererBase> clazz, Float priority) {
+        this.rendererOrder.put(clazz, priority);
+        this.RENDERER_ORDER.add(clazz);
     }
 
-    public void registerPOVRenderer(Class<? extends POVRendererBase> clazz, Float priority) {
-        this.povPriorityMap.put(clazz, priority);
-        this.POV_RENDERER_ORDER.add(clazz);
+    public void unregisterRenderer(Class<? extends RendererBase> clazz) {
+        this.rendererOrder.remove(clazz);
+        this.RENDERER_ORDER.remove(clazz);
     }
 
-    public void registerFlatRenderer(Class<? extends FlatRendererBase> clazz, Float priority) {
-        this.flatPriorityMap.put(clazz, priority);
-        this.FLAT_RENDERER_ORDER.add(clazz);
-    }
-
-    public void unregisterPOVRenderer(Class<? extends POVRendererBase> clazz) {
-        this.povPriorityMap.remove(clazz);
-        this.POV_RENDERER_ORDER.remove(clazz);
-    }
-
-    public void unregisterFlatRenderer(Class<? extends FlatRendererBase> clazz) {
-        this.flatPriorityMap.remove(clazz);
-        this.FLAT_RENDERER_ORDER.remove(clazz);
-    }
-
-    public Iterator<Class<? extends POVRendererBase>> getPOVRendererIterator() {
-        return this.POV_RENDERER_ORDER.iterator();
-    }
-
-    public Iterator<Class<? extends FlatRendererBase>> getFlatRendererIterator() {
-        return this.FLAT_RENDERER_ORDER.iterator();
+    public Iterator<Class<? extends RendererBase>> getRendererIterator() {
+        return this.RENDERER_ORDER.iterator();
     }
     //</editor-fold>
+    
+        /**
+     * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
+     * NEAR_PLANE and display size.
+     *
+     * @param fieldOfView
+     * @param nearPlane
+     * @param farPlane
+     */
+    public void createProjectionMatrix(float width, float height, float fieldOfView, float farPlane, float nearPlane) {
+        float aspectRatio = width / height;
+        float y_scale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio;
+        float x_scale = y_scale / aspectRatio;
+        float frustum_length = farPlane - nearPlane;
+
+        this.projectionMatrix = new Matrix4f();
+        this.projectionMatrix.m00 = x_scale;
+        this.projectionMatrix.m11 = y_scale;
+        this.projectionMatrix.m22 = -((farPlane + nearPlane) / frustum_length);
+        this.projectionMatrix.m23 = -1;
+        this.projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
+        this.projectionMatrix.m33 = 0;
+    }
 
     // <editor-fold  defaultstate="collapsed" desc="Lighting">
     /**

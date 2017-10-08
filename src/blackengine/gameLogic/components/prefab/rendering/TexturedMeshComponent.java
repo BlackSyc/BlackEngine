@@ -23,7 +23,7 @@
  */
 package blackengine.gameLogic.components.prefab.rendering;
 
-import blackengine.gameLogic.components.base.POVRendereredComponentBase;
+import blackengine.gameLogic.components.base.RenderedComponent;
 import blackengine.openGL.texture.Texture;
 import blackengine.openGL.vao.Vao;
 import blackengine.rendering.prefab.texturedRendering.TexturedMeshRenderer;
@@ -32,7 +32,7 @@ import blackengine.rendering.prefab.texturedRendering.TexturedMeshRenderer;
  *
  * @author Blackened
  */
-public class TexturedMeshComponent extends POVRendereredComponentBase<TexturedMeshRenderer>{
+public class TexturedMeshComponent extends RenderedComponent<TexturedMeshRenderer>{
     
     private Vao vao;
     

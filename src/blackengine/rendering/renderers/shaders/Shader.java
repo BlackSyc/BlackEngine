@@ -215,10 +215,11 @@ public abstract class Shader {
      */
     private static List<String> extractAttributeNames(String shaderSource) {
         return Stream.of(shaderSource.split(System.lineSeparator()))
-                .filter(x -> x.contains(" in "))
+                .filter(x -> x.contains("in "))
                 .map(x -> {
                     String[] splitted = x.split(" ");
-                    return splitted[splitted.length - 1];
+                    String withSemiColon = splitted[splitted.length - 1];
+                    return withSemiColon.substring(0, withSemiColon.length() - 1);
                 })
                 .collect(Collectors.toList());
     }

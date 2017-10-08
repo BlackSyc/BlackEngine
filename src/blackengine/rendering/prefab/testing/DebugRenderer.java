@@ -28,7 +28,6 @@ import blackengine.dataAccess.dataObjects.MeshDataObject;
 import blackengine.dataAccess.fileLoaders.ImageLoader;
 import blackengine.dataAccess.fileLoaders.MeshLoader;
 import blackengine.dataAccess.tools.PlainTextLoader;
-import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.GameElement;
 import blackengine.gameLogic.GameManager;
 import blackengine.gameLogic.components.prefab.collision.BoxCollisionComponent;
@@ -41,10 +40,12 @@ import blackengine.openGL.vao.Vao;
 import blackengine.openGL.vao.VaoLoader;
 import static blackengine.openGL.vao.vbo.AttributeType.*;
 import blackengine.rendering.Camera;
-import blackengine.rendering.renderers.TargetPOVRenderer;
-import blackengine.toolbox.math.ImmutableVector2;
+import blackengine.rendering.RenderEngine;
+import blackengine.rendering.renderers.RendererBase;
+import blackengine.rendering.renderers.ShaderProgram;
+import blackengine.rendering.renderers.shaders.FragmentShader;
+import blackengine.rendering.renderers.shaders.VertexShader;
 import blackengine.toolbox.math.ImmutableVector3;
-import blackengine.toolbox.math.MatrixMath;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,21 +54,20 @@ import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import static org.lwjgl.opengl.GL11.GL_LINE;
 import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
  *
  * @author Blackened
  */
-public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
+public class DebugRenderer extends RendererBase<DebugRenderComponent> {
 
     private Set<DebugRenderComponent> renderTargets;
 
     private Vao unitSphere;
 
     private Vao unitCube;
-    
+
     private int gridVao;
 
     private boolean gridEnabled = false;
@@ -79,7 +79,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
     public void setGridVao(int gridVao) {
         this.gridVao = gridVao;
     }
-    
+
     public void setUnitSphere(Vao unitSphere) {
         this.unitSphere = unitSphere;
     }
@@ -104,20 +104,16 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.renderCollidersEnabled = renderCollidersEnabled;
     }
 
-    protected DebugRenderer(GameManager gameManager) {
-
+    protected DebugRenderer(GameManager gameManager, ShaderProgram shaderProgram) {
+        super(shaderProgram);
         this.gameManager = gameManager;
         this.renderTargets = new HashSet<>();
     }
 
     @Override
-    public void render(Camera camera) {
-        Matrix4f viewMatrix = camera.getViewMatrix();
+    public void render() {
+        Matrix4f viewMatrix = RenderEngine.getInstance().getMainCamera().getViewMatrix();
         this.initializeRendering(viewMatrix);
-
-        if (this.gridEnabled) {
-            this.renderGrid();
-        }
 
         if (this.renderCollidersEnabled) {
             this.renderSphereColliders();
@@ -131,17 +127,17 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
             if (!x.isWireFrameEnabled()) {
                 GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 x.getTexture().bindToUnit(GL13.GL_TEXTURE0);
-                this.loadUniformBool("textured", true);
-                this.loadUniformVector3f("colour", new ImmutableVector3(1, 1, 1));
+                this.shaderProgram.loadUniformBool("textured", true);
+                this.shaderProgram.loadUniformVector3f("colour", new ImmutableVector3(1, 1, 1));
                 unbindTexture = true;
             } else {
                 GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                this.loadUniformBool("textured", false);
-                this.loadUniformVector3f("colour", new ImmutableVector3(1, 1, 1));
+                this.shaderProgram.loadUniformBool("textured", false);
+                this.shaderProgram.loadUniformVector3f("colour", new ImmutableVector3(1, 1, 1));
             }
 
             Matrix4f transformationMatrix = x.getParent().getTransform().createTransformationMatrix();
-            this.loadUniformMatrix("transformationMatrix", transformationMatrix);
+            this.shaderProgram.loadUniformMatrix("transformationMatrix", transformationMatrix);
 
             GL11.glDrawElements(GL11.GL_TRIANGLES, x.getVao().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
             if (unbindTexture) {
@@ -152,22 +148,11 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         this.finalizeRendering();
     }
 
-    private void renderGrid() {
-//        GL30.glBindVertexArray(this.gridVao);
-//        
-//        //RENDER SHIT
-//        
-//        
-//        
-//        GL30.glBindVertexArray(0);
-        
-    }
-
     private void renderSphereColliders() {
         GameElement activeScene = this.gameManager.getActiveScene();
         this.unitSphere.bind();
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        this.loadUniformBool("textured", false);
+        this.shaderProgram.loadUniformBool("textured", false);
 
         activeScene.flattened()
                 .filter(x -> x.containsComponent(CollisionComponent.class))
@@ -175,12 +160,12 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
                 .filter(x -> x instanceof SphereCollisionComponent)
                 .forEach(x -> {
                     if (x.isColliding()) {
-                        this.loadUniformVector3f("colour", new ImmutableVector3(1, 0, 0));
+                        this.shaderProgram.loadUniformVector3f("colour", new ImmutableVector3(1, 0, 0));
                     } else {
-                        this.loadUniformVector3f("colour", new ImmutableVector3(0, 1, 0));
+                        this.shaderProgram.loadUniformVector3f("colour", new ImmutableVector3(0, 1, 0));
                     }
                     Matrix4f transformationMatrix = x.getTransform().createTransformationMatrix();
-                    this.loadUniformMatrix("transformationMatrix", transformationMatrix);
+                    this.shaderProgram.loadUniformMatrix("transformationMatrix", transformationMatrix);
                     GL11.glDrawElements(GL11.GL_TRIANGLES, unitSphere.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
                 });
         this.unitSphere.unbind();
@@ -191,7 +176,7 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         GameElement activeScene = this.gameManager.getActiveScene();
         this.unitCube.bind();
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        this.loadUniformBool("textured", false);
+        this.shaderProgram.loadUniformBool("textured", false);
 
         activeScene.flattened()
                 .filter(x -> x.containsComponent(CollisionComponent.class))
@@ -199,12 +184,12 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
                 .filter(x -> x instanceof BoxCollisionComponent)
                 .forEach(x -> {
                     if (x.isColliding()) {
-                        this.loadUniformVector3f("colour", new ImmutableVector3(1, 0, 0));
+                        this.shaderProgram.loadUniformVector3f("colour", new ImmutableVector3(1, 0, 0));
                     } else {
-                        this.loadUniformVector3f("colour", new ImmutableVector3(0, 1, 0));
+                        this.shaderProgram.loadUniformVector3f("colour", new ImmutableVector3(0, 1, 0));
                     }
                     Matrix4f transformationMatrix = x.getTransform().createTransformationMatrix();
-                    this.loadUniformMatrix("transformationMatrix", transformationMatrix);
+                    this.shaderProgram.loadUniformMatrix("transformationMatrix", transformationMatrix);
                     GL11.glDrawElements(GL11.GL_TRIANGLES, unitCube.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
                 });
         this.unitCube.unbind();
@@ -226,19 +211,14 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
         return this.renderTargets.contains(renderComponent);
     }
 
-    @Override
-    public void bindAttributes() {
-        super.bindAttribute(VERTEX_POSITIONS.getValue(), "position");
-    }
-
     /**
      *
      */
     @Override
     public void initialize() {
-        this.start();
-        super.loadUniformMatrix("projectionMatrix", super.getProjectionMatrix());
-        this.stop();
+        this.shaderProgram.start();
+        super.shaderProgram.loadUniformMatrix("projectionMatrix", RenderEngine.getInstance().getProjectionMatrix());
+        this.shaderProgram.stop();
     }
 
     @Override
@@ -247,32 +227,39 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
             x.setRenderer(null);
         });
         this.renderTargets = new HashSet<>();
-        super.destroy();
+        super.shaderProgram.destroy();
     }
 
     private void initializeRendering(Matrix4f viewMatrix) {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        this.start();
-        this.loadUniformMatrix("viewMatrix", viewMatrix);
+        this.shaderProgram.start();
+        this.shaderProgram.loadUniformMatrix("viewMatrix", viewMatrix);
     }
 
     private void finalizeRendering() {
-        this.stop();
+        this.shaderProgram.stop();
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_BLEND);
     }
 
     public static DebugRenderer createDefault(GameManager gameManager) throws IOException {
-        DebugRenderer tmr = new DebugRenderer(gameManager);
 
         String vertexSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/testing/vertexShader.glsl");
         String fragmentSource = PlainTextLoader.loadResource("/blackengine/rendering/prefab/testing/fragmentShader.glsl");
 
-        tmr.load(vertexSource, fragmentSource);
+        VertexShader vertexShader = new VertexShader("vs", vertexSource);
+        FragmentShader fragmentShader = new FragmentShader("fs", fragmentSource);
 
+        DebugRenderer dr = new DebugRenderer(gameManager, new ShaderProgram(vertexShader, fragmentShader) {
+            @Override
+            public void bindAttributes() {
+                super.bindAttribute("position", VERTEX_POSITIONS.getValue());
+            }
+        });
+        
         MeshDataObject md = MeshLoader.getInstance().loadResource("/blackengine/res/plane.obj");
         Vao vao = VaoLoader.loadVao(md);
 
@@ -284,25 +271,10 @@ public class DebugRenderer extends TargetPOVRenderer<DebugRenderComponent> {
 
         MeshDataObject unitCubeMd = MeshLoader.getInstance().loadResource("/blackengine/res/unitCube.obj");
         Vao unitCube = VaoLoader.loadVao(unitCubeMd);
-        
-        
 
-        tmr.setUnitSphere(unitSphere);
-        tmr.setUnitCube(unitCube);
+        dr.setUnitSphere(unitSphere);
+        dr.setUnitCube(unitCube);
 
-        return tmr;
-    }
-    
-//    private static int createGridVao(){
-//        final int vaoID = GL30.glGenVertexArrays();
-//        GL30.glBindVertexArray(vaoID);
-//        
-//        
-//        
-//        
-//    }
-
-    public static DebugRenderer createEmpty(GameManager gameManager) {
-        return new DebugRenderer(gameManager);
+        return dr;
     }
 }
