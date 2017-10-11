@@ -42,8 +42,9 @@ import org.lwjgl.util.vector.Matrix4f;
 /**
  *
  * @author Blackened
+ * @param <M>
  */
-public abstract class ShaderProgram {
+public abstract class ShaderProgram<M extends Material<? extends ShaderProgram>> {
 
     //<editor-fold defaultstate="collapsed" desc="Fields">
     /**
@@ -92,6 +93,15 @@ public abstract class ShaderProgram {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Public methods">
+    /**
+     * Loads all properties from the material to their corresponding uniform
+     * variables.
+     *
+     * @param material The material of which the properties will be loaded into
+     * the uniform variables.
+     */
+    public abstract void loadMaterialProperties(M material);
+
     /**
      * Starts the shader program on the graphics card.
      */

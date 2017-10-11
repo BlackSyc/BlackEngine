@@ -21,52 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.prefab.testing;
+package blackengine.gameLogic.components.prefab.rendering;
 
-import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
+import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.openGL.vao.Vao;
+import blackengine.rendering.RenderEngine;
+import blackengine.rendering.renderers.Material;
 import blackengine.rendering.renderers.RendererBase;
 import blackengine.rendering.renderers.ShaderProgram;
-import java.util.HashSet;
 
 /**
  *
  * @author Blackened
+ * @param <M>
  */
-public class DebugRenderer extends RendererBase<DebugMaterial>{
+public class RenderComponent<M extends Material<? extends ShaderProgram<M>>> extends ComponentBase{
     
-    private HashSet<RenderComponent<DebugMaterial>> targets;
+    private M material;
+    
+    private Vao vao;
 
-    public DebugRenderer(ShaderProgram shaderProgram) {
-        super(shaderProgram);
+    public M getMaterial() {
+        return material;
+    }
+
+    public Vao getVao() {
+        return vao;
+    }
+
+    public RenderComponent(M material, Vao vao) {
+        this.material = material;
+        this.vao = vao;
+    }
+    
+    @Override
+    public boolean isActive() {
+        if(RenderEngine.getInstance().getMasterRenderer().containsRendererFor(this)){
+            RenderEngine.getInstance().getMasterRenderer().getRendererFor(this.getMaterial().getShaderClass());
+        }
+        return false;
     }
 
     @Override
-    public void render() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onActivate() {
+        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this.getMaterial().getShaderClass()).addRenderTarget(this);
     }
 
     @Override
-    public void destroy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onDeactivate() {
+        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this.getMaterial().getShaderClass()).removeRenderTarget(this);
     }
-
-    @Override
-    public void initialize() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addRenderTarget(RenderComponent<DebugMaterial> renderTarget) {
-        this.targets.add(renderTarget);
-    }
-
-    @Override
-    public void removeRenderTarget(RenderComponent<DebugMaterial> renderTarget) {
-        this.targets.remove(renderTarget);
-    }
-
-    @Override
-    public boolean containsRenderTarget(RenderComponent<DebugMaterial> renderTarget) {
-        return this.targets.contains(renderTarget);
-    }
+    
 }

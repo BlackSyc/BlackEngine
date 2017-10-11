@@ -23,50 +23,38 @@
  */
 package blackengine.rendering.prefab.testing;
 
-import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
-import blackengine.rendering.renderers.RendererBase;
 import blackengine.rendering.renderers.ShaderProgram;
-import java.util.HashSet;
+import blackengine.rendering.renderers.shaders.FragmentShader;
+import blackengine.rendering.renderers.shaders.VertexShader;
 
 /**
  *
  * @author Blackened
  */
-public class DebugRenderer extends RendererBase<DebugMaterial>{
+public class DebugShaderProgram extends ShaderProgram<DebugMaterial>{
+
+    public DebugShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
+        super(vertexShader, fragmentShader);
+    }
+
+    @Override
+    public void loadMaterialProperties(DebugMaterial material) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onInitialize() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onDestroy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void bindAttributes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
-    private HashSet<RenderComponent<DebugMaterial>> targets;
-
-    public DebugRenderer(ShaderProgram shaderProgram) {
-        super(shaderProgram);
-    }
-
-    @Override
-    public void render() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void destroy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void initialize() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addRenderTarget(RenderComponent<DebugMaterial> renderTarget) {
-        this.targets.add(renderTarget);
-    }
-
-    @Override
-    public void removeRenderTarget(RenderComponent<DebugMaterial> renderTarget) {
-        this.targets.remove(renderTarget);
-    }
-
-    @Override
-    public boolean containsRenderTarget(RenderComponent<DebugMaterial> renderTarget) {
-        return this.targets.contains(renderTarget);
-    }
 }
