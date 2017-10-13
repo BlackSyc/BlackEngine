@@ -35,20 +35,23 @@ import blackengine.rendering.renderers.shaders.FragmentShader;
 import blackengine.rendering.renderers.shaders.VertexShader;
 import java.io.IOException;
 import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_FILL;
+import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.util.vector.Matrix4f;
 
 /**
  *
  * @author Blackened
  */
-public class SimpleShaderProgram extends ShaderProgram<SimpleMaterial>{
-    
+public class SimpleShaderProgram extends ShaderProgram<SimpleMaterial> {
+
     private static final String VERTEX_PATH = "/blackengine/rendering/prefab/simple/vertexShader.glsl";
-    
+
     private static final String FRAGMENT_PATH = "/blackengine/rendering/prefab/simple/fragmentShader.glsl";
 
     public SimpleShaderProgram() throws IOException {
-        super(new VertexShader("simpleVertex", PlainTextLoader.loadResource(VERTEX_PATH)), 
+        super(new VertexShader("simpleVertex", PlainTextLoader.loadResource(VERTEX_PATH)),
                 new FragmentShader("simpleFragment", PlainTextLoader.loadResource(FRAGMENT_PATH)));
     }
 
@@ -87,7 +90,9 @@ public class SimpleShaderProgram extends ShaderProgram<SimpleMaterial>{
 
     @Override
     public void applySettings() {
-        
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
-    
+
 }

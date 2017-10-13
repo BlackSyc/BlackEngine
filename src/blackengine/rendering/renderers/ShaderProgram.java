@@ -38,6 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_FILL;
+import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -137,7 +140,10 @@ public abstract class ShaderProgram<M extends Material> {
     public abstract void applySettings();
     
     public void revertSettings(){
-        
+        GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+    
     }
 
     /**
