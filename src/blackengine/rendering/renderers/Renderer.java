@@ -45,6 +45,10 @@ public class Renderer<S extends ShaderProgram, M extends Material<S>> {
         this.targets = new HashSet<>();
         this.renderPriority = renderPriority;
     }
+    
+    public void initialize(){
+        this.shaderProgram.initialize();
+    }
 
     @SuppressWarnings("unchecked")
     public void render() {

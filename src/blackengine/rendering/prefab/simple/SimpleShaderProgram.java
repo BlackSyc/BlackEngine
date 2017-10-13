@@ -43,9 +43,9 @@ import org.lwjgl.opengl.GL13;
  */
 public class SimpleShaderProgram extends ShaderProgram<SimpleMaterial>{
     
-    private static final String VERTEX_PATH = "/rendering/prefab/simple/vertexShader.glsl";
+    private static final String VERTEX_PATH = "/blackengine/rendering/prefab/simple/vertexShader.glsl";
     
-    private static final String FRAGMENT_PATH = "/rendering/prefab/simple/fragmentShader.glsl";
+    private static final String FRAGMENT_PATH = "/blackengine/rendering/prefab/simple/fragmentShader.glsl";
 
     public SimpleShaderProgram() throws IOException {
         super(new VertexShader("simpleVertex", PlainTextLoader.loadResource(VERTEX_PATH)), 
