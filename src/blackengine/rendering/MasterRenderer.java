@@ -53,6 +53,10 @@ public class MasterRenderer {
     public <S extends ShaderProgram, M extends Material<S>> Renderer<S, M> getRendererWith(Class<S> shaderClass) {
         return this.rendererMap.get(shaderClass);
     }
+    
+    public <S extends ShaderProgram, M extends Material<S>> void put(Renderer<S, M> renderer){
+        this.rendererMap.put(renderer);
+    }
 
     public void render() {
         this.rendererMap.getRenderers()
