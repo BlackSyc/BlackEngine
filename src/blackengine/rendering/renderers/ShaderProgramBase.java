@@ -98,7 +98,6 @@ public abstract class ShaderProgramBase<M extends Material> {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Public methods">
-
     /**
      * Starts the shader program on the graphics card.
      */
@@ -118,12 +117,12 @@ public abstract class ShaderProgramBase<M extends Material> {
      * program is still running.
      */
     public abstract void loadGlobalUniforms();
-    
+
     /**
      * Gets called before any instance of RenderComponent is rendered.
      */
     public abstract void loadFrameUniforms();
-    
+
     /**
      * Loads all properties from the material to their corresponding uniform
      * variables.
@@ -132,26 +131,26 @@ public abstract class ShaderProgramBase<M extends Material> {
      * the uniform variables.
      */
     public abstract void loadMaterialUniforms(M material);
-    
+
     public abstract void loadTransformUniforms(Transform transform);
-    
+
     public abstract void draw(Vao vao);
-    
+
     public abstract void applySettings();
-    
-    public void revertSettings(){
+
+    public void revertSettings() {
         GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_BLEND);
-    
+
     }
 
     /**
      * Gets called just before the destroy method is called, while the shader
      * program is still running.
      */
-    public void onDestroy(){
-        
+    public void onDestroy() {
+
     }
 
     public final void initialize() {
@@ -236,6 +235,53 @@ public abstract class ShaderProgramBase<M extends Material> {
      */
     public void loadUniformVector2f(String uniformName, ImmutableVector2 vector) {
         GL20.glUniform2f(this.getUniformLocation(uniformName), vector.getX(), vector.getY());
+    }
+
+    /**
+     * Loads a float value to the specified uniform.
+     *
+     * @param uniformName The name of the uniform variable the float will be
+     * loaded into.
+     * @param value The value that will be loaded into the uniform location.
+     */
+    public void loadUniformFloat(String uniformName, float value) {
+        GL20.glUniform1f(this.getUniformLocation(uniformName), value);
+    }
+
+    /**
+     * Loads three integers into a uniform variable 'ivec3'.
+     *
+     * @param uniformName The name of the uniform variable the values will be
+     * loaded into.
+     * @param x The first value of the vector.
+     * @param y The second value of the vector.
+     * @param z The third value of the vector.
+     */
+    public void loadUniformVector3i(String uniformName, int x, int y, int z) {
+        GL20.glUniform3i(this.getUniformLocation(uniformName), x, y, z);
+    }
+
+    /**
+     * Loads two integers into a uniform variable 'ivec2'.
+     *
+     * @param uniformName The name of the uniform variable the values will be
+     * loaded into.
+     * @param x The first value of the vector.
+     * @param y The second value of the vector.
+     */
+    public void loadUniformVector2i(String uniformName, int x, int y) {
+        GL20.glUniform2i(this.getUniformLocation(uniformName), x, y);
+    }
+
+    /**
+     * Loads an integer value to the specified uniform.
+     *
+     * @param uniformName The name of the uniform variable the integer will be
+     * loaded into.
+     * @param value The value that will be loaded into the uniform location.
+     */
+    public void loadUniformInteger(String uniformName, int value) {
+        GL20.glUniform1i(this.getUniformLocation(uniformName), value);
     }
     //</editor-fold>
 
