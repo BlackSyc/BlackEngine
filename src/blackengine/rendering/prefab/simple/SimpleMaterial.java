@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,36 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic;
+package blackengine.rendering.prefab.simple;
 
-import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
-
+import blackengine.openGL.texture.Texture;
+import blackengine.rendering.renderers.Material;
 
 /**
- * An instance of this class represents a scene in the game.
- *
- * #Tested
  *
  * @author Blackened
  */
-public class Scene extends GameElement {
+public class SimpleMaterial extends Material<SimpleShaderProgram>{
     
-    private Entity player;
-    
-    public void setPlayer(Entity player) throws DuplicateEntityNameException{
-        super.addEntity(player);
-        
-        this.player = player;
-    }
+    private Texture texture;
 
-    public Entity getPlayer() {
-        return player;
-    }
-
-    public Scene(String name) {
-        super(name);
+    public Texture getTexture() {
+        return texture;
     }
     
+    public SimpleMaterial(Texture texture) {
+        super(SimpleShaderProgram.class);
+        this.texture = texture;
+    }
     
-
 }

@@ -23,6 +23,8 @@
  */
 package blackengine.rendering.renderers;
 
+import blackengine.gameLogic.Transform;
+import blackengine.openGL.vao.Vao;
 import blackengine.rendering.renderers.shaders.FragmentShader;
 import blackengine.rendering.renderers.shaders.VertexShader;
 import blackengine.rendering.renderers.shaders.exceptions.NoSuchAttributeException;
@@ -93,14 +95,6 @@ public abstract class ShaderProgram<M extends Material> {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Public methods">
-    /**
-     * Loads all properties from the material to their corresponding uniform
-     * variables.
-     *
-     * @param material The material of which the properties will be loaded into
-     * the uniform variables.
-     */
-    public abstract void loadInstanceUniforms(M material);
 
     /**
      * Starts the shader program on the graphics card.
@@ -120,13 +114,39 @@ public abstract class ShaderProgram<M extends Material> {
      * Gets called after the initialization has taken place, while the shader
      * program is still running.
      */
-    public abstract void onInitialize();
+    public abstract void loadGlobalUniforms();
+    
+    /**
+     * Gets called before any instance of RenderComponent is rendered.
+     */
+    public abstract void loadFrameUniforms();
+    
+    /**
+     * Loads all properties from the material to their corresponding uniform
+     * variables.
+     *
+     * @param material The material of which the properties will be loaded into
+     * the uniform variables.
+     */
+    public abstract void loadMaterialUniforms(M material);
+    
+    public abstract void loadTransformUniforms(Transform transform);
+    
+    public abstract void draw(Vao vao);
+    
+    public abstract void applySettings();
+    
+    public void revertSettings(){
+        
+    }
 
     /**
      * Gets called just before the destroy method is called, while the shader
      * program is still running.
      */
-    public abstract void onDestroy();
+    public void onDestroy(){
+        
+    }
 
     public final void initialize() {
         if (this.programId != -1) {
@@ -148,7 +168,7 @@ public abstract class ShaderProgram<M extends Material> {
                 .concat(this.vertexShader.getUniformNames(),
                         this.fragmentShader.getUniformNames())));
 
-        this.onInitialize();
+        this.loadGlobalUniforms();
         this.stop();
     }
 

@@ -26,11 +26,6 @@ package blackengine.rendering;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.stream.Stream;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -67,7 +62,7 @@ public class RenderEngine {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Master Renderer">
-    private MasterRenderer masterRenderer;
+    private final MasterRenderer masterRenderer;
 
     public MasterRenderer getMasterRenderer() {
         return this.masterRenderer;
@@ -101,6 +96,8 @@ public class RenderEngine {
      * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
      * NEAR_PLANE and display size.
      *
+     * @param width
+     * @param height
      * @param fieldOfView
      * @param nearPlane
      * @param farPlane

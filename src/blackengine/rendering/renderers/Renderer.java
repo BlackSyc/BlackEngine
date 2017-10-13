@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @param <S>
  * @param <M>
  */
-public abstract class Renderer<S extends ShaderProgram, M extends Material<S>> {
+public class Renderer<S extends ShaderProgram, M extends Material<S>> {
 
     protected final S shaderProgram;
 
@@ -27,7 +27,6 @@ public abstract class Renderer<S extends ShaderProgram, M extends Material<S>> {
         return renderPriority;
     }
 
-    
     public final Stream<RenderComponent<S, M>> getTargets() {
         return this.targets.stream();
     }
@@ -47,7 +46,21 @@ public abstract class Renderer<S extends ShaderProgram, M extends Material<S>> {
         this.renderPriority = renderPriority;
     }
 
-    public abstract void render();
+    @SuppressWarnings("unchecked")
+    public void render() {
+        this.shaderProgram.applySettings();
+        this.shaderProgram.start();
+        this.shaderProgram.loadFrameUniforms();
+        this.getTargets().forEach(x -> {
+            this.shaderProgram.loadTransformUniforms(x.getParent().getTransform());
+
+            this.shaderProgram.loadMaterialUniforms(x.getMaterial());
+            this.shaderProgram.draw(x.getVao());
+        });
+
+        this.shaderProgram.stop();
+        this.shaderProgram.revertSettings();
+    }
 
     public void addTarget(RenderComponent<S, M> target) {
         this.targets.add(target);
@@ -62,6 +75,6 @@ public abstract class Renderer<S extends ShaderProgram, M extends Material<S>> {
     }
 
     public void destroy() {
-
+        this.shaderProgram.destroy();
     }
 }
