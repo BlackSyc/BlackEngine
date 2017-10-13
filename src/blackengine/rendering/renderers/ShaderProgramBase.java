@@ -49,7 +49,7 @@ import org.lwjgl.util.vector.Matrix4f;
  * @author Blackened
  * @param <M>
  */
-public abstract class ShaderProgram<M extends Material> {
+public abstract class ShaderProgramBase<M extends Material> {
 
     //<editor-fold defaultstate="collapsed" desc="Fields">
     /**
@@ -86,7 +86,7 @@ public abstract class ShaderProgram<M extends Material> {
      * @param vertexShader The vertex shader that will be used.
      * @param fragmentShader The fragment shader that will be used.
      */
-    public ShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
+    public ShaderProgramBase(VertexShader vertexShader, FragmentShader fragmentShader) {
 
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;

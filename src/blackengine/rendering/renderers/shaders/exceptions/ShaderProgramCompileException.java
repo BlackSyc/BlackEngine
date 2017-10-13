@@ -23,7 +23,7 @@
  */
 package blackengine.rendering.renderers.shaders.exceptions;
 
-import blackengine.rendering.renderers.ShaderProgram;
+import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
  *
@@ -31,7 +31,7 @@ import blackengine.rendering.renderers.ShaderProgram;
  */
 public class ShaderProgramCompileException extends RuntimeException{
 
-    public ShaderProgramCompileException(Class<? extends ShaderProgram> clazz) {
+    public ShaderProgramCompileException(Class<? extends ShaderProgramBase> clazz) {
         super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
     }
     

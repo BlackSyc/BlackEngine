@@ -8,7 +8,7 @@ package blackengine.rendering.map;
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
 import blackengine.rendering.renderers.Material;
 import blackengine.rendering.renderers.Renderer;
-import blackengine.rendering.renderers.ShaderProgram;
+import blackengine.rendering.renderers.ShaderProgramBase;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -74,7 +74,7 @@ public class RendererMap {
      * @param <M>
      * @param renderer The renderer to be added to this renderer map.
      */
-    public <S extends ShaderProgram, M extends Material<S>> void put(Renderer<S, M> renderer) {
+    public <S extends ShaderProgramBase, M extends Material<S>> void put(Renderer<S, M> renderer) {
         this.destroyRendererFor(renderer.getShaderClass());
         Class<S> shaderClass = renderer.getShaderClass();
         RendererEntry<S, M> entry = new RendererEntry<>(shaderClass, renderer);
@@ -89,7 +89,7 @@ public class RendererMap {
      * @param shaderClass The class of the shader used by the renderer that is
      * to be removed.
      */
-    public void destroyRendererFor(Class<? extends ShaderProgram> shaderClass) {
+    public void destroyRendererFor(Class<? extends ShaderProgramBase> shaderClass) {
         if (this.containsRendererFor(shaderClass)) {
             this.get(shaderClass).destroy();
             this.entries.removeIf(x -> x.getShaderClass().equals(shaderClass));
@@ -105,7 +105,7 @@ public class RendererMap {
      * @return An instance of Renderer, or null if none was found.
      */
     @SuppressWarnings("unchecked")
-    public <S extends ShaderProgram, M extends Material<S>> Renderer<S, M> get(Class<S> shaderClass) {
+    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> get(Class<S> shaderClass) {
         return this.entries.stream()
                 .filter(x -> x.getShaderClass().equals(shaderClass))
                 .findFirst()
@@ -120,7 +120,7 @@ public class RendererMap {
      * @return True if a renderer using the specified shader class is present,
      * false otherwise.
      */
-    public boolean containsRendererFor(Class<? extends ShaderProgram> shaderClass) {
+    public boolean containsRendererFor(Class<? extends ShaderProgramBase> shaderClass) {
         return this.entries.stream()
                 .anyMatch(x -> x.getShaderClass().equals(shaderClass));
     }
@@ -136,7 +136,7 @@ public class RendererMap {
      * @return True if a renderer was found that is compatible with the render
      * component, false otherwise.
      */
-    public <S extends ShaderProgram, M extends Material<S>> boolean containsRendererFor(RenderComponent<S, M> renderComponent) {
+    public <S extends ShaderProgramBase, M extends Material<S>> boolean containsRendererFor(RenderComponent<S, M> renderComponent) {
         return this.containsRendererFor(renderComponent.getMaterial().getShaderClass());
     }
 
@@ -151,7 +151,7 @@ public class RendererMap {
      * @return A renderer that is compatible with the specified render
      * component, or null if none was found.
      */
-    public <S extends ShaderProgram, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S, M> renderComponent) {
+    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S, M> renderComponent) {
         return this.get(renderComponent.getMaterial().getShaderClass());
     }
 

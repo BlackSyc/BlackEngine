@@ -28,7 +28,7 @@ package blackengine.rendering.renderers;
  * @author Blackened
  * @param <S>
  */
-public class Material<S extends ShaderProgram> {
+public class Material<S extends ShaderProgramBase> {
     
     private final Class<S> shaderClass;
     

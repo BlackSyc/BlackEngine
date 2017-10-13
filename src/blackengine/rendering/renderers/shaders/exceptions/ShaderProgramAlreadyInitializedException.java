@@ -23,7 +23,7 @@
  */
 package blackengine.rendering.renderers.shaders.exceptions;
 
-import blackengine.rendering.renderers.ShaderProgram;
+import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
  *
@@ -31,7 +31,7 @@ import blackengine.rendering.renderers.ShaderProgram;
  */
 public class ShaderProgramAlreadyInitializedException extends RuntimeException{
 
-    public ShaderProgramAlreadyInitializedException(ShaderProgram shaderProgram) {
+    public ShaderProgramAlreadyInitializedException(ShaderProgramBase shaderProgram) {
         super("Shader program '" + shaderProgram.toString() + "' has already been initialized.");
     }
     

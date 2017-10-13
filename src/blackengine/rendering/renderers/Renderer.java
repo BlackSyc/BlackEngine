@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @param <S>
  * @param <M>
  */
-public class Renderer<S extends ShaderProgram, M extends Material<S>> {
+public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
 
     protected final S shaderProgram;
 

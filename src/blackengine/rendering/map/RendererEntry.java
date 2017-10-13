@@ -7,7 +7,7 @@ package blackengine.rendering.map;
 
 import blackengine.rendering.renderers.Material;
 import blackengine.rendering.renderers.Renderer;
-import blackengine.rendering.renderers.ShaderProgram;
+import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
  * Represents a node in a renderer map. Each entry contains a renderer and the
@@ -17,7 +17,7 @@ import blackengine.rendering.renderers.ShaderProgram;
  * @param <S> 
  * @param <M>
  */
-public class RendererEntry<S extends ShaderProgram, M extends Material<S>> {
+public class RendererEntry<S extends ShaderProgramBase, M extends Material<S>> {
 
     /**
      * The class of the shader the renderer uses.

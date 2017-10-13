@@ -27,7 +27,7 @@ import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
 import blackengine.rendering.map.RendererMap;
 import blackengine.rendering.renderers.Material;
 import blackengine.rendering.renderers.Renderer;
-import blackengine.rendering.renderers.ShaderProgram;
+import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
  * An instance of this class will deal with all rendering logic by coordinating
@@ -42,19 +42,19 @@ public class MasterRenderer {
      */
     private RendererMap rendererMap;
 
-    public <S extends ShaderProgram, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S,M> renderComponent) {
+    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S,M> renderComponent) {
         return this.rendererMap.getRendererFor(renderComponent);
     }
 
-    public <S extends ShaderProgram, M extends Material<S>> boolean containsRendererFor(RenderComponent<S,M> renderComponent) {
+    public <S extends ShaderProgramBase, M extends Material<S>> boolean containsRendererFor(RenderComponent<S,M> renderComponent) {
         return this.rendererMap.containsRendererFor(renderComponent);
     }
     
-    public <S extends ShaderProgram, M extends Material<S>> Renderer<S, M> getRendererWith(Class<S> shaderClass) {
+    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererWith(Class<S> shaderClass) {
         return this.rendererMap.get(shaderClass);
     }
     
-    public <S extends ShaderProgram, M extends Material<S>> void put(Renderer<S, M> renderer){
+    public <S extends ShaderProgramBase, M extends Material<S>> void put(Renderer<S, M> renderer){
         this.rendererMap.put(renderer);
         renderer.initialize();
     }

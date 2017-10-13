@@ -21,34 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.prefab.simple;
+package blackengine.rendering.renderers;
 
-import blackengine.dataAccess.tools.PlainTextLoader;
 import blackengine.gameLogic.Transform;
 import blackengine.openGL.vao.Vao;
 import static blackengine.openGL.vao.vbo.AttributeType.TEXTURE_COORDS;
 import static blackengine.openGL.vao.vbo.AttributeType.VERTEX_POSITIONS;
 import blackengine.rendering.RenderEngine;
-import blackengine.rendering.renderers.ShaderProgramBase;
 import blackengine.rendering.renderers.shaders.FragmentShader;
 import blackengine.rendering.renderers.shaders.VertexShader;
-import java.io.IOException;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 /**
  *
  * @author Blackened
+ * @param <M>
  */
-public class SimpleShaderProgram extends ShaderProgramBase<SimpleMaterial> {
+public abstract class BasicShaderProgramBase<M extends Material> extends ShaderProgramBase<M> {
 
-    private static final String VERTEX_PATH = "/blackengine/rendering/prefab/simple/vertexShader.glsl";
-
-    private static final String FRAGMENT_PATH = "/blackengine/rendering/prefab/simple/fragmentShader.glsl";
-
-    public SimpleShaderProgram() throws IOException {
-        super(new VertexShader("simpleVertex", PlainTextLoader.loadResource(VERTEX_PATH)),
-                new FragmentShader("simpleFragment", PlainTextLoader.loadResource(FRAGMENT_PATH)));
+    public BasicShaderProgramBase(VertexShader vertexShader, FragmentShader fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
 
     @Override
@@ -65,11 +57,6 @@ public class SimpleShaderProgram extends ShaderProgramBase<SimpleMaterial> {
     @Override
     public void loadFrameUniforms() {
         super.loadUniformMatrix("viewMatrix", RenderEngine.getInstance().getMainCamera().getViewMatrix());
-    }
-
-    @Override
-    public void loadMaterialUniforms(SimpleMaterial material) {
-        material.getTexture().bindToUnit(GL13.GL_TEXTURE0);
     }
 
     @Override
@@ -90,5 +77,4 @@ public class SimpleShaderProgram extends ShaderProgramBase<SimpleMaterial> {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
-
 }
