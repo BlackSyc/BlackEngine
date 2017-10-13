@@ -27,19 +27,19 @@ import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.openGL.vao.Vao;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.renderers.Material;
-import blackengine.rendering.renderers.RendererBase;
 import blackengine.rendering.renderers.ShaderProgram;
 
 /**
  *
  * @author Blackened
+ * @param <S>
  * @param <M>
  */
-public class RenderComponent<M extends Material<? extends ShaderProgram<M>>> extends ComponentBase{
+public class RenderComponent<S extends ShaderProgram, M extends Material<S>> extends ComponentBase{
     
-    private M material;
+    private final M material;
     
-    private Vao vao;
+    private final Vao vao;
 
     public M getMaterial() {
         return material;
@@ -55,21 +55,17 @@ public class RenderComponent<M extends Material<? extends ShaderProgram<M>>> ext
     }
     
     @Override
-    public boolean isActive() {
-        if(RenderEngine.getInstance().getMasterRenderer().containsRendererFor(this)){
-            RenderEngine.getInstance().getMasterRenderer().getRendererFor(this.getMaterial().getShaderClass());
-        }
-        return false;
-    }
-
-    @Override
-    public void onActivate() {
-        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this.getMaterial().getShaderClass()).addRenderTarget(this);
-    }
-
-    @Override
-    public void onDeactivate() {
-        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this.getMaterial().getShaderClass()).removeRenderTarget(this);
+    public void onActivate(){
+        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).addTarget(this);
     }
     
+    @Override
+    public void onDeactivate(){
+        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).removeTarget(this);
+    }
+    
+    @Override
+    public boolean isActive(){
+        return RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).containsTarget(this);
+    }
 }

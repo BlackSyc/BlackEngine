@@ -25,7 +25,6 @@ package blackengine.rendering;
 
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
-import blackengine.rendering.renderers.RendererBase;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -95,38 +94,6 @@ public class RenderEngine {
 
     public boolean isAnisotropicFilteringEnabled() {
         return this.anisotropicFilteringEnabled;
-    }
-    //</editor-fold>
-
-    // <editor-fold  defaultstate="collapsed" desc="Renderer registration">
-    private HashMap<Class<? extends RendererBase>, Float> rendererOrder = new HashMap<>();
-
-    private final SortedSet<Class<? extends RendererBase>> RENDERER_ORDER = new TreeSet<>(new Comparator<Class<? extends RendererBase>>() {
-
-        @Override
-        public int compare(Class<? extends RendererBase> o1, Class<? extends RendererBase> o2) {
-            return rendererOrder.get(o1)
-                    .compareTo(rendererOrder.get(o2));
-        }
-    });
-
-
-    public HashMap<Class<? extends RendererBase>, Float> getPOVPriorityMap() {
-        return this.rendererOrder;
-    }
-
-    public void registerRenderer(Class<? extends RendererBase> clazz, Float priority) {
-        this.rendererOrder.put(clazz, priority);
-        this.RENDERER_ORDER.add(clazz);
-    }
-
-    public void unregisterRenderer(Class<? extends RendererBase> clazz) {
-        this.rendererOrder.remove(clazz);
-        this.RENDERER_ORDER.remove(clazz);
-    }
-
-    public Iterator<Class<? extends RendererBase>> getRendererIterator() {
-        return this.RENDERER_ORDER.iterator();
     }
     //</editor-fold>
     

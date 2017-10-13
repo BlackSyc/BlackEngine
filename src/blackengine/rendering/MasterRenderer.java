@@ -24,12 +24,10 @@
 package blackengine.rendering;
 
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
+import blackengine.rendering.map.RendererMap;
 import blackengine.rendering.renderers.Material;
-import blackengine.rendering.renderers.RendererBase;
+import blackengine.rendering.renderers.Renderer;
 import blackengine.rendering.renderers.ShaderProgram;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * An instance of this class will deal with all rendering logic by coordinating
@@ -42,108 +40,27 @@ public class MasterRenderer {
     /**
      * All renderers that have been added to this instance of Master Renderer.
      */
-    private Map<Class<? extends ShaderProgram<? extends Material<?>>>, RendererBase> renderers;
+    private RendererMap rendererMap;
 
-    /**
-     * Retrieves a renderer with a shader program of the specified class, if one
-     * exists.
-     *
-     * @param <S> The type of the shader program.
-     * @param <M>
-     * @param clazz The class of the shader program for which the renderer will
-     * be found.
-     * @return A renderer that has the shader program of the specified type, or
-     * null if none was found.
-     */
-    public <M extends Material<S>, S extends ShaderProgram<M>> RendererBase<M> getRendererFor(Class<S> clazz) {
-        return this.renderers.get(clazz);
+    public <S extends ShaderProgram, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S,M> renderComponent) {
+        return this.rendererMap.getRendererFor(renderComponent);
     }
 
-    /**
-     * Retrieves a renderer that can render the specified component if one
-     * exists.
-     *
-     * @param <Q>
-     * @param renderComponent The component for which the compatible renderer
-     * will be retrieved.
-     * @return A renderer that can render the specified component, or null if
-     * none was found.
-     */
-    public <Q extends Material<? extends ShaderProgram>> RendererBase<Q> getRendererFor(RenderComponent<Q> renderComponent) {
-        return this.renderers.get(renderComponent.getMaterial().getShaderClass());
+    public <S extends ShaderProgram, M extends Material<S>> boolean containsRendererFor(RenderComponent<S,M> renderComponent) {
+        return this.rendererMap.containsRendererFor(renderComponent);
+    }
+    
+    public <S extends ShaderProgram, M extends Material<S>> Renderer<S, M> getRendererWith(Class<S> shaderClass) {
+        return this.rendererMap.get(shaderClass);
     }
 
-    /**
-     * Default constructor for creating a new instance of MasterRenderer.
-     */
-    public MasterRenderer() {
-        this.renderers = new HashMap<>();
-    }
-
-    /**
-     * Adds a new renderer object to this master renderer. If a renderer for the
-     * same shader program class was already found, it will be destroyed and
-     * replaced with the presented renderer.
-     *
-     * @param renderer The renderer to be added.
-     */
-    public void addRenderer(RendererBase renderer) {
-        if (this.containsRendererFor(renderer.getShaderClass())) {
-            this.getRendererFor(renderer.getShaderClass()).destroy();
-        }
-        this.renderers.put(renderer.getShaderClass(), renderer);
-        renderer.initialize();
-    }
-
-    /**
-     * Checks whether there exists a renderer for the specified shader program
-     * class.
-     *
-     * @param clazz The class of the shader program for which the master
-     * renderer will check presence of a renderer in its renderer list.
-     * @return True if a renderer for the same shader program class is present
-     * in the renderer list, false otherwise.
-     */
-    public boolean containsRendererFor(Class<? extends ShaderProgram> clazz) {
-        return this.renderers.containsKey(clazz);
-    }
-
-    /**
-     * Checks whether there exists a renderer in this master renderer instance
-     * that can render the specified component.
-     *
-     * @param renderComponent The render component which will be used to see if
-     * there is a compatible renderer present in this instance of master
-     * renderer.
-     * @return True if a renderer is present in the renderer list that is
-     * compatible with the specified render component, false otherwise.
-     */
-    public boolean containsRendererFor(RenderComponent<?> renderComponent) {
-        return this.renderers.containsKey(renderComponent.getMaterial().getShaderClass());
-    }
-
-    /**
-     * Destroys all renderers present in this master renderer.
-     */
-    public void destroy() {
-        this.renderers.values().forEach(x -> x.destroy());
-        this.renderers = new HashMap<>();
-    }
-
-    /**
-     * Calls the render method on all of the registered POV renderers present in
-     * this instance of MasterRenderer, in the order provided by the
-     * RenderEngine.
-     */
     public void render() {
-//        Iterator<Class<? extends RendererBase>> iter = RenderEngine.getInstance().getRendererIterator();
-//
-//        while (iter.hasNext()) {
-//            Class<? extends RendererBase> rendererClass = iter.next();
-//            if (this.containsRenderer(rendererClass)) {
-//                this.getRenderer(rendererClass).render();
-//            }
-//        }
+        this.rendererMap.getRenderers()
+                .forEach(x -> x.render());
+    }
+
+    public void destroy() {
+        this.rendererMap.destroy();
     }
 
 }
