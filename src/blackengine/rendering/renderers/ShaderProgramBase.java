@@ -132,10 +132,27 @@ public abstract class ShaderProgramBase<M extends Material> {
      */
     public abstract void loadMaterialUniforms(M material);
 
+    /**
+     * Loads all uniform variables that are dependant on the transform of an
+     * instance that will be renderer.
+     *
+     * @param transform The transform of the instance that will be rendered
+     * next.
+     */
     public abstract void loadTransformUniforms(Transform transform);
 
+    /**
+     * The draw call specific to the vao. The Vao should be bound and unbound in
+     * this method as well.
+     *
+     * @param vao The vao that will be drawn.
+     */
     public abstract void draw(Vao vao);
 
+    /**
+     * Sets the specific rendering settings for this shader program such as
+     * blending, depth testing and polygon mode.
+     */
     public abstract void applySettings();
 
     public void revertSettings() {
@@ -153,6 +170,11 @@ public abstract class ShaderProgramBase<M extends Material> {
 
     }
 
+    /**
+     * Initializes the shader program by loading it and its shaders to the
+     * graphics card. Calls the {@link #loadGlobalUniforms()} method when
+     * initialization was successful.
+     */
     public final void initialize() {
         if (this.programId != -1) {
             throw new ShaderProgramAlreadyInitializedException(this);
@@ -177,6 +199,10 @@ public abstract class ShaderProgramBase<M extends Material> {
         this.stop();
     }
 
+    /**
+     * Calls the member {@link #onDestroy()} and then proceeds to destroy the
+     * shaders and deleting this program from the graphics card.
+     */
     public void destroy() {
         this.onDestroy();
         this.vertexShader.destroy();

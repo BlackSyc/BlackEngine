@@ -27,20 +27,34 @@ import blackengine.openGL.texture.Texture;
 import blackengine.rendering.renderers.Material;
 
 /**
+ * Very simple material for rendering shapes with textures.
  *
  * @author Blackened
  */
-public class SimpleMaterial extends Material<SimpleShaderProgram>{
-    
+public class SimpleMaterial extends Material<SimpleShaderProgram> {
+
+    /**
+     * The texture that will be rendered onto the shape.
+     */
     private Texture texture;
 
+    /**
+     * Getter for the texture.
+     *
+     * @return The texture that will be rendered onto the shape.
+     */
     public Texture getTexture() {
         return texture;
     }
-    
+
+    /**
+     * Default constructor for creating a new instance of SimpleMaterial.
+     *
+     * @param texture The texture that will be rendered onto the shape.
+     */
     public SimpleMaterial(Texture texture) {
         super(SimpleShaderProgram.class);
         this.texture = texture;
     }
-    
+
 }

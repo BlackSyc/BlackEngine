@@ -40,36 +40,86 @@ public class MasterRenderer {
     /**
      * All renderers that have been added to this instance of Master Renderer.
      */
-    private RendererMap rendererMap;
+    private final RendererMap rendererMap;
 
-    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S,M> renderComponent) {
+    /**
+     * Retrieves the renderer that can be used to render the specified render
+     * component if one is present.
+     *
+     * @param <S>
+     * @param <M>
+     * @param renderComponent The render component for which a compatible
+     * renderer will be retrieved, if one is present.
+     * @return An instance of Renderer that is compatible with the specified
+     * render component, or null if none was found.
+     */
+    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S, M> renderComponent) {
         return this.rendererMap.getRendererFor(renderComponent);
     }
 
-    public <S extends ShaderProgramBase, M extends Material<S>> boolean containsRendererFor(RenderComponent<S,M> renderComponent) {
+    /**
+     * Checks whether a renderer is present in this master renderers renderer
+     * map.
+     *
+     * @param <S>
+     * @param <M>
+     * @param renderComponent The render component for which the presence of a
+     * compatible renderer will be checked.
+     * @return True if a renderer is present that is compatible with the
+     * specified component, false otherwise.
+     */
+    public <S extends ShaderProgramBase, M extends Material<S>> boolean containsRendererFor(RenderComponent<S, M> renderComponent) {
         return this.rendererMap.containsRendererFor(renderComponent);
     }
-    
+
+    /**
+     * Retrieves a renderer that has a shader program of the specified shader
+     * program class.
+     *
+     * @param <S>
+     * @param <M>
+     * @param shaderClass The class of the shader program that will be in the
+     * retrieved renderer.
+     * @return A renderer with a shader program of the specified class, if one
+     * exists. Returns null otherwise.
+     */
     public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererWith(Class<S> shaderClass) {
         return this.rendererMap.get(shaderClass);
     }
-    
-    public <S extends ShaderProgramBase, M extends Material<S>> void put(Renderer<S, M> renderer){
+
+    /**
+     * Puts a renderer in this master renderers renderer map. If one with the
+     * same shader class was already present, it will be replaced.
+     *
+     * @param <S>
+     * @param <M>
+     * @param renderer An instance of Renderer that will be put in the renderer
+     * map.
+     */
+    public <S extends ShaderProgramBase, M extends Material<S>> void put(Renderer<S, M> renderer) {
         this.rendererMap.put(renderer);
         renderer.initialize();
     }
 
+    /**
+     * Default constructor for creating a new instance of MasterRenderer.
+     */
     public MasterRenderer() {
         this.rendererMap = new RendererMap();
     }
-    
-    
 
+    /**
+     * Calls the render method on each of the renderers that are present in the
+     * renderer map.
+     */
     public void render() {
         this.rendererMap.getRenderers()
                 .forEach(x -> x.render());
     }
 
+    /**
+     * Destroys each of the renderers present in the renderer map.
+     */
     public void destroy() {
         this.rendererMap.destroy();
     }

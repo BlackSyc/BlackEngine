@@ -68,15 +68,27 @@ public class RendererMap {
     /**
      * Puts a new renderer in this instance of renderer map. If one using the
      * same shader class was already present, that one will be destroyed and
-     * replaced with the new one.
+     * replaced with the new one. The render targets that were present in the
+     * old renderer will be transferred to the new renderer.
      *
      * @param <S>
      * @param <M>
      * @param renderer The renderer to be added to this renderer map.
      */
     public <S extends ShaderProgramBase, M extends Material<S>> void put(Renderer<S, M> renderer) {
-        this.destroyRendererFor(renderer.getShaderClass());
         Class<S> shaderClass = renderer.getShaderClass();
+        if (this.containsRendererFor(shaderClass)) {
+            Stream<RenderComponent<S, Material<S>>> renderComponents = this.get(shaderClass).getTargets();
+            renderComponents
+                    .map(x -> {
+                        @SuppressWarnings("unchecked")
+                        RenderComponent<S, M> target = (RenderComponent<S, M>) x;
+                        return target;
+                    })
+                    .forEach(x -> renderer.addTarget(x));
+            this.destroyRendererFor(renderer.getShaderClass());
+
+        }
         RendererEntry<S, M> entry = new RendererEntry<>(shaderClass, renderer);
         this.entries.add(entry);
         this.entries.sort(this.comparator);
