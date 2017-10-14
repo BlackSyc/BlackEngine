@@ -31,6 +31,8 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 import blackengine.rendering.RenderEngine;
+import java.nio.ByteBuffer;
+import org.lwjgl.opengl.GL32;
 
 public class TextureLoader {
 
@@ -65,6 +67,36 @@ public class TextureLoader {
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         return new Texture(texID, data.getWidth(), data.getHeight());
+    }
+
+    public static FBOTexture createFrameBufferTexture(int width, int height) {
+        int texID = GL11.glGenTextures();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA,
+                GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+
+        GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, texID, 0);
+
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        return new FBOTexture(texID, width, height);
+    }
+
+    public static FBOTexture createFrameBufferDepthTexture(int width, int height) {
+        int texID = GL11.glGenTextures();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT32, width, height, 0, GL11.GL_DEPTH_COMPONENT,
+                GL11.GL_FLOAT, (ByteBuffer) null);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+
+        GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, texID, 0);
+
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        return new FBOTexture(texID, width, height);
     }
 
 }

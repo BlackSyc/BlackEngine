@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,38 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.prefab.simple;
 
+import blackengine.openGL.texture.Texture;
+import blackengine.rendering.renderers.Material;
 
 /**
+ * Very simple material for rendering shapes with textures.
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class TargetFlatRenderer<T> extends FlatRendererBase{
-        
+public class SimpleMaterial extends Material<SimpleShaderProgram> {
+
     /**
-     * 
+     * The texture that will be rendered onto the shape.
      */
-    public TargetFlatRenderer() {
+    private Texture texture;
+
+    /**
+     * Getter for the texture.
+     *
+     * @return The texture that will be rendered onto the shape.
+     */
+    public Texture getTexture() {
+        return texture;
     }
-    
+
     /**
-     * 
-     * @param renderTarget
+     * Default constructor for creating a new instance of SimpleMaterial.
+     *
+     * @param texture The texture that will be rendered onto the shape.
      */
-    public abstract void addRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void removeRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     * @return 
-     */
-    public abstract boolean containsRenderTarget(T renderTarget);
+    public SimpleMaterial(Texture texture) {
+        super(SimpleShaderProgram.class);
+        this.texture = texture;
+    }
+
 }

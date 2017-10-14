@@ -23,53 +23,49 @@
  */
 package blackengine.gameLogic.components.prefab.rendering;
 
-import blackengine.gameLogic.components.base.POVRendereredComponentBase;
-import blackengine.openGL.texture.Texture;
+import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.openGL.vao.Vao;
-import blackengine.rendering.prefab.texturedRendering.TexturedMeshRenderer;
+import blackengine.rendering.RenderEngine;
+import blackengine.rendering.renderers.Material;
+import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
  *
  * @author Blackened
+ * @param <S>
+ * @param <M>
  */
-public class TexturedMeshComponent extends POVRendereredComponentBase<TexturedMeshRenderer>{
+public class RenderComponent<S extends ShaderProgramBase, M extends Material<S>> extends ComponentBase{
     
-    private Vao vao;
+    private final M material;
     
-    private Texture texture;
-    
+    private final Vao vao;
+
+    public M getMaterial() {
+        return material;
+    }
+
     public Vao getVao() {
         return vao;
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
-
-    public TexturedMeshComponent(TexturedMeshRenderer renderer, Vao vao, Texture texture) {
-        super(renderer);
+    public RenderComponent(M material, Vao vao) {
+        this.material = material;
         this.vao = vao;
-        this.texture = texture;
-    }
-
-    @Override
-    public void onActivate() {
-        super.getRenderer().addRenderTarget(this);
-    }
-
-    @Override
-    public void onDeactivate() {
-        super.getRenderer().removeRenderTarget(this);
-    }
-
-    @Override
-    public boolean isRendered() {
-        return super.getRenderer().containsRenderTarget(this);
     }
     
     @Override
-    public TexturedMeshComponent clone(){
-        return new TexturedMeshComponent(this.getRenderer(), this.getVao(), this.getTexture());
+    public void onActivate(){
+        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).addTarget(this);
     }
     
+    @Override
+    public void onDeactivate(){
+        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).removeTarget(this);
+    }
+    
+    @Override
+    public boolean isActive(){
+        return RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).containsTarget(this);
+    }
 }

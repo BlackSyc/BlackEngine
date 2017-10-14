@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,36 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic;
-
-import blackengine.gameLogic.exceptions.DuplicateEntityNameException;
-
+package blackengine.rendering.renderers.shaders.exceptions;
 
 /**
- * An instance of this class represents a scene in the game.
- *
- * #Tested
  *
  * @author Blackened
  */
-public class Scene extends GameElement {
-    
-    private Entity player;
-    
-    public void setPlayer(Entity player) throws DuplicateEntityNameException{
-        super.addEntity(player);
-        
-        this.player = player;
-    }
+public class ShaderCompileException extends RuntimeException {
 
-    public Entity getPlayer() {
-        return player;
+    public ShaderCompileException(String message) {
+        super(message);
     }
-
-    public Scene(String name) {
-        super(name);
-    }
-    
-    
-
 }

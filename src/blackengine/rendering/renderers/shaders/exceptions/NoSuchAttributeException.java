@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,41 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
-
-
+package blackengine.rendering.renderers.shaders.exceptions;
 
 /**
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class TargetPOVRenderer<T> extends POVRendererBase {
-    
-    /**
-     * 
-     */
-    public TargetPOVRenderer() {
+public class NoSuchAttributeException extends RuntimeException{
+
+    public NoSuchAttributeException(String attributeName) {
+        super("Attribute with name " + attributeName + " was not found.");
     }
+
     
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void addRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     */
-    public abstract void removeRenderTarget(T renderTarget);
-    
-    /**
-     * 
-     * @param renderTarget
-     * @return 
-     */
-    public abstract boolean containsRenderTarget(T renderTarget);
     
     
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,35 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.renderers.shaders.exceptions;
 
-import blackengine.rendering.Camera;
-import org.lwjgl.util.vector.Matrix4f;
+import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
  *
  * @author Blackened
  */
-public abstract class POVRendererBase extends RendererBase {
+public class ShaderProgramCompileException extends RuntimeException{
 
-    private Matrix4f projectionMatrix;
-
-    public Matrix4f getProjectionMatrix() {
-        return projectionMatrix;
+    public ShaderProgramCompileException(Class<? extends ShaderProgramBase> clazz) {
+        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
     }
-
-    public void setProjectionMatrix(Matrix4f projectionMatrix) {
-        this.projectionMatrix = projectionMatrix;
-    }
-
-    public POVRendererBase() {
-    }
-
-    /**
-     * Render the targets.
-     *
-     * @param camera The camera
-     */
-    public abstract void render(Camera camera);
-
+    
+    
+    
 }

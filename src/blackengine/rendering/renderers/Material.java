@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,30 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.base;
-
-import blackengine.rendering.renderers.TargetPOVRenderer;
+package blackengine.rendering.renderers;
 
 /**
+ * An instance of this class should expose all material uniforms used in the
+ * specified shader class.
  *
  * @author Blackened
- * @param <T>
+ * @param <S>
  */
-public abstract class POVRendereredComponentBase<T extends TargetPOVRenderer> extends ComponentBase {
+public abstract class Material<S extends ShaderProgramBase> {
 
-    private T renderer;
+    /**
+     * The class of shader program this material exposes the uniform variables for.
+     */
+    private final Class<S> shaderClass;
 
-    public T getRenderer() {
-        return renderer;
-    }
-    
-    public void setRenderer(T renderer){
-        this.renderer = renderer;
+    /**
+     * Getter for the class of shader program this material exposes the uniform
+     * variables for.
+     *
+     * @return A class that extends ShaderProgram.
+     */
+    public Class<S> getShaderClass() {
+        return this.shaderClass;
     }
 
-    public POVRendereredComponentBase(T renderer) {
-        this.renderer = renderer;
+    /**
+     * Default constructor for creating a new instance of Material.
+     *
+     * @param shaderClass The class of shader program that this material will
+     * expose the uniform variables to.
+     */
+    public Material(Class<S> shaderClass) {
+        this.shaderClass = shaderClass;
     }
-    
-    public abstract boolean isRendered();
+
 }

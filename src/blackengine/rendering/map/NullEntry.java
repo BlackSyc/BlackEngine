@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,30 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.base;
-
-import blackengine.rendering.renderers.TargetFlatRenderer;
+package blackengine.rendering.map;
 
 /**
+ * Represents an empty entry in the renderer map.
  *
  * @author Blackened
- * @param <T>
  */
-public abstract class FlatRenderedComponentBase<T extends TargetFlatRenderer> extends ComponentBase {
+public class NullEntry extends RendererEntry {
 
-    private T renderer;
-
-    public T getRenderer() {
-        return renderer;
+    /**
+     * Default constructor for creating a new instance. Calls the super
+     * constructor using nulled arguments.
+     */
+    @SuppressWarnings("unchecked")
+    public NullEntry() {
+        super(null, null);
     }
 
-    public void setRenderer(T renderer) {
-        this.renderer = renderer;
-    }
-
-    public FlatRenderedComponentBase(T renderer) {
-        this.renderer = renderer;
-    }
-
-    public abstract boolean isRendered();
 }

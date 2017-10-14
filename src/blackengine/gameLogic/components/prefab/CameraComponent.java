@@ -118,7 +118,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public boolean isActive() {
-        return RenderEngine.getInstance().getMasterRenderer().getMainCamera() == this;
+        return RenderEngine.getInstance().getMainCamera() == this;
     }
     
     @Override
@@ -142,7 +142,7 @@ public class CameraComponent extends ComponentBase implements Camera {
         this.parentTransformSubscription = this.getParent().getTransform().getObservable()
                 .subscribe(x -> this.onParentTransformChanged(x));
         this.updateViewMatrix();
-        RenderEngine.getInstance().getMasterRenderer().setMainCamera(this);
+        RenderEngine.getInstance().setMainCamera(this);
     }
 
     public void onParentTransformChanged(Transform parentTransform) {
@@ -182,7 +182,7 @@ public class CameraComponent extends ComponentBase implements Camera {
         if (this.isActive()) {
             this.parentTransformSubscription.dispose();
             this.parentTransformSubscription = null;
-            RenderEngine.getInstance().getMasterRenderer().setMainCamera(null);
+            RenderEngine.getInstance().setMainCamera(null);
         }
     }
 

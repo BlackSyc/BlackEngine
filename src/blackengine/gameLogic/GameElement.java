@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  *
  * @author Blackened
  */
-public abstract class GameElement {
+public class GameElement {
 
     //<editor-fold defaultstate="collapsed" desc="Properties">
     /**

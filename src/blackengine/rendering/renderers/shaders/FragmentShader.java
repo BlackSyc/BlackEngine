@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Blackened.
@@ -21,21 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.renderers.shaders;
+
+import blackengine.rendering.renderers.shaders.exceptions.ShaderCompileException;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 
 /**
  *
  * @author Blackened
  */
-public abstract class FlatRendererBase extends RendererBase {
+public final class FragmentShader extends Shader{
 
-    public FlatRendererBase() {
+    public FragmentShader(String name, String shaderSource) {
+        super(name, shaderSource);
     }
 
-    /**
-     * Render the targets.
-     *
-     */
-    public abstract void render();
-
+    @Override
+    protected int create(String shaderSource) {
+        int shaderId = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
+        GL20.glShaderSource(shaderId, shaderSource);
+        GL20.glCompileShader(shaderId);
+        if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+            throw new ShaderCompileException("Fragment shader " + this.getName() + " did not compile. OpenGL compile status: " + GL20.GL_COMPILE_STATUS);
+        }
+        return shaderId;
+    }
+    
 }
