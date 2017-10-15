@@ -23,9 +23,11 @@
  */
 package blackengine.rendering;
 
+import blackengine.openGL.frameBuffer.FrameBufferObject;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.stream.Stream;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -53,6 +55,7 @@ public class RenderEngine {
     private RenderEngine() {
         this.masterRenderer = new MasterRenderer();
         this.lights = new ArrayList<>();
+        this.fbos = new HashMap<>();
     }
 
     protected void destroy() {
@@ -69,6 +72,26 @@ public class RenderEngine {
     }
     //</editor-fold>
     
+    private int displayWidth;
+    
+    private int displayHeight;
+
+    public int getDisplayWidth() {
+        return displayWidth;
+    }
+
+    public void setDisplayWidth(int displayWidth) {
+        this.displayWidth = displayWidth;
+    }
+
+    public int getDisplayHeight() {
+        return displayHeight;
+    }
+
+    public void setDisplayHeight(int displayHeight) {
+        this.displayHeight = displayHeight;
+    }
+    
     private Camera mainCamera;
     
     private Matrix4f projectionMatrix = new Matrix4f();
@@ -82,6 +105,16 @@ public class RenderEngine {
 
     public void setMainCamera(Camera mainCamera) {
         this.mainCamera = mainCamera;
+    }
+    
+    private HashMap<String, FrameBufferObject> fbos;
+    
+    public FrameBufferObject getFbo(String name){
+        return fbos.get(name);
+    }
+    
+    public void addFbo(String name, FrameBufferObject fbo){
+        this.fbos.put(name, fbo);
     }
 
     //<editor-fold  defaultstate="collapsed" desc="Settings">
@@ -102,8 +135,8 @@ public class RenderEngine {
      * @param nearPlane
      * @param farPlane
      */
-    public void createProjectionMatrix(float width, float height, float fieldOfView, float farPlane, float nearPlane) {
-        float aspectRatio = width / height;
+    public void createProjectionMatrix(float fieldOfView, float farPlane, float nearPlane) {
+        float aspectRatio = this.displayWidth / this.displayHeight;
         float y_scale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio;
         float x_scale = y_scale / aspectRatio;
         float frustum_length = farPlane - nearPlane;

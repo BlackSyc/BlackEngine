@@ -63,7 +63,7 @@ public class Texture {
         GL11.glBindTexture(type, 0);
     }
 
-    public void delete() {
+    public void destroy() {
         GL11.glDeleteTextures(textureId);
     }
 
