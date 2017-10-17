@@ -25,7 +25,6 @@ package blackengine.rendering.renderers;
 
 import blackengine.gameLogic.Transform;
 import blackengine.openGL.vao.Vao;
-import blackengine.rendering.RenderEngine;
 import blackengine.rendering.renderers.shaders.FragmentShader;
 import blackengine.rendering.renderers.shaders.VertexShader;
 import blackengine.rendering.renderers.shaders.exceptions.NoSuchAttributeException;
@@ -43,13 +42,14 @@ import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
+ * The base of all shader programs.
  *
  * @author Blackened
- * @param <M>
+ * @param <M> The material that is used to load all uniforms to this programs
+ * shaders.
  */
 public abstract class ShaderProgramBase<M extends Material> {
 

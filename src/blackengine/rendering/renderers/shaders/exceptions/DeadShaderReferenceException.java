@@ -24,11 +24,18 @@
 package blackengine.rendering.renderers.shaders.exceptions;
 
 /**
+ * An instance of this exception type is thrown when a shader has been destroyed
+ * but is still called.
  *
  * @author Blackened
  */
-public class DeadShaderReferenceException extends RuntimeException{
+public class DeadShaderReferenceException extends RuntimeException {
 
+    /**
+     * Default constructor for creating a new dead shader reference exception.
+     *
+     * @param name The name of the shader that has a dead reference.
+     */
     public DeadShaderReferenceException(String name) {
         super("The reference to shader '" + name + "' is invalid, as it has been destroyed.");
     }

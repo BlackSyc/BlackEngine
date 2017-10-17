@@ -24,13 +24,22 @@
 package blackengine.rendering.renderers.shaders.exceptions;
 
 /**
+ * An instance of this exception type is thrown when a uniform variable name is
+ * referenced but was not found on the shader source code.
  *
  * @author Blackened
  */
-public class UniformVariableNameNotFound extends RuntimeException{
+public class UniformVariableNameNotFound extends RuntimeException {
 
+    /**
+     * Default constructor for creating a new uniform variable not found
+     * exception.
+     *
+     * @param uniformVariableName The name of the uniform variable that was not
+     * found.
+     */
     public UniformVariableNameNotFound(String uniformVariableName) {
         super("The uniform variable '" + uniformVariableName + "' was not found.");
     }
-    
+
 }

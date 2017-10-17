@@ -24,16 +24,20 @@
 package blackengine.rendering.renderers.shaders.exceptions;
 
 /**
+ * An instance of this exception type is thrown when an attribute name was not
+ * found in the shader code, but still called from code.
  *
  * @author Blackened
  */
-public class NoSuchAttributeException extends RuntimeException{
+public class NoSuchAttributeException extends RuntimeException {
 
+    /**
+     * Default constructor for creating a new no such attribute exception.
+     *
+     * @param attributeName The name of the attribute that was not found.
+     */
     public NoSuchAttributeException(String attributeName) {
         super("Attribute with name " + attributeName + " was not found.");
     }
 
-    
-    
-    
 }

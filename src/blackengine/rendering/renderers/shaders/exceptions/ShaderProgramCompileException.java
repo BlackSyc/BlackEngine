@@ -26,15 +26,20 @@ package blackengine.rendering.renderers.shaders.exceptions;
 import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
+ * An instance of this exception type is thrown when a shader program did not
+ * get validated by OpenGL.
  *
  * @author Blackened
  */
-public class ShaderProgramCompileException extends RuntimeException{
+public class ShaderProgramCompileException extends RuntimeException {
 
+    /**
+     * Default constructor for creating a new shader program compile exception.
+     *
+     * @param clazz The class of the shader program that was not compiled.
+     */
     public ShaderProgramCompileException(Class<? extends ShaderProgramBase> clazz) {
         super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
     }
-    
-    
-    
+
 }
