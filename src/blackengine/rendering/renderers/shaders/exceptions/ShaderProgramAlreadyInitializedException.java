@@ -26,13 +26,21 @@ package blackengine.rendering.renderers.shaders.exceptions;
 import blackengine.rendering.renderers.ShaderProgramBase;
 
 /**
+ * An instance of this exception type is thrown when a shader program is
+ * initialized but had been initialized before already.
  *
  * @author Blackened
  */
-public class ShaderProgramAlreadyInitializedException extends RuntimeException{
+public class ShaderProgramAlreadyInitializedException extends RuntimeException {
 
+    /**
+     * Default constructor for creating a new shader program already initialized
+     * exception.
+     *
+     * @param shaderProgram The shader program that was already initialized.
+     */
     public ShaderProgramAlreadyInitializedException(ShaderProgramBase shaderProgram) {
         super("Shader program '" + shaderProgram.toString() + "' has already been initialized.");
     }
-    
+
 }

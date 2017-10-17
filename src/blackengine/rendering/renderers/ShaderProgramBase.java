@@ -45,9 +45,11 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
+ * The base of all shader programs.
  *
  * @author Blackened
- * @param <M>
+ * @param <M> The material that is used to load all uniforms to this programs
+ * shaders.
  */
 public abstract class ShaderProgramBase<M extends Material> {
 

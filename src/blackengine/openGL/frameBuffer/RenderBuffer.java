@@ -21,23 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.openGL.frameBuffer;
+
+import org.lwjgl.opengl.GL30;
 
 /**
- * An instance of this exception type is thrown when an attribute name was not
- * found in the shader code, but still called from code.
  *
  * @author Blackened
  */
-public class NoSuchAttributeException extends RuntimeException {
+public class RenderBuffer {
+    
+    private final int id;
 
-    /**
-     * Default constructor for creating a new no such attribute exception.
-     *
-     * @param attributeName The name of the attribute that was not found.
-     */
-    public NoSuchAttributeException(String attributeName) {
-        super("Attribute with name " + attributeName + " was not found.");
+    public int getId() {
+        return id;
     }
-
+    
+    public RenderBuffer(int id) {
+        this.id = id;
+    }
+    
+    public void bind(){
+        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, this.id);
+    }
+    
+    public void unbind(){
+        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
+    }
+    
+    public void destroy(){
+        GL30.glDeleteRenderbuffers(this.id);
+    }
+    
+    
 }

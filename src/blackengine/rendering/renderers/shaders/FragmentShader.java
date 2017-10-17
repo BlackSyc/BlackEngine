@@ -33,17 +33,27 @@ import org.lwjgl.opengl.GL20;
  */
 public final class FragmentShader extends Shader{
 
+    /**
+     * Default constructor for creating a new instance of FragmentShader.
+     * @param name The name of the shader (primarily used for debugging purposes).
+     * @param shaderSource The source of the shader written in GLSL.
+     */
     public FragmentShader(String name, String shaderSource) {
         super(name, shaderSource);
     }
 
+    /**
+     * Creates and compiles the fragment shader from the source.
+     * @param shaderSource The source of the shader written in GLSL.
+     * @return An integer referencing the shader on the graphics card.
+     */
     @Override
     protected int create(String shaderSource) {
         int shaderId = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
         GL20.glShaderSource(shaderId, shaderSource);
         GL20.glCompileShader(shaderId);
         if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-            throw new ShaderCompileException("Fragment shader " + this.getName() + " did not compile. OpenGL compile status: " + GL20.GL_COMPILE_STATUS);
+            throw new ShaderCompileException("Fragment", this.getName());
         }
         return shaderId;
     }

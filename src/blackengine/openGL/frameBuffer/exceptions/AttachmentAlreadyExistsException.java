@@ -21,23 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.openGL.frameBuffer.exceptions;
 
 /**
- * An instance of this exception type is thrown when an attribute name was not
- * found in the shader code, but still called from code.
  *
  * @author Blackened
  */
-public class NoSuchAttributeException extends RuntimeException {
+public class AttachmentAlreadyExistsException extends RuntimeException{
 
-    /**
-     * Default constructor for creating a new no such attribute exception.
-     *
-     * @param attributeName The name of the attribute that was not found.
-     */
-    public NoSuchAttributeException(String attributeName) {
-        super("Attribute with name " + attributeName + " was not found.");
+    public AttachmentAlreadyExistsException(String attachment) {
+        super("Attachment '" + attachment + "' already exists within this framebuffer object.");
     }
-
+    
+    
+    
 }

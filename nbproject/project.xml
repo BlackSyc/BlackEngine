@@ -21,6 +21,7 @@
             <word>renderers</word>
             <word>shaders</word>
             <word>usings</word>
+            <word>vao</word>
         </spellchecker-wordlist>
     </configuration>
 </project>

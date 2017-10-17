@@ -24,7 +24,9 @@
 package blackengine.rendering;
 
 import blackengine.toolbox.math.ImmutableVector3;
+import io.reactivex.Observable;
 import java.awt.Canvas;
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -114,7 +116,9 @@ public class DisplayManager {
 
         GL11.glViewport(0, 0, width, height);
 
-        RenderEngine.getInstance().createProjectionMatrix(width, height, 70f, 500f, 0.1f);
+        RenderEngine.getInstance().setDisplayWidth(width);
+        RenderEngine.getInstance().setDisplayHeight(height);
+        RenderEngine.getInstance().createProjectionMatrix(70f, 500f, 0.1f);
 
     }
 
@@ -141,9 +145,12 @@ public class DisplayManager {
 
         GL11.glViewport(0, 0, width, height);
 
-        RenderEngine.getInstance().createProjectionMatrix(width, height, 70f, 500f, 0.1f);
+        RenderEngine.getInstance().setDisplayWidth(width);
+        RenderEngine.getInstance().setDisplayHeight(height);
+        
+        RenderEngine.getInstance().createProjectionMatrix(70f, 500f, 0.1f);
     }
-
+    
     public void destroyDisplay() {
         Display.destroy();
     }

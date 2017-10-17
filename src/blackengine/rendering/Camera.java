@@ -31,15 +31,38 @@ import org.lwjgl.util.vector.Matrix4f;
  * @author Blackened
  */
 public interface Camera {
-    
+
+    /**
+     * Getter for the view matrix (dependant on the transform of the camera).
+     *
+     * @return An instance of Matrix4f.
+     */
     public Matrix4f getViewMatrix();
-    
+
+    /**
+     * Getter for the position of the camera.
+     *
+     * @return An instance of
+     * {@link blackengine.toolbox.math.ImmutableVector3 ImmutableVector3}.
+     */
     public ImmutableVector3 getPosition();
-    
+
+    /**
+     * Getter for the yaw of the camera.
+     * @return A double representing the yaw of the camera in degrees.
+     */
     public double getYaw();
-    
+
+    /**
+     * Getter for the roll of the camera.
+     * @return A double representing the roll of the camera in degrees.
+     */
     public double getRoll();
-    
+
+    /**
+     * Getter for the pitch of the camera.
+     * @return A double representing the pitch of the camera in degrees.
+     */
     public double getPitch();
-    
+
 }

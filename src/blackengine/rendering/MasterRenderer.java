@@ -110,11 +110,22 @@ public class MasterRenderer {
 
     /**
      * Calls the render method on each of the renderers that are present in the
-     * renderer map.
+     * renderer map. Also removes all renderers that are flagged as destroyed.
      */
     public void render() {
+        this.removeDestroyedRenderers();
         this.rendererMap.getRenderers()
                 .forEach(x -> x.render());
+    }
+
+    /**
+     * Removes all renderers from the renderer map that are flagged as
+     * destroyed.
+     */
+    public void removeDestroyedRenderers() {
+        this.rendererMap.getRenderers()
+                .filter(x -> x.isDestroyed())
+                .forEach(x -> this.rendererMap.removeRenderer(x));
     }
 
     /**

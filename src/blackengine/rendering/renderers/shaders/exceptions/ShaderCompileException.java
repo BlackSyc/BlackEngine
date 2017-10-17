@@ -24,12 +24,22 @@
 package blackengine.rendering.renderers.shaders.exceptions;
 
 /**
+ * An instance of this exception type is thrown when a shader could not be
+ * compiled by OpenGL successfully.
  *
  * @author Blackened
  */
 public class ShaderCompileException extends RuntimeException {
 
-    public ShaderCompileException(String message) {
-        super(message);
+    /**
+     * Default constructor for creating a new instance of shader compile
+     * exception.
+     *
+     * @param shaderType The type of shader that did not compile.
+     * @param shaderName The name of the shader that did not compile.
+     */
+    public ShaderCompileException(String shaderType, String shaderName) {
+        super(shaderType + " shader " + shaderName + " did not compile.");
+
     }
 }

@@ -109,6 +109,16 @@ public class RendererMap {
     }
 
     /**
+     * Removes a specified renderer from this renderer map, if it was present.
+     *
+     * @param renderer The renderer that is to be removed if it is present in
+     * the renderer map.
+     */
+    public void removeRenderer(Renderer renderer) {
+        this.entries.removeIf(x -> x.getShaderClass().equals(renderer.getShaderClass()));
+    }
+
+    /**
      * Retrieves the renderer using the specified shader class, if any.
      *
      * @param <S>

@@ -23,9 +23,11 @@
  */
 package blackengine.rendering;
 
+import blackengine.openGL.frameBuffer.FrameBufferObject;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.stream.Stream;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -37,8 +39,19 @@ import org.lwjgl.util.vector.Matrix4f;
 public class RenderEngine {
 
     //<editor-fold defaultstate="collapsed" desc="Instance">
+    /**
+     * The singleton instance of RenderEngine.
+     */
     private static RenderEngine INSTANCE;
 
+    /**
+     * Retrieves the singleton instance of RenderEngine if it was created or
+     * throws a
+     * {@link blackengine.rendering.exceptions.RenderEngineNotCreatedException}
+     * if it has not yet been instantiated.
+     *
+     * @return An instance of RenderEngine.
+     */
     public static RenderEngine getInstance() {
         if (INSTANCE != null) {
             return INSTANCE;
@@ -46,15 +59,25 @@ public class RenderEngine {
         throw new RenderEngineNotCreatedException();
     }
 
+    /**
+     * Creates a new singleton instance of RenderEngine.
+     */
     protected static void create() {
         INSTANCE = new RenderEngine();
     }
 
+    /**
+     * Default constructor for creating a new instance of RenderEngine.
+     */
     private RenderEngine() {
         this.masterRenderer = new MasterRenderer();
         this.lights = new ArrayList<>();
+        this.fbos = new HashMap<>();
     }
 
+    /**
+     * Destroys this instance of RenderEngine and its master renderer.
+     */
     protected void destroy() {
         this.masterRenderer.destroy();
         INSTANCE = null;
@@ -62,48 +85,164 @@ public class RenderEngine {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Master Renderer">
+    /**
+     * The master renderer that is used to call all renderers.
+     */
     private final MasterRenderer masterRenderer;
 
+    /**
+     * Getter for the master renderer of this render engine.
+     *
+     * @return An instance of {@link blackengine.rendering.MasterRenderer} that
+     * is used to call all renderers.
+     */
     public MasterRenderer getMasterRenderer() {
         return this.masterRenderer;
     }
     //</editor-fold>
-    
+
+    /**
+     * The width of the display that will be rendered to.
+     */
+    private int displayWidth;
+
+    /**
+     * The height of the display that will be rendered to.
+     */
+    private int displayHeight;
+
+    /**
+     * Getter for the width of the display that will be rendered to.
+     *
+     * @return An integer representing the width of the display that will be
+     * rendered to in pixels.
+     */
+    public int getDisplayWidth() {
+        return displayWidth;
+    }
+
+    /**
+     * Setter for the width of the display that will be rendered to.
+     *
+     * @param displayWidth An integer representing the width of the display that
+     * will be rendered to in pixels.
+     */
+    public void setDisplayWidth(int displayWidth) {
+        this.displayWidth = displayWidth;
+    }
+
+    /**
+     * Getter for the height of the display that will be rendered to.
+     *
+     * @return An integer representing the height of the display that will be
+     * rendered to in pixels.
+     */
+    public int getDisplayHeight() {
+        return displayHeight;
+    }
+
+    /**
+     * Setter for the height of the display that will be rendered to.
+     *
+     * @param displayHeight An integer representing the height of the display
+     * that will be rendered to in pixels.
+     */
+    public void setDisplayHeight(int displayHeight) {
+        this.displayHeight = displayHeight;
+    }
+
+    /**
+     * The main camera that will be used for rendering.
+     */
     private Camera mainCamera;
-    
+
+    /**
+     * The projection matrix that will be used for rendering.
+     */
     private Matrix4f projectionMatrix = new Matrix4f();
 
+    /**
+     * Getter for the projection matrix.
+     *
+     * @return An instance of Matrix4f.
+     */
     public Matrix4f getProjectionMatrix() {
         return projectionMatrix;
     }
+
+    /**
+     * Getter for the main camera that will be used for rendering.
+     *
+     * @return An implementation of {@link blackengine.rendering.Camera}.
+     */
     public Camera getMainCamera() {
         return mainCamera;
     }
 
+    /**
+     * Setter for the main camera that will be used for rendering.
+     *
+     * @param mainCamera An implementation of
+     * {@link blackengine.rendering.Camera}.
+     */
     public void setMainCamera(Camera mainCamera) {
         this.mainCamera = mainCamera;
     }
 
+    /**
+     * All frame buffer objects mapped to their name.
+     */
+    private final HashMap<String, FrameBufferObject> fbos;
+
+    /**
+     * Getter for a specific frame buffer object.
+     *
+     * @param name The name the frame buffer object is mapped to.
+     * @return An instance of
+     * {@link blackengine.openGL.frameBuffer.FrameBufferObject} that is mapped
+     * to the specified name.
+     */
+    public FrameBufferObject getFbo(String name) {
+        return fbos.get(name);
+    }
+
+    /**
+     * Adds a new frame buffer object to the render engine, mapped to the
+     * specified name.
+     *
+     * @param name A String representing the name that the frame buffer object
+     * will be mapped to.
+     * @param fbo An instance of FrameBufferObject.
+     */
+    public void addFbo(String name, FrameBufferObject fbo) {
+        this.fbos.put(name, fbo);
+    }
+
     //<editor-fold  defaultstate="collapsed" desc="Settings">
+    /**
+     * A flag determining whether anisotropic filtering is enabled.
+     */
     private boolean anisotropicFilteringEnabled = true;
 
+    /**
+     * Getter for the flag whether anisotropic filtering is enabled.
+     * @return True if anisotropic filtering is enabled, false otherwise.
+     */
     public boolean isAnisotropicFilteringEnabled() {
         return this.anisotropicFilteringEnabled;
     }
     //</editor-fold>
-    
-        /**
+
+    /**
      * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
      * NEAR_PLANE and display size.
      *
-     * @param width
-     * @param height
      * @param fieldOfView
      * @param nearPlane
      * @param farPlane
      */
-    public void createProjectionMatrix(float width, float height, float fieldOfView, float farPlane, float nearPlane) {
-        float aspectRatio = width / height;
+    public void createProjectionMatrix(float fieldOfView, float farPlane, float nearPlane) {
+        float aspectRatio = this.displayWidth / this.displayHeight;
         float y_scale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio;
         float x_scale = y_scale / aspectRatio;
         float frustum_length = farPlane - nearPlane;
