@@ -61,14 +61,18 @@ public class ImmutableVector2 implements Serializable{
 
     public ImmutableVector2() {
     }
+    
+    public ImmutableVector2(ImmutableVector2 immutableVector){
+        this.x = immutableVector.getX();
+        this.y = immutableVector.getY();
+    }
 
     public Vector2f mutable() {
         return new Vector2f(this.x, this.y);
     }
 
-    @Override
-    public ImmutableVector2 clone() {
-        return new ImmutableVector2(this.x, this.y);
+    public ImmutableVector2 copy() {
+        return new ImmutableVector2(this);
     }
 
     public float length() {

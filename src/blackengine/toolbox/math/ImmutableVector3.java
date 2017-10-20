@@ -76,14 +76,19 @@ public final class ImmutableVector3 implements Serializable{
         this.y = y;
         this.z = z;
     }
+    
+    public ImmutableVector3(ImmutableVector3 immutableVector){
+        this.x = immutableVector.getX();
+        this.y = immutableVector.getY();
+        this.z = immutableVector.getZ();
+    }
 
     public Vector3f mutable() {
         return new Vector3f(this.x, this.y, this.z);
     }
 
-    @Override
-    public ImmutableVector3 clone() {
-        return new ImmutableVector3(this.x, this.y, this.z);
+    public ImmutableVector3 copy() {
+        return new ImmutableVector3(this);
     }
 
     public float length() {

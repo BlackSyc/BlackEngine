@@ -74,8 +74,7 @@ public class MovementComponent extends ComponentBase {
         super.getParent().getTransform().setRelativeEulerRotation(newRotation);
     }
     
-    @Override
-    public MovementComponent clone(){
+    public MovementComponent copy(){
         return new MovementComponent(this.movementSpeed, this.rotationSpeed);
     }
 }

@@ -126,8 +126,7 @@ public class BehaviourComponent extends ComponentBase {
         this.behaviours.forEach(x -> x.tick());
     }
     
-    @Override
-    public BehaviourComponent clone(){
+    public BehaviourComponent copy(){
         return new BehaviourComponent((Behaviour[])this.behaviours.stream().map(x -> x.clone()).toArray());
     }
 

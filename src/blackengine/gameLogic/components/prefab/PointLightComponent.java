@@ -85,8 +85,7 @@ public class PointLightComponent extends ComponentBase implements PointLight {
         RenderEngine.getInstance().removeLight(this);
     }
     
-    @Override
-    public PointLightComponent clone(){
-        return new PointLightComponent(this.attenuation.clone(), this.offSet.clone(), this.colour.clone());
+    public PointLightComponent copy(){
+        return new PointLightComponent(this.attenuation.copy(), this.offSet.copy(), this.colour.copy());
     }
 }
