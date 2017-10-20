@@ -26,8 +26,8 @@ package blackengine.gameLogic.components.prefab.rendering;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.openGL.vao.Vao;
 import blackengine.rendering.RenderEngine;
-import blackengine.rendering.renderers.Material;
-import blackengine.rendering.renderers.ShaderProgramBase;
+import blackengine.rendering.renderers.shaderPrograms.Material;
+import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
 
 /**
  *
@@ -35,7 +35,7 @@ import blackengine.rendering.renderers.ShaderProgramBase;
  * @param <S>
  * @param <M>
  */
-public class RenderComponent<S extends ShaderProgramBase, M extends Material<S>> extends ComponentBase{
+public class RenderComponent<S extends MaterialShaderProgram, M extends Material<S>> extends ComponentBase{
     
     private final M material;
     

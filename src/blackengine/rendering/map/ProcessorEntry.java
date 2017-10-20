@@ -23,20 +23,54 @@
  */
 package blackengine.rendering.map;
 
+import blackengine.rendering.renderers.Processor;
+import blackengine.rendering.renderers.shaderPrograms.ProcessingShaderProgram;
+
 /**
- * Represents an empty entry in the renderer map.
  *
  * @author Blackened
+ * @param <S>
  */
-public class NullEntry extends RendererEntry {
+public class ProcessorEntry<S extends ProcessingShaderProgram> {
+    
+    /**
+     * The class of the shader the renderer uses.
+     */
+    private final Class<S> shaderClass;
 
     /**
-     * Default constructor for creating a new instance. Calls the super
-     * constructor using nulled arguments.
+     * The renderer itself.
      */
-    @SuppressWarnings("unchecked")
-    public NullEntry() {
-        super(null, null);
+    private final Processor<S> processor;
+
+    /**
+     * Getter for the class of the shader this renderer uses.
+     *
+     * @return The class of the shader the renderer uses.
+     */
+    public Class<S> getShaderClass() {
+        return shaderClass;
+    }
+
+    /**
+     * Getter for the renderer itself.
+     *
+     * @return The renderer itself.
+     */
+    public Processor<S> getProcessor() {
+        return this.processor;
+    }
+
+    /**
+     * Protected default constructor for creating a new instance of
+     * RendererEntry.
+     *
+     * @param shaderClass The class of the shader the renderer uses.
+     * @param processor
+     */
+    protected ProcessorEntry(Class<S> shaderClass, Processor<S> processor) {
+        this.shaderClass = shaderClass;
+        this.processor = processor;
     }
 
 }

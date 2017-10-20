@@ -25,9 +25,9 @@ package blackengine.rendering;
 
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
 import blackengine.rendering.map.RendererMap;
-import blackengine.rendering.renderers.Material;
+import blackengine.rendering.renderers.shaderPrograms.Material;
 import blackengine.rendering.renderers.Renderer;
-import blackengine.rendering.renderers.ShaderProgramBase;
+import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
 
 /**
  * An instance of this class will deal with all rendering logic by coordinating
@@ -53,7 +53,7 @@ public class MasterRenderer {
      * @return An instance of Renderer that is compatible with the specified
      * render component, or null if none was found.
      */
-    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S, M> renderComponent) {
+    public <S extends MaterialShaderProgram, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S, M> renderComponent) {
         return this.rendererMap.getRendererFor(renderComponent);
     }
 
@@ -68,7 +68,7 @@ public class MasterRenderer {
      * @return True if a renderer is present that is compatible with the
      * specified component, false otherwise.
      */
-    public <S extends ShaderProgramBase, M extends Material<S>> boolean containsRendererFor(RenderComponent<S, M> renderComponent) {
+    public <S extends MaterialShaderProgram, M extends Material<S>> boolean containsRendererFor(RenderComponent<S, M> renderComponent) {
         return this.rendererMap.containsRendererFor(renderComponent);
     }
 
@@ -83,8 +83,8 @@ public class MasterRenderer {
      * @return A renderer with a shader program of the specified class, if one
      * exists. Returns null otherwise.
      */
-    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererWith(Class<S> shaderClass) {
-        return this.rendererMap.get(shaderClass);
+    public <S extends MaterialShaderProgram, M extends Material<S>> Renderer<S, M> getRendererWith(Class<S> shaderClass) {
+        return this.rendererMap.getRenderer(shaderClass);
     }
 
     /**
@@ -96,7 +96,7 @@ public class MasterRenderer {
      * @param renderer An instance of Renderer that will be put in the renderer
      * map.
      */
-    public <S extends ShaderProgramBase, M extends Material<S>> void put(Renderer<S, M> renderer) {
+    public <S extends MaterialShaderProgram, M extends Material<S>> void put(Renderer<S, M> renderer) {
         this.rendererMap.put(renderer);
         renderer.initialize();
     }
@@ -113,19 +113,9 @@ public class MasterRenderer {
      * renderer map. Also removes all renderers that are flagged as destroyed.
      */
     public void render() {
-        this.removeDestroyedRenderers();
-        this.rendererMap.getRenderers()
+        this.rendererMap.removeDestroyedPipelineElements();
+        this.rendererMap.getPipeline()
                 .forEach(x -> x.render());
-    }
-
-    /**
-     * Removes all renderers from the renderer map that are flagged as
-     * destroyed.
-     */
-    public void removeDestroyedRenderers() {
-        this.rendererMap.getRenderers()
-                .filter(x -> x.isDestroyed())
-                .forEach(x -> this.rendererMap.removeRenderer(x));
     }
 
     /**

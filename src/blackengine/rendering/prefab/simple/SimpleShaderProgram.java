@@ -24,7 +24,7 @@
 package blackengine.rendering.prefab.simple;
 
 import blackengine.dataAccess.tools.PlainTextLoader;
-import blackengine.rendering.renderers.BasicShaderProgramBase;
+import blackengine.rendering.renderers.shaderPrograms.BasicShaderProgramBase;
 import blackengine.rendering.renderers.shaders.FragmentShader;
 import blackengine.rendering.renderers.shaders.VertexShader;
 import java.io.IOException;

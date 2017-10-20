@@ -5,6 +5,8 @@
  */
 package blackengine.rendering.renderers;
 
+import blackengine.rendering.renderers.shaderPrograms.Material;
+import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
 import java.util.HashSet;
 import java.util.stream.Stream;
@@ -15,7 +17,7 @@ import java.util.stream.Stream;
  * @param <S>
  * @param <M>
  */
-public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
+public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> implements PipelineElement<S>{
 
     /**
      * The shader program that is used to render this renderers targets.
@@ -42,6 +44,7 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      *
      * @return True if this renderer was destroyed, false otherwise.
      */
+    @Override
     public boolean isDestroyed() {
         return destroyed;
     }
@@ -52,7 +55,8 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      * @return A float determining the priority index used to determine the
      * order of renderers.
      */
-    public float getRenderPriority() {
+    @Override
+    public float getPriority() {
         return renderPriority;
     }
 
@@ -74,6 +78,7 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      * its targets..
      */
     @SuppressWarnings("unchecked")
+    @Override
     public final Class<S> getShaderClass() {
         return (Class<S>) this.shaderProgram.getClass();
     }
@@ -164,6 +169,7 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      * Destroys this renderers shader program, deactivates all targets, and
      * flags this renderer for destruction.
      */
+    @Override
     public void destroy() {
         this.shaderProgram.destroy();
         this.targets.stream().forEach(x -> x.deactivate());

@@ -21,25 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.renderers.shaderPrograms;
 
 import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
 
 /**
- * An instance of this exception type is thrown when a shader program did not
- * get validated by OpenGL.
+ * An instance of this class should expose all material uniforms used in the
+ * specified shader class.
  *
  * @author Blackened
+ * @param <S>
  */
-public class ShaderProgramCompileException extends RuntimeException {
+public abstract class Material<S extends MaterialShaderProgram> {
 
     /**
-     * Default constructor for creating a new shader program compile exception.
-     *
-     * @param clazz The class of the shader program that was not compiled.
+     * The class of shader program this material exposes the uniform variables for.
      */
-    public ShaderProgramCompileException(Class<? extends MaterialShaderProgram> clazz) {
-        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
+    private final Class<S> shaderClass;
+
+    /**
+     * Getter for the class of shader program this material exposes the uniform
+     * variables for.
+     *
+     * @return A class that extends ShaderProgram.
+     */
+    public Class<S> getShaderClass() {
+        return this.shaderClass;
+    }
+
+    /**
+     * Default constructor for creating a new instance of Material.
+     *
+     * @param shaderClass The class of shader program that this material will
+     * expose the uniform variables to.
+     */
+    public Material(Class<S> shaderClass) {
+        this.shaderClass = shaderClass;
     }
 
 }

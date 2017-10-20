@@ -21,25 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.map;
 
-import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
 
 /**
- * An instance of this exception type is thrown when a shader program did not
- * get validated by OpenGL.
  *
  * @author Blackened
  */
-public class ShaderProgramCompileException extends RuntimeException {
-
-    /**
-     * Default constructor for creating a new shader program compile exception.
-     *
-     * @param clazz The class of the shader program that was not compiled.
-     */
-    public ShaderProgramCompileException(Class<? extends MaterialShaderProgram> clazz) {
-        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
+public class NullProcessorEntry extends ProcessorEntry{
+    
+    @SuppressWarnings("unchecked")
+    public NullProcessorEntry() {
+        super(null, null);
     }
-
+    
 }

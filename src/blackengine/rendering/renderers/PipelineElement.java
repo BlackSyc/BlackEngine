@@ -23,38 +23,26 @@
  */
 package blackengine.rendering.renderers;
 
+import blackengine.rendering.renderers.shaderPrograms.ShaderProgramBase;
+
 /**
- * An instance of this class should expose all material uniforms used in the
- * specified shader class.
  *
  * @author Blackened
  * @param <S>
  */
-public abstract class Material<S extends ShaderProgramBase> {
-
-    /**
-     * The class of shader program this material exposes the uniform variables for.
-     */
-    private final Class<S> shaderClass;
-
-    /**
-     * Getter for the class of shader program this material exposes the uniform
-     * variables for.
-     *
-     * @return A class that extends ShaderProgram.
-     */
-    public Class<S> getShaderClass() {
-        return this.shaderClass;
-    }
-
-    /**
-     * Default constructor for creating a new instance of Material.
-     *
-     * @param shaderClass The class of shader program that this material will
-     * expose the uniform variables to.
-     */
-    public Material(Class<S> shaderClass) {
-        this.shaderClass = shaderClass;
-    }
-
+public interface PipelineElement<S extends ShaderProgramBase> {
+    
+    public float getPriority();
+    
+    public void render();
+    
+    public boolean isDestroyed();
+    
+    public void destroy();
+    
+    @SuppressWarnings("unchecked")
+    public Class<S> getShaderClass();
+    
+    
+    
 }

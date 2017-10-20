@@ -6,9 +6,12 @@
 package blackengine.rendering.map;
 
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
-import blackengine.rendering.renderers.Material;
+import blackengine.rendering.renderers.PipelineElement;
+import blackengine.rendering.renderers.Processor;
+import blackengine.rendering.renderers.shaderPrograms.Material;
 import blackengine.rendering.renderers.Renderer;
-import blackengine.rendering.renderers.ShaderProgramBase;
+import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
+import blackengine.rendering.renderers.shaderPrograms.ProcessingShaderProgram;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -25,34 +28,29 @@ public class RendererMap {
      * All entries containing the renderers mapped by the class of the shader
      * they use.
      */
-    private final ArrayList<RendererEntry> entries;
+    private final ArrayList<RendererEntry> rendererEntries;
+    
+    private final ArrayList<ProcessorEntry> processorEntries;
+    
+    private final ArrayList<PipelineElement> pipeline;
 
     /**
      * A comparator that is used to order the renderers.
      */
-    private final Comparator<RendererEntry> comparator;
+    private final Comparator<PipelineElement> comparator;
 
     /**
      * Default constructor for creating a new instance of RendererMap. Creates a
      * default comparator that uses the Float.compare method.
      */
     public RendererMap() {
-        this.entries = new ArrayList<>();
+        this.rendererEntries = new ArrayList<>();
+        this.processorEntries = new ArrayList<>();
+        this.pipeline = new ArrayList<>();
         this.comparator = (x, y)
                 -> Float.compare(
-                        x.getRenderer().getRenderPriority(),
-                        y.getRenderer().getRenderPriority());
-    }
-
-    /**
-     * Constructor for creating a new instance of RendererMap.
-     *
-     * @param comparator The comparator that will be used to order the internal
-     * renderer entries.
-     */
-    public RendererMap(Comparator<RendererEntry> comparator) {
-        this.entries = new ArrayList<>();
-        this.comparator = comparator;
+                        x.getPriority(),
+                        y.getPriority());
     }
 
     /**
@@ -61,8 +59,14 @@ public class RendererMap {
      * @return An instance of a Stream of renderers that is ordered according to
      * the internal comparator.
      */
-    public Stream<Renderer> getRenderers() {
-        return this.entries.stream().map(x -> x.getRenderer());
+    public Stream<PipelineElement> getPipeline() {
+        return this.pipeline.stream();
+    }
+    
+    public void removeDestroyedPipelineElements(){
+        this.rendererEntries.removeIf(x -> x.getRenderer().isDestroyed());
+        this.processorEntries.removeIf(x -> x.getProcessor().isDestroyed());
+        this.pipeline.removeIf(x -> x.isDestroyed());
     }
 
     /**
@@ -75,10 +79,10 @@ public class RendererMap {
      * @param <M>
      * @param renderer The renderer to be added to this renderer map.
      */
-    public <S extends ShaderProgramBase, M extends Material<S>> void put(Renderer<S, M> renderer) {
+    public <S extends MaterialShaderProgram, M extends Material<S>> void put(Renderer<S, M> renderer) {
         Class<S> shaderClass = renderer.getShaderClass();
         if (this.containsRendererFor(shaderClass)) {
-            Stream<RenderComponent<S, Material<S>>> renderComponents = this.get(shaderClass).getTargets();
+            Stream<RenderComponent<S, Material<S>>> renderComponents = this.getRenderer(shaderClass).getTargets();
             renderComponents
                     .map(x -> {
                         @SuppressWarnings("unchecked")
@@ -90,10 +94,49 @@ public class RendererMap {
 
         }
         RendererEntry<S, M> entry = new RendererEntry<>(shaderClass, renderer);
-        this.entries.add(entry);
-        this.entries.sort(this.comparator);
+        this.rendererEntries.add(entry);
+        
+        // add the renderer to the pipeline as well.
+        this.pipeline.add(renderer);
+        this.pipeline.sort(this.comparator);
+        
     }
 
+    public <S extends ProcessingShaderProgram> void put(Processor<S> processor){
+        Class<S> shaderClass = processor.getShaderClass();
+        if(this.containsProcessorFor(shaderClass)){
+            this.destroyProcessorFor(shaderClass);
+        }
+        
+        ProcessorEntry<S> entry = new ProcessorEntry<>(shaderClass, processor);
+        this.processorEntries.add(entry);
+        
+        // add the processor to the pipeline as well.
+        this.pipeline.add(processor);
+        this.pipeline.sort(this.comparator);
+    }
+    
+    public <S extends ProcessingShaderProgram> boolean containsProcessorFor(Class<S> shaderProgramClass){
+        return this.processorEntries.stream()
+                .anyMatch(x -> x.getShaderClass().equals(shaderProgramClass));
+    }
+    
+    public <S extends ProcessingShaderProgram> void destroyProcessorFor(Class<S> shaderProgramClass){
+        if(this.containsProcessorFor(shaderProgramClass)){
+            this.getProcessor(shaderProgramClass).destroy();
+            this.processorEntries.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
+            this.pipeline.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <S extends ProcessingShaderProgram> Processor<S> getProcessor(Class<S> shaderProgramClass){
+                return this.processorEntries.stream()
+                .filter(x -> x.getShaderClass().equals(shaderProgramClass))
+                .findFirst()
+                .orElse(new NullProcessorEntry())
+                .getProcessor();
+    }
     /**
      * Destroys and removes the renderer using the specified shader class, if
      * any.
@@ -101,10 +144,11 @@ public class RendererMap {
      * @param shaderClass The class of the shader used by the renderer that is
      * to be removed.
      */
-    public void destroyRendererFor(Class<? extends ShaderProgramBase> shaderClass) {
+    public void destroyRendererFor(Class<? extends MaterialShaderProgram> shaderClass) {
         if (this.containsRendererFor(shaderClass)) {
-            this.get(shaderClass).destroy();
-            this.entries.removeIf(x -> x.getShaderClass().equals(shaderClass));
+            this.getRenderer(shaderClass).destroy();
+            this.rendererEntries.removeIf(x -> x.getShaderClass().equals(shaderClass));
+            this.pipeline.removeIf(x -> x.getShaderClass().equals(shaderClass));
         }
     }
 
@@ -115,7 +159,8 @@ public class RendererMap {
      * the renderer map.
      */
     public void removeRenderer(Renderer renderer) {
-        this.entries.removeIf(x -> x.getShaderClass().equals(renderer.getShaderClass()));
+        this.rendererEntries.removeIf(x -> x.getShaderClass().equals(renderer.getShaderClass()));
+        this.pipeline.removeIf(x -> x.getShaderClass().equals(renderer.getShaderClass()));
     }
 
     /**
@@ -127,11 +172,11 @@ public class RendererMap {
      * @return An instance of Renderer, or null if none was found.
      */
     @SuppressWarnings("unchecked")
-    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> get(Class<S> shaderClass) {
-        return this.entries.stream()
+    public <S extends MaterialShaderProgram, M extends Material<S>> Renderer<S, M> getRenderer(Class<S> shaderClass) {
+        return this.rendererEntries.stream()
                 .filter(x -> x.getShaderClass().equals(shaderClass))
                 .findFirst()
-                .orElse(new NullEntry())
+                .orElse(new NullRendererEntry())
                 .getRenderer();
     }
 
@@ -142,8 +187,8 @@ public class RendererMap {
      * @return True if a renderer using the specified shader class is present,
      * false otherwise.
      */
-    public boolean containsRendererFor(Class<? extends ShaderProgramBase> shaderClass) {
-        return this.entries.stream()
+    public boolean containsRendererFor(Class<? extends MaterialShaderProgram> shaderClass) {
+        return this.rendererEntries.stream()
                 .anyMatch(x -> x.getShaderClass().equals(shaderClass));
     }
 
@@ -158,7 +203,7 @@ public class RendererMap {
      * @return True if a renderer was found that is compatible with the render
      * component, false otherwise.
      */
-    public <S extends ShaderProgramBase, M extends Material<S>> boolean containsRendererFor(RenderComponent<S, M> renderComponent) {
+    public <S extends MaterialShaderProgram, M extends Material<S>> boolean containsRendererFor(RenderComponent<S, M> renderComponent) {
         return this.containsRendererFor(renderComponent.getMaterial().getShaderClass());
     }
 
@@ -173,8 +218,8 @@ public class RendererMap {
      * @return A renderer that is compatible with the specified render
      * component, or null if none was found.
      */
-    public <S extends ShaderProgramBase, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S, M> renderComponent) {
-        return this.get(renderComponent.getMaterial().getShaderClass());
+    public <S extends MaterialShaderProgram, M extends Material<S>> Renderer<S, M> getRendererFor(RenderComponent<S, M> renderComponent) {
+        return this.getRenderer(renderComponent.getMaterial().getShaderClass());
     }
 
     /**
@@ -182,8 +227,8 @@ public class RendererMap {
      * and clears the reference to them.
      */
     public void destroy() {
-        this.entries.forEach(x -> x.getRenderer().destroy());
-        this.entries.clear();
+        this.rendererEntries.forEach(x -> x.getRenderer().destroy());
+        this.rendererEntries.clear();
     }
 
 }

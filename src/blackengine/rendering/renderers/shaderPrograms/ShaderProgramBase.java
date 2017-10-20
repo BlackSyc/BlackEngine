@@ -21,10 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.renderers.shaderPrograms;
 
-import blackengine.gameLogic.Transform;
-import blackengine.openGL.vao.Vao;
 import blackengine.rendering.renderers.shaders.FragmentShader;
 import blackengine.rendering.renderers.shaders.VertexShader;
 import blackengine.rendering.renderers.shaders.exceptions.NoSuchAttributeException;
@@ -45,14 +43,11 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
- * The base of all shader programs.
  *
  * @author Blackened
- * @param <M> The material that is used to load all uniforms to this programs
- * shaders.
  */
-public abstract class ShaderProgramBase<M extends Material> {
-
+public abstract class ShaderProgramBase {
+    
     //<editor-fold defaultstate="collapsed" desc="Fields">
     /**
      * The ID of this shader program used for reference with the graphics card.
@@ -124,32 +119,6 @@ public abstract class ShaderProgramBase<M extends Material> {
      * Gets called before any instance of RenderComponent is rendered.
      */
     public abstract void loadFrameUniforms();
-
-    /**
-     * Loads all properties from the material to their corresponding uniform
-     * variables.
-     *
-     * @param material The material of which the properties will be loaded into
-     * the uniform variables.
-     */
-    public abstract void loadMaterialUniforms(M material);
-
-    /**
-     * Loads all uniform variables that are dependant on the transform of an
-     * instance that will be renderer.
-     *
-     * @param transform The transform of the instance that will be rendered
-     * next.
-     */
-    public abstract void loadTransformUniforms(Transform transform);
-
-    /**
-     * The draw call specific to the vao. The Vao should be bound and unbound in
-     * this method as well.
-     *
-     * @param vao The vao that will be drawn.
-     */
-    public abstract void draw(Vao vao);
 
     /**
      * Sets the specific rendering settings for this shader program such as
@@ -328,13 +297,6 @@ public abstract class ShaderProgramBase<M extends Material> {
         }
         GL20.glBindAttribLocation(this.programId, location, attributeName);
     }
-
-    /**
-     * An implementation of this method should bind all attributes ('in'
-     * variables) to a specified location using the member
-     * {@link #bindAttribute(java.lang.String, int) bindAttribute(attributeName, location)}.
-     */
-    protected abstract void bindAttributes();
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Private methods">
@@ -348,9 +310,7 @@ public abstract class ShaderProgramBase<M extends Material> {
     /**
      * Binds the attributes ('in' variables) and validates this program.
      */
-    private void validate() {
-        this.bindAttributes();
-
+    protected void validate() {
         GL20.glLinkProgram(this.programId);
         GL20.glValidateProgram(this.programId);
 //        if (GL20.glGetProgrami(this.programId, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) {

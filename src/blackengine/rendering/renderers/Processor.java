@@ -21,25 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.renderers;
 
-import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
+import blackengine.rendering.renderers.shaderPrograms.ShaderProgramBase;
 
 /**
- * An instance of this exception type is thrown when a shader program did not
- * get validated by OpenGL.
  *
  * @author Blackened
+ * @param <S>
  */
-public class ShaderProgramCompileException extends RuntimeException {
+public class Processor<S extends ShaderProgramBase> implements PipelineElement<S>{
+    
+    private final float priority;
+    
+    private boolean destroyed = false;
+    
+    private final S shaderProgram;
 
-    /**
-     * Default constructor for creating a new shader program compile exception.
-     *
-     * @param clazz The class of the shader program that was not compiled.
-     */
-    public ShaderProgramCompileException(Class<? extends MaterialShaderProgram> clazz) {
-        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
+    public Processor(S shaderProgram, float priority) {
+        this.shaderProgram = shaderProgram;
+        this.priority = priority;
+    }
+    
+    
+
+    @Override
+    public float getPriority() {
+        return this.priority;
     }
 
+    @Override
+    public void render() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<S> getShaderClass() {
+        return (Class<S>) this.shaderProgram.getClass();
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return this.destroyed;
+    }
+
+    @Override
+    public void destroy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

@@ -21,25 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.renderers.shaderPrograms;
 
-import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
+import blackengine.rendering.renderers.shaders.FragmentShader;
+import blackengine.rendering.renderers.shaders.VertexShader;
 
 /**
- * An instance of this exception type is thrown when a shader program did not
- * get validated by OpenGL.
  *
  * @author Blackened
  */
-public class ShaderProgramCompileException extends RuntimeException {
+public class ProcessingShaderProgram extends ShaderProgramBase{
 
-    /**
-     * Default constructor for creating a new shader program compile exception.
-     *
-     * @param clazz The class of the shader program that was not compiled.
-     */
-    public ShaderProgramCompileException(Class<? extends MaterialShaderProgram> clazz) {
-        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
+    public ProcessingShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
 
+    @Override
+    public void loadGlobalUniforms() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void loadFrameUniforms() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void applySettings() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }
