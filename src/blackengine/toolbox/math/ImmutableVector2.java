@@ -31,6 +31,11 @@ import org.lwjgl.util.vector.Vector2f;
  * @author Blackened
  */
 public class ImmutableVector2 implements Serializable{
+    
+    public final ImmutableVector2 LEFT = new ImmutableVector2(-1,0);
+    public final ImmutableVector2 RIGHT = new ImmutableVector2(1,0);
+    public final ImmutableVector2 UP = new ImmutableVector2(0,1);
+    public final ImmutableVector2 DOWN = new ImmutableVector2(0,-1);
 
     private float x;
 

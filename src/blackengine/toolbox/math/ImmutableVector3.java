@@ -33,6 +33,13 @@ import org.lwjgl.util.vector.Vector4f;
  * @author Blackened
  */
 public final class ImmutableVector3 implements Serializable{
+        
+    public final ImmutableVector3 UP = new ImmutableVector3(0,1,0);
+    public final ImmutableVector3 DOWN = new ImmutableVector3(0,-1,0);
+    public final ImmutableVector3 LEFT = new ImmutableVector3(-1,0,0);
+    public final ImmutableVector3 RIGHT = new ImmutableVector3(1,0,0);
+    public final ImmutableVector3 FORWARD = new ImmutableVector3(0,0,-1);
+    public final ImmutableVector3 BACKWARD = new ImmutableVector3(0,0,1);
 
     private final float x;
 
