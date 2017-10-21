@@ -40,6 +40,10 @@ public class Processor<S extends ProcessingShaderProgram> implements PipelineEle
 
     private final S shaderProgram;
 
+    public Processor(S shaderProgram){
+        this(shaderProgram, 1.0f);
+    }
+    
     public Processor(S shaderProgram, float priority) {
         this.shaderProgram = shaderProgram;
         this.priority = priority;
@@ -54,8 +58,10 @@ public class Processor<S extends ProcessingShaderProgram> implements PipelineEle
     public void render() {
         if (this.isEnabled()) {
             this.shaderProgram.applySettings();
+            this.shaderProgram.start();
             this.shaderProgram.loadFrameUniforms();
             this.shaderProgram.render();
+            this.shaderProgram.stop();
             this.shaderProgram.revertSettings();
         }
     }
