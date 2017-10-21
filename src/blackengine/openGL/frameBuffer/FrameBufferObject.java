@@ -111,6 +111,7 @@ public class FrameBufferObject {
         int ID = GL30.glGenFramebuffers();
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, ID);
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
         return ID;
     }
 
@@ -124,7 +125,7 @@ public class FrameBufferObject {
         if (this.colourTexture != null) {
             throw new AttachmentAlreadyExistsException("colourTexture");
         }
-        this.colourTexture = TextureLoader.createFrameBufferTexture(width, height);
+        this.colourTexture = TextureLoader.createFrameBufferTexture(this.frameBufferId, width, height);
     }
 
     /**
@@ -137,7 +138,7 @@ public class FrameBufferObject {
         if (this.depthTexture != null) {
             throw new AttachmentAlreadyExistsException("depthTexture");
         }
-        this.depthTexture = TextureLoader.createFrameBufferDepthTexture(width, height);
+        this.depthTexture = TextureLoader.createFrameBufferDepthTexture(this.frameBufferId, width, height);
     }
 
     /**

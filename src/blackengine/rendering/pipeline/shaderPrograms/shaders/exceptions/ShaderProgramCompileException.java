@@ -21,25 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
-import blackengine.rendering.renderers.shaderPrograms.ShaderProgramBase;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
+
+import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 
 /**
- * An instance of this exception type is thrown when a shader program is
- * initialized but had been initialized before already.
+ * An instance of this exception type is thrown when a shader program did not
+ * get validated by OpenGL.
  *
  * @author Blackened
  */
-public class ShaderProgramAlreadyInitializedException extends RuntimeException {
+public class ShaderProgramCompileException extends RuntimeException {
 
     /**
-     * Default constructor for creating a new shader program already initialized
-     * exception.
+     * Default constructor for creating a new shader program compile exception.
      *
-     * @param shaderProgram The shader program that was already initialized.
+     * @param clazz The class of the shader program that was not compiled.
      */
-    public ShaderProgramAlreadyInitializedException(ShaderProgramBase shaderProgram) {
-        super("Shader program '" + shaderProgram.toString() + "' has already been initialized.");
+    public ShaderProgramCompileException(Class<? extends MaterialShaderProgram> clazz) {
+        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
     }
 
 }

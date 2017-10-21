@@ -21,29 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.pipeline.elements;
 
-import blackengine.rendering.renderers.shaderPrograms.ShaderProgramBase;
+import blackengine.rendering.pipeline.shaderPrograms.ProcessingShaderProgram;
 
 /**
  *
  * @author Blackened
  * @param <S>
  */
-public class Processor<S extends ShaderProgramBase> implements PipelineElement<S>{
-    
+public class Processor<S extends ProcessingShaderProgram> implements PipelineElement<S> {
+
     private final float priority;
-    
+
     private boolean destroyed = false;
-    
+
+    private boolean enabled = true;
+
     private final S shaderProgram;
 
     public Processor(S shaderProgram, float priority) {
         this.shaderProgram = shaderProgram;
         this.priority = priority;
     }
-    
-    
 
     @Override
     public float getPriority() {
@@ -52,7 +52,12 @@ public class Processor<S extends ShaderProgramBase> implements PipelineElement<S
 
     @Override
     public void render() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.isEnabled()) {
+            this.shaderProgram.applySettings();
+            this.shaderProgram.loadFrameUniforms();
+            this.shaderProgram.render();
+            this.shaderProgram.revertSettings();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +73,23 @@ public class Processor<S extends ShaderProgramBase> implements PipelineElement<S
 
     @Override
     public void destroy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.shaderProgram.destroy();
+        this.destroyed = true;
     }
-    
+
+    @Override
+    public void initialize() {
+        this.shaderProgram.initialize();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
 }

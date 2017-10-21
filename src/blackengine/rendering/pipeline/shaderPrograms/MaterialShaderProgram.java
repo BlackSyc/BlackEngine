@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaderPrograms;
+package blackengine.rendering.pipeline.shaderPrograms;
 
 import blackengine.gameLogic.Transform;
 import blackengine.openGL.vao.Vao;
-import blackengine.rendering.renderers.shaders.FragmentShader;
-import blackengine.rendering.renderers.shaders.VertexShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
 
 /**
  * The base of all shader programs.

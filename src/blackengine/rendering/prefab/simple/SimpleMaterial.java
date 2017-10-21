@@ -24,7 +24,7 @@
 package blackengine.rendering.prefab.simple;
 
 import blackengine.openGL.texture.Texture;
-import blackengine.rendering.renderers.shaderPrograms.Material;
+import blackengine.rendering.pipeline.shaderPrograms.Material;
 
 /**
  * Very simple material for rendering shapes with textures.

@@ -21,56 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.map;
-
-import blackengine.rendering.renderers.Processor;
-import blackengine.rendering.renderers.shaderPrograms.ProcessingShaderProgram;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
 
 /**
+ * An instance of this exception type is thrown when a uniform variable name is
+ * referenced but was not found on the shader source code.
  *
  * @author Blackened
- * @param <S>
  */
-public class ProcessorEntry<S extends ProcessingShaderProgram> {
-    
-    /**
-     * The class of the shader the renderer uses.
-     */
-    private final Class<S> shaderClass;
+public class UniformVariableNameNotFound extends RuntimeException {
 
     /**
-     * The renderer itself.
-     */
-    private final Processor<S> processor;
-
-    /**
-     * Getter for the class of the shader this renderer uses.
+     * Default constructor for creating a new uniform variable not found
+     * exception.
      *
-     * @return The class of the shader the renderer uses.
+     * @param uniformVariableName The name of the uniform variable that was not
+     * found.
      */
-    public Class<S> getShaderClass() {
-        return shaderClass;
-    }
-
-    /**
-     * Getter for the renderer itself.
-     *
-     * @return The renderer itself.
-     */
-    public Processor<S> getProcessor() {
-        return this.processor;
-    }
-
-    /**
-     * Protected default constructor for creating a new instance of
-     * RendererEntry.
-     *
-     * @param shaderClass The class of the shader the renderer uses.
-     * @param processor
-     */
-    protected ProcessorEntry(Class<S> shaderClass, Processor<S> processor) {
-        this.shaderClass = shaderClass;
-        this.processor = processor;
+    public UniformVariableNameNotFound(String uniformVariableName) {
+        super("The uniform variable '" + uniformVariableName + "' was not found.");
     }
 
 }

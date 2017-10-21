@@ -21,15 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaderPrograms;
+package blackengine.rendering.pipeline.shaderPrograms;
 
 import blackengine.gameLogic.Transform;
 import blackengine.openGL.vao.Vao;
 import static blackengine.openGL.vao.vbo.AttributeType.TEXTURE_COORDS;
 import static blackengine.openGL.vao.vbo.AttributeType.VERTEX_POSITIONS;
 import blackengine.rendering.RenderEngine;
-import blackengine.rendering.renderers.shaders.FragmentShader;
-import blackengine.rendering.renderers.shaders.VertexShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
 import org.lwjgl.opengl.GL11;
 
 /**

@@ -21,34 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaderPrograms;
-
-import blackengine.rendering.renderers.shaders.FragmentShader;
-import blackengine.rendering.renderers.shaders.VertexShader;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
 
 /**
+ * An instance of this exception type is thrown when an attribute name was not
+ * found in the shader code, but still called from code.
  *
  * @author Blackened
  */
-public class ProcessingShaderProgram extends ShaderProgramBase{
+public class NoSuchAttributeException extends RuntimeException {
 
-    public ProcessingShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
-        super(vertexShader, fragmentShader);
+    /**
+     * Default constructor for creating a new no such attribute exception.
+     *
+     * @param attributeName The name of the attribute that was not found.
+     */
+    public NoSuchAttributeException(String attributeName) {
+        super("Attribute with name " + attributeName + " was not found.");
     }
 
-    @Override
-    public void loadGlobalUniforms() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void loadFrameUniforms() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void applySettings() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

@@ -24,9 +24,9 @@
 package blackengine.rendering.prefab.simple;
 
 import blackengine.dataAccess.tools.PlainTextLoader;
-import blackengine.rendering.renderers.shaderPrograms.BasicShaderProgramBase;
-import blackengine.rendering.renderers.shaders.FragmentShader;
-import blackengine.rendering.renderers.shaders.VertexShader;
+import blackengine.rendering.pipeline.shaderPrograms.BasicShaderProgramBase;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
 import java.io.IOException;
 import org.lwjgl.opengl.GL13;
 

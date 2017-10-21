@@ -21,18 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.map;
+package blackengine.rendering.pipeline.shaderPrograms;
 
+import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 
 /**
+ * An instance of this class should expose all material uniforms used in the
+ * specified shader class.
  *
  * @author Blackened
+ * @param <S>
  */
-public class NullProcessorEntry extends ProcessorEntry{
-    
-    @SuppressWarnings("unchecked")
-    public NullProcessorEntry() {
-        super(null, null);
+public abstract class Material<S extends MaterialShaderProgram> {
+
+    /**
+     * The class of shader program this material exposes the uniform variables for.
+     */
+    private final Class<S> shaderClass;
+
+    /**
+     * Getter for the class of shader program this material exposes the uniform
+     * variables for.
+     *
+     * @return A class that extends ShaderProgram.
+     */
+    public Class<S> getShaderClass() {
+        return this.shaderClass;
     }
-    
+
+    /**
+     * Default constructor for creating a new instance of Material.
+     *
+     * @param shaderClass The class of shader program that this material will
+     * expose the uniform variables to.
+     */
+    public Material(Class<S> shaderClass) {
+        this.shaderClass = shaderClass;
+    }
+
 }

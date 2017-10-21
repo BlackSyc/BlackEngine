@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
 
 /**
  * An instance of this exception type is thrown when a shader could not be

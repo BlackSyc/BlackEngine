@@ -26,6 +26,7 @@ package blackengine.rendering;
 import blackengine.openGL.frameBuffer.FrameBufferObject;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
+import blackengine.rendering.pipeline.PipelineManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Stream;
@@ -70,36 +71,26 @@ public class RenderEngine {
      * Default constructor for creating a new instance of RenderEngine.
      */
     private RenderEngine() {
-        this.masterRenderer = new MasterRenderer();
         this.lights = new ArrayList<>();
         this.fbos = new HashMap<>();
+        this.pipelineManager = new PipelineManager();
     }
 
     /**
      * Destroys this instance of RenderEngine and its master renderer.
      */
     protected void destroy() {
-        this.masterRenderer.destroy();
+        this.pipelineManager.destroy();
         INSTANCE = null;
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Master Renderer">
+    //<editor-fold desc="Fields" defaultstate="collapsed">
     /**
-     * The master renderer that is used to call all renderers.
+     * The pipeline manager that contains the rendering pipeline containing all
+     * renderers and processors ordered by their render priority.
      */
-    private final MasterRenderer masterRenderer;
-
-    /**
-     * Getter for the master renderer of this render engine.
-     *
-     * @return An instance of {@link blackengine.rendering.MasterRenderer} that
-     * is used to call all renderers.
-     */
-    public MasterRenderer getMasterRenderer() {
-        return this.masterRenderer;
-    }
-    //</editor-fold>
+    private final PipelineManager pipelineManager;
 
     /**
      * The width of the display that will be rendered to.
@@ -110,6 +101,33 @@ public class RenderEngine {
      * The height of the display that will be rendered to.
      */
     private int displayHeight;
+
+    /**
+     * The main camera that will be used for rendering.
+     */
+    private Camera mainCamera;
+
+    /**
+     * The projection matrix that will be used for rendering.
+     */
+    private Matrix4f projectionMatrix = new Matrix4f();
+
+    /**
+     * All frame buffer objects mapped to their name.
+     */
+    private final HashMap<String, FrameBufferObject> fbos;
+    //</editor-fold>
+
+    //<editor-fold desc="Getters & Setters" defaultstate="collapsed">
+    /**
+     * Getter for the pipeline manager containing the pipeline used for
+     * rendering and processing.
+     *
+     * @return The instance of PipelineManager that is currently being used.
+     */
+    public PipelineManager getPipelineManager() {
+        return this.pipelineManager;
+    }
 
     /**
      * Getter for the width of the display that will be rendered to.
@@ -152,16 +170,6 @@ public class RenderEngine {
     }
 
     /**
-     * The main camera that will be used for rendering.
-     */
-    private Camera mainCamera;
-
-    /**
-     * The projection matrix that will be used for rendering.
-     */
-    private Matrix4f projectionMatrix = new Matrix4f();
-
-    /**
      * Getter for the projection matrix.
      *
      * @return An instance of Matrix4f.
@@ -190,11 +198,6 @@ public class RenderEngine {
     }
 
     /**
-     * All frame buffer objects mapped to their name.
-     */
-    private final HashMap<String, FrameBufferObject> fbos;
-
-    /**
      * Getter for a specific frame buffer object.
      *
      * @param name The name the frame buffer object is mapped to.
@@ -217,6 +220,7 @@ public class RenderEngine {
     public void addFbo(String name, FrameBufferObject fbo) {
         this.fbos.put(name, fbo);
     }
+    //</editor-fold>
 
     //<editor-fold  defaultstate="collapsed" desc="Settings">
     /**
@@ -226,6 +230,7 @@ public class RenderEngine {
 
     /**
      * Getter for the flag whether anisotropic filtering is enabled.
+     *
      * @return True if anisotropic filtering is enabled, false otherwise.
      */
     public boolean isAnisotropicFilteringEnabled() {
@@ -233,6 +238,7 @@ public class RenderEngine {
     }
     //</editor-fold>
 
+    //<editor-fold desc="Public methods" defaultstate="collapsed">
     /**
      * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
      * NEAR_PLANE and display size.
@@ -255,6 +261,12 @@ public class RenderEngine {
         this.projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
         this.projectionMatrix.m33 = 0;
     }
+
+    public void render() {
+        this.pipelineManager.removeDestroyedPipelineElements();
+        this.pipelineManager.getPipeline().forEach(x -> x.render());
+    }
+    //</editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Lighting">
     /**

@@ -21,22 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.map;
+package blackengine.rendering.pipeline.shaderPrograms;
+
+import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
 
 /**
- * Represents an empty entry in the renderer map.
  *
  * @author Blackened
  */
-public class NullRendererEntry extends RendererEntry {
+public abstract class ProcessingShaderProgram extends ShaderProgramBase{
 
-    /**
-     * Default constructor for creating a new instance. Calls the super
-     * constructor using nulled arguments.
-     */
-    @SuppressWarnings("unchecked")
-    public NullRendererEntry() {
-        super(null, null);
+    public ProcessingShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
 
+    @Override
+    public abstract void loadGlobalUniforms();
+
+    @Override
+    public abstract void loadFrameUniforms();
+
+    @Override
+    public abstract void applySettings();
+    
+    public abstract void render();
+    
 }

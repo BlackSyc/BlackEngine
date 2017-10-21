@@ -26,8 +26,8 @@ package blackengine.gameLogic.components.prefab.rendering;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.openGL.vao.Vao;
 import blackengine.rendering.RenderEngine;
-import blackengine.rendering.renderers.shaderPrograms.Material;
-import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
+import blackengine.rendering.pipeline.shaderPrograms.Material;
+import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 
 /**
  *
@@ -56,16 +56,16 @@ public class RenderComponent<S extends MaterialShaderProgram, M extends Material
     
     @Override
     public void onActivate(){
-        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).addTarget(this);
+        RenderEngine.getInstance().getPipelineManager().getRendererFor(this).addTarget(this);
     }
     
     @Override
     public void onDeactivate(){
-        RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).removeTarget(this);
+        RenderEngine.getInstance().getPipelineManager().getRendererFor(this).removeTarget(this);
     }
     
     @Override
     public boolean isActive(){
-        return RenderEngine.getInstance().getMasterRenderer().getRendererFor(this).containsTarget(this);
+        return RenderEngine.getInstance().getPipelineManager().getRendererFor(this).containsTarget(this);
     }
 }

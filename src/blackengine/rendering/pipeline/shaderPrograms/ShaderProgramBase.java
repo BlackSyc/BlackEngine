@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaderPrograms;
+package blackengine.rendering.pipeline.shaderPrograms;
 
-import blackengine.rendering.renderers.shaders.FragmentShader;
-import blackengine.rendering.renderers.shaders.VertexShader;
-import blackengine.rendering.renderers.shaders.exceptions.NoSuchAttributeException;
-import blackengine.rendering.renderers.shaders.exceptions.ShaderProgramAlreadyInitializedException;
-import blackengine.rendering.renderers.shaders.exceptions.UniformVariableNameNotFound;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions.NoSuchAttributeException;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions.ShaderProgramAlreadyInitializedException;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions.UniformVariableNameNotFound;
 import blackengine.toolbox.math.ImmutableVector2;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.nio.FloatBuffer;

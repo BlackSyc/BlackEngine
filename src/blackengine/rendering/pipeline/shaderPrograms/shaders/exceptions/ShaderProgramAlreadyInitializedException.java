@@ -21,28 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
-
-import blackengine.rendering.renderers.shaderPrograms.ShaderProgramBase;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
+import blackengine.rendering.pipeline.shaderPrograms.ShaderProgramBase;
 
 /**
+ * An instance of this exception type is thrown when a shader program is
+ * initialized but had been initialized before already.
  *
  * @author Blackened
- * @param <S>
  */
-public interface PipelineElement<S extends ShaderProgramBase> {
-    
-    public float getPriority();
-    
-    public void render();
-    
-    public boolean isDestroyed();
-    
-    public void destroy();
-    
-    @SuppressWarnings("unchecked")
-    public Class<S> getShaderClass();
-    
-    
-    
+public class ShaderProgramAlreadyInitializedException extends RuntimeException {
+
+    /**
+     * Default constructor for creating a new shader program already initialized
+     * exception.
+     *
+     * @param shaderProgram The shader program that was already initialized.
+     */
+    public ShaderProgramAlreadyInitializedException(ShaderProgramBase shaderProgram) {
+        super("Shader program '" + shaderProgram.toString() + "' has already been initialized.");
+    }
+
 }

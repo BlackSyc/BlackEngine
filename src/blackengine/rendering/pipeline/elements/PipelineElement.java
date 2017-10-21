@@ -21,42 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaderPrograms;
+package blackengine.rendering.pipeline.elements;
 
-import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
+import blackengine.rendering.pipeline.shaderPrograms.ShaderProgramBase;
 
 /**
- * An instance of this class should expose all material uniforms used in the
- * specified shader class.
  *
  * @author Blackened
  * @param <S>
  */
-public abstract class Material<S extends MaterialShaderProgram> {
-
-    /**
-     * The class of shader program this material exposes the uniform variables for.
-     */
-    private final Class<S> shaderClass;
-
-    /**
-     * Getter for the class of shader program this material exposes the uniform
-     * variables for.
-     *
-     * @return A class that extends ShaderProgram.
-     */
-    public Class<S> getShaderClass() {
-        return this.shaderClass;
-    }
-
-    /**
-     * Default constructor for creating a new instance of Material.
-     *
-     * @param shaderClass The class of shader program that this material will
-     * expose the uniform variables to.
-     */
-    public Material(Class<S> shaderClass) {
-        this.shaderClass = shaderClass;
-    }
-
+public interface PipelineElement<S extends ShaderProgramBase> {
+    
+    public float getPriority();
+    
+    public void render();
+    
+    public boolean isDestroyed();
+    
+    public void destroy();
+    
+    @SuppressWarnings("unchecked")
+    public Class<S> getShaderClass();
+    
+    public void initialize();
+    
+    public void setEnabled(boolean enabled);
+    
+    public boolean isEnabled();
+    
+    
+    
 }

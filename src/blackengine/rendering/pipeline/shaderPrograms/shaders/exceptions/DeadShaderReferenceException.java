@@ -21,25 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
-
-import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
 
 /**
- * An instance of this exception type is thrown when a shader program did not
- * get validated by OpenGL.
+ * An instance of this exception type is thrown when a shader has been destroyed
+ * but is still called.
  *
  * @author Blackened
  */
-public class ShaderProgramCompileException extends RuntimeException {
+public class DeadShaderReferenceException extends RuntimeException {
 
     /**
-     * Default constructor for creating a new shader program compile exception.
+     * Default constructor for creating a new dead shader reference exception.
      *
-     * @param clazz The class of the shader program that was not compiled.
+     * @param name The name of the shader that has a dead reference.
      */
-    public ShaderProgramCompileException(Class<? extends MaterialShaderProgram> clazz) {
-        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
+    public DeadShaderReferenceException(String name) {
+        super("The reference to shader '" + name + "' is invalid, as it has been destroyed.");
     }
-
 }

@@ -24,9 +24,7 @@
 package blackengine.rendering;
 
 import blackengine.toolbox.math.ImmutableVector3;
-import io.reactivex.Observable;
 import java.awt.Canvas;
-import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -66,7 +64,7 @@ public class DisplayManager {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glClearColor(this.clearColour.getX(), this.clearColour.getY(), this.clearColour.getZ(), 1);
 
-        RenderEngine.getInstance().getMasterRenderer().render();
+        RenderEngine.getInstance().render();
 
         this.updateDisplay();
     }

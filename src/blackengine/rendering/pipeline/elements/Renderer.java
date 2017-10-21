@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.pipeline.elements;
 
-import blackengine.rendering.renderers.shaderPrograms.Material;
-import blackengine.rendering.renderers.shaderPrograms.MaterialShaderProgram;
+import blackengine.rendering.pipeline.shaderPrograms.Material;
+import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
 import java.util.HashSet;
 import java.util.stream.Stream;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * @param <S>
  * @param <M>
  */
-public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> implements PipelineElement<S>{
+public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> implements PipelineElement<S> {
 
     /**
      * The shader program that is used to render this renderers targets.
@@ -38,6 +38,18 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
      * Flags whether this instance of renderer was destroyed.
      */
     private boolean destroyed = false;
+
+    private boolean enabled = true;
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     /**
      * Getter for whether this instance of renderer was destroyed.
@@ -111,6 +123,7 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
     /**
      * Initializes this renderer and its shader program.
      */
+    @Override
     public void initialize() {
         this.shaderProgram.initialize();
     }
@@ -119,19 +132,22 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
      * Renders all targets using the shader program.
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void render() {
-        this.shaderProgram.applySettings();
-        this.shaderProgram.start();
-        this.shaderProgram.loadFrameUniforms();
-        this.getTargets().forEach(x -> {
-            this.shaderProgram.loadTransformUniforms(x.getParent().getTransform());
+        if (this.isEnabled()) {
+            this.shaderProgram.applySettings();
+            this.shaderProgram.start();
+            this.shaderProgram.loadFrameUniforms();
+            this.getTargets().forEach(x -> {
+                this.shaderProgram.loadTransformUniforms(x.getParent().getTransform());
 
-            this.shaderProgram.loadMaterialUniforms(x.getMaterial());
-            this.shaderProgram.draw(x.getVao());
-        });
+                this.shaderProgram.loadMaterialUniforms(x.getMaterial());
+                this.shaderProgram.draw(x.getVao());
+            });
 
-        this.shaderProgram.stop();
-        this.shaderProgram.revertSettings();
+            this.shaderProgram.stop();
+            this.shaderProgram.revertSettings();
+        }
     }
 
     /**
