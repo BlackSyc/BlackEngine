@@ -60,7 +60,7 @@ public class Processor<S extends ProcessingShaderProgram> implements PipelineEle
             this.shaderProgram.applySettings();
             this.shaderProgram.start();
             this.shaderProgram.loadFrameUniforms();
-            this.shaderProgram.render();
+            this.shaderProgram.process();
             this.shaderProgram.stop();
             this.shaderProgram.revertSettings();
         }

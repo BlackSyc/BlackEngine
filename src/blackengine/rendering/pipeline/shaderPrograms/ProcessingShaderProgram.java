@@ -45,6 +45,6 @@ public abstract class ProcessingShaderProgram extends ShaderProgramBase{
     @Override
     public abstract void applySettings();
     
-    public abstract void render();
+    public abstract void process();
     
 }
