@@ -21,40 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.prefab.simple;
-
-import blackengine.openGL.texture.Texture;
-import blackengine.rendering.pipeline.shaderPrograms.Material;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
 
 /**
- * Very simple material for rendering shapes with textures.
+ * An instance of this exception type is thrown when a shader could not be
+ * compiled by OpenGL successfully.
  *
  * @author Blackened
  */
-public class SimpleMaterial extends Material<SimpleShaderProgram> {
+public class ShaderCompileException extends RuntimeException {
 
     /**
-     * The texture that will be rendered onto the shape.
-     */
-    private Texture texture;
-
-    /**
-     * Getter for the texture.
+     * Default constructor for creating a new instance of shader compile
+     * exception.
      *
-     * @return The texture that will be rendered onto the shape.
+     * @param shaderType The type of shader that did not compile.
+     * @param shaderName The name of the shader that did not compile.
      */
-    public Texture getTexture() {
-        return texture;
-    }
+    public ShaderCompileException(String shaderType, String shaderName) {
+        super(shaderType + " shader " + shaderName + " did not compile.");
 
-    /**
-     * Default constructor for creating a new instance of SimpleMaterial.
-     *
-     * @param texture The texture that will be rendered onto the shape.
-     */
-    public SimpleMaterial(Texture texture) {
-        super(SimpleShaderProgram.class);
-        this.texture = texture;
     }
-
 }

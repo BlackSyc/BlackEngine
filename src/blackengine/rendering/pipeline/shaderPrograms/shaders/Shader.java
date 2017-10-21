@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders;
+package blackengine.rendering.pipeline.shaderPrograms.shaders;
 
-import blackengine.rendering.renderers.shaders.exceptions.DeadShaderReferenceException;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions.DeadShaderReferenceException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

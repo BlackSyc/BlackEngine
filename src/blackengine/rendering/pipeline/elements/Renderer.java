@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.pipeline.elements;
 
+import blackengine.rendering.pipeline.shaderPrograms.Material;
+import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
 import java.util.HashSet;
 import java.util.stream.Stream;
@@ -15,7 +17,7 @@ import java.util.stream.Stream;
  * @param <S>
  * @param <M>
  */
-public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
+public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> implements PipelineElement<S> {
 
     /**
      * The shader program that is used to render this renderers targets.
@@ -37,11 +39,24 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      */
     private boolean destroyed = false;
 
+    private boolean enabled = true;
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     /**
      * Getter for whether this instance of renderer was destroyed.
      *
      * @return True if this renderer was destroyed, false otherwise.
      */
+    @Override
     public boolean isDestroyed() {
         return destroyed;
     }
@@ -52,7 +67,8 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      * @return A float determining the priority index used to determine the
      * order of renderers.
      */
-    public float getRenderPriority() {
+    @Override
+    public float getPriority() {
         return renderPriority;
     }
 
@@ -74,6 +90,7 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      * its targets..
      */
     @SuppressWarnings("unchecked")
+    @Override
     public final Class<S> getShaderClass() {
         return (Class<S>) this.shaderProgram.getClass();
     }
@@ -106,6 +123,7 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
     /**
      * Initializes this renderer and its shader program.
      */
+    @Override
     public void initialize() {
         this.shaderProgram.initialize();
     }
@@ -114,19 +132,22 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      * Renders all targets using the shader program.
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void render() {
-        this.shaderProgram.applySettings();
-        this.shaderProgram.start();
-        this.shaderProgram.loadFrameUniforms();
-        this.getTargets().forEach(x -> {
-            this.shaderProgram.loadTransformUniforms(x.getParent().getTransform());
+        if (this.isEnabled()) {
+            this.shaderProgram.applySettings();
+            this.shaderProgram.start();
+            this.shaderProgram.loadFrameUniforms();
+            this.getTargets().forEach(x -> {
+                this.shaderProgram.loadTransformUniforms(x.getParent().getTransform());
 
-            this.shaderProgram.loadMaterialUniforms(x.getMaterial());
-            this.shaderProgram.draw(x.getVao());
-        });
+                this.shaderProgram.loadMaterialUniforms(x.getMaterial());
+                this.shaderProgram.draw(x.getVao());
+            });
 
-        this.shaderProgram.stop();
-        this.shaderProgram.revertSettings();
+            this.shaderProgram.stop();
+            this.shaderProgram.revertSettings();
+        }
     }
 
     /**
@@ -164,6 +185,7 @@ public class Renderer<S extends ShaderProgramBase, M extends Material<S>> {
      * Destroys this renderers shader program, deactivates all targets, and
      * flags this renderer for destruction.
      */
+    @Override
     public void destroy() {
         this.shaderProgram.destroy();
         this.targets.stream().forEach(x -> x.deactivate());

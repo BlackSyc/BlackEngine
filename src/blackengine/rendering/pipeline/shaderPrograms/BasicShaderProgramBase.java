@@ -21,27 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers;
+package blackengine.rendering.pipeline.shaderPrograms;
 
 import blackengine.gameLogic.Transform;
 import blackengine.openGL.vao.Vao;
 import static blackengine.openGL.vao.vbo.AttributeType.TEXTURE_COORDS;
 import static blackengine.openGL.vao.vbo.AttributeType.VERTEX_POSITIONS;
 import blackengine.rendering.RenderEngine;
-import blackengine.rendering.renderers.shaders.FragmentShader;
-import blackengine.rendering.renderers.shaders.VertexShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
 import org.lwjgl.opengl.GL11;
 
 /**
  * This base class extends
- * {@link blackengine.rendering.renderers.ShaderProgramBase} with some most used
+ * {@link blackengine.rendering.renderers.MaterialShaderProgram} with some most used
  * implementations of abstract methods such that the projection matrix, view
  * matrix, transform matrix will be loaded into their uniform variables.
  *
  * @author Blackened
  * @param <M>
  */
-public abstract class BasicShaderProgramBase<M extends Material> extends ShaderProgramBase<M> {
+public abstract class BasicShaderProgramBase<M extends Material> extends MaterialShaderProgram<M> {
 
     /**
      * Default constructor for creating a new instance of basic shader program

@@ -21,25 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.pipeline.map;
+
+import blackengine.rendering.pipeline.map.ProcessorEntry;
+
 
 /**
- * An instance of this exception type is thrown when a uniform variable name is
- * referenced but was not found on the shader source code.
  *
  * @author Blackened
  */
-public class UniformVariableNameNotFound extends RuntimeException {
-
-    /**
-     * Default constructor for creating a new uniform variable not found
-     * exception.
-     *
-     * @param uniformVariableName The name of the uniform variable that was not
-     * found.
-     */
-    public UniformVariableNameNotFound(String uniformVariableName) {
-        super("The uniform variable '" + uniformVariableName + "' was not found.");
+public class NullProcessorEntry extends ProcessorEntry{
+    
+    @SuppressWarnings("unchecked")
+    public NullProcessorEntry() {
+        super(null, null);
     }
-
+    
 }

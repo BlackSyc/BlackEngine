@@ -21,22 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.map;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
 
 /**
- * Represents an empty entry in the renderer map.
+ * An instance of this exception type is thrown when a shader has been destroyed
+ * but is still called.
  *
  * @author Blackened
  */
-public class NullEntry extends RendererEntry {
+public class DeadShaderReferenceException extends RuntimeException {
 
     /**
-     * Default constructor for creating a new instance. Calls the super
-     * constructor using nulled arguments.
+     * Default constructor for creating a new dead shader reference exception.
+     *
+     * @param name The name of the shader that has a dead reference.
      */
-    @SuppressWarnings("unchecked")
-    public NullEntry() {
-        super(null, null);
+    public DeadShaderReferenceException(String name) {
+        super("The reference to shader '" + name + "' is invalid, as it has been destroyed.");
     }
-
 }

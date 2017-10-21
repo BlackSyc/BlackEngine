@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders;
+package blackengine.rendering.pipeline.shaderPrograms.shaders;
 
-import blackengine.rendering.renderers.shaders.exceptions.ShaderCompileException;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions.ShaderCompileException;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -31,31 +31,31 @@ import org.lwjgl.opengl.GL20;
  *
  * @author Blackened
  */
-public final class FragmentShader extends Shader{
+public final class VertexShader extends Shader {
 
     /**
-     * Default constructor for creating a new instance of FragmentShader.
+     * Default constructor for creating a new instance of VertexShader.
      * @param name The name of the shader (primarily used for debugging purposes).
      * @param shaderSource The source of the shader written in GLSL.
      */
-    public FragmentShader(String name, String shaderSource) {
+    public VertexShader(String name, String shaderSource) {
         super(name, shaderSource);
     }
 
     /**
-     * Creates and compiles the fragment shader from the source.
+     * Creates and compiles the vertex shader from the source.
      * @param shaderSource The source of the shader written in GLSL.
      * @return An integer referencing the shader on the graphics card.
      */
     @Override
     protected int create(String shaderSource) {
-        int shaderId = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
+        int shaderId = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
         GL20.glShaderSource(shaderId, shaderSource);
         GL20.glCompileShader(shaderId);
         if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-            throw new ShaderCompileException("Fragment", this.getName());
+            throw new ShaderCompileException("Vertex", this.getName());
         }
         return shaderId;
     }
-    
+
 }

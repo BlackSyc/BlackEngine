@@ -21,25 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.pipeline.elements;
 
-import blackengine.rendering.renderers.ShaderProgramBase;
+import blackengine.rendering.pipeline.shaderPrograms.ShaderProgramBase;
 
 /**
- * An instance of this exception type is thrown when a shader program did not
- * get validated by OpenGL.
  *
  * @author Blackened
+ * @param <S>
  */
-public class ShaderProgramCompileException extends RuntimeException {
-
-    /**
-     * Default constructor for creating a new shader program compile exception.
-     *
-     * @param clazz The class of the shader program that was not compiled.
-     */
-    public ShaderProgramCompileException(Class<? extends ShaderProgramBase> clazz) {
-        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
-    }
-
+public interface PipelineElement<S extends ShaderProgramBase> {
+    
+    public float getPriority();
+    
+    public void render();
+    
+    public boolean isDestroyed();
+    
+    public void destroy();
+    
+    @SuppressWarnings("unchecked")
+    public Class<S> getShaderClass();
+    
+    public void initialize();
+    
+    public void setEnabled(boolean enabled);
+    
+    public boolean isEnabled();
+    
+    
+    
 }

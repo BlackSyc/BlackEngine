@@ -21,25 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.pipeline.shaderPrograms;
+
+import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
+import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
 
 /**
- * An instance of this exception type is thrown when a shader could not be
- * compiled by OpenGL successfully.
  *
  * @author Blackened
  */
-public class ShaderCompileException extends RuntimeException {
+public abstract class ProcessingShaderProgram extends ShaderProgramBase{
 
-    /**
-     * Default constructor for creating a new instance of shader compile
-     * exception.
-     *
-     * @param shaderType The type of shader that did not compile.
-     * @param shaderName The name of the shader that did not compile.
-     */
-    public ShaderCompileException(String shaderType, String shaderName) {
-        super(shaderType + " shader " + shaderName + " did not compile.");
-
+    public ProcessingShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
+
+    @Override
+    public abstract void loadGlobalUniforms();
+
+    @Override
+    public abstract void loadFrameUniforms();
+
+    @Override
+    public abstract void applySettings();
+    
+    public abstract void render();
+    
 }

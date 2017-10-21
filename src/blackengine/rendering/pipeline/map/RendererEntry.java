@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package blackengine.rendering.map;
+package blackengine.rendering.pipeline.map;
 
-import blackengine.rendering.renderers.Material;
-import blackengine.rendering.renderers.Renderer;
-import blackengine.rendering.renderers.ShaderProgramBase;
+import blackengine.rendering.pipeline.shaderPrograms.Material;
+import blackengine.rendering.pipeline.elements.Renderer;
+import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 
 /**
  * Represents a node in a renderer map. Each entry contains a renderer and the
@@ -17,7 +17,7 @@ import blackengine.rendering.renderers.ShaderProgramBase;
  * @param <S> 
  * @param <M>
  */
-public class RendererEntry<S extends ShaderProgramBase, M extends Material<S>> {
+public class RendererEntry<S extends MaterialShaderProgram, M extends Material<S>> {
 
     /**
      * The class of the shader the renderer uses.
@@ -54,7 +54,7 @@ public class RendererEntry<S extends ShaderProgramBase, M extends Material<S>> {
      * @param shaderClass The class of the shader the renderer uses.
      * @param renderer The renderer itself.
      */
-    protected RendererEntry(Class<S> shaderClass, Renderer<S, M> renderer) {
+    public RendererEntry(Class<S> shaderClass, Renderer<S, M> renderer) {
         this.shaderClass = shaderClass;
         this.renderer = renderer;
     }

@@ -21,22 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.renderers.shaders.exceptions;
+package blackengine.rendering.pipeline.shaderPrograms;
+
+import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 
 /**
- * An instance of this exception type is thrown when a shader has been destroyed
- * but is still called.
+ * An instance of this class should expose all material uniforms used in the
+ * specified shader class.
  *
  * @author Blackened
+ * @param <S>
  */
-public class DeadShaderReferenceException extends RuntimeException {
+public abstract class Material<S extends MaterialShaderProgram> {
 
     /**
-     * Default constructor for creating a new dead shader reference exception.
-     *
-     * @param name The name of the shader that has a dead reference.
+     * The class of shader program this material exposes the uniform variables for.
      */
-    public DeadShaderReferenceException(String name) {
-        super("The reference to shader '" + name + "' is invalid, as it has been destroyed.");
+    private final Class<S> shaderClass;
+
+    /**
+     * Getter for the class of shader program this material exposes the uniform
+     * variables for.
+     *
+     * @return A class that extends ShaderProgram.
+     */
+    public Class<S> getShaderClass() {
+        return this.shaderClass;
     }
+
+    /**
+     * Default constructor for creating a new instance of Material.
+     *
+     * @param shaderClass The class of shader program that this material will
+     * expose the uniform variables to.
+     */
+    public Material(Class<S> shaderClass) {
+        this.shaderClass = shaderClass;
+    }
+
 }

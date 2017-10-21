@@ -21,51 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.gameLogic.components.prefab.rendering;
+package blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions;
 
-import blackengine.gameLogic.components.base.ComponentBase;
-import blackengine.openGL.vao.Vao;
-import blackengine.rendering.RenderEngine;
-import blackengine.rendering.pipeline.shaderPrograms.Material;
 import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 
 /**
+ * An instance of this exception type is thrown when a shader program did not
+ * get validated by OpenGL.
  *
  * @author Blackened
- * @param <S>
- * @param <M>
  */
-public class RenderComponent<S extends MaterialShaderProgram, M extends Material<S>> extends ComponentBase{
-    
-    private final M material;
-    
-    private final Vao vao;
+public class ShaderProgramCompileException extends RuntimeException {
 
-    public M getMaterial() {
-        return material;
-    }
-
-    public Vao getVao() {
-        return vao;
+    /**
+     * Default constructor for creating a new shader program compile exception.
+     *
+     * @param clazz The class of the shader program that was not compiled.
+     */
+    public ShaderProgramCompileException(Class<? extends MaterialShaderProgram> clazz) {
+        super("ShaderProgram " + clazz.getSimpleName() + " was not validated.");
     }
 
-    public RenderComponent(M material, Vao vao) {
-        this.material = material;
-        this.vao = vao;
-    }
-    
-    @Override
-    public void onActivate(){
-        RenderEngine.getInstance().getPipelineManager().getRendererFor(this).addTarget(this);
-    }
-    
-    @Override
-    public void onDeactivate(){
-        RenderEngine.getInstance().getPipelineManager().getRendererFor(this).removeTarget(this);
-    }
-    
-    @Override
-    public boolean isActive(){
-        return RenderEngine.getInstance().getPipelineManager().getRendererFor(this).containsTarget(this);
-    }
 }

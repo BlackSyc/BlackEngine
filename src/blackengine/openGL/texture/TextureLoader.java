@@ -69,7 +69,8 @@ public class TextureLoader {
         return new Texture(texID, data.getWidth(), data.getHeight());
     }
 
-    public static FBOTexture createFrameBufferTexture(int width, int height) {
+    public static FBOTexture createFrameBufferTexture(int frameBufferId, int width, int height) {
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBufferId);
         int texID = GL11.glGenTextures();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA,
@@ -81,10 +82,12 @@ public class TextureLoader {
         GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, texID, 0);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
         return new FBOTexture(texID, width, height);
     }
 
-    public static FBOTexture createFrameBufferDepthTexture(int width, int height) {
+    public static FBOTexture createFrameBufferDepthTexture(int frameBufferId, int width, int height) {
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBufferId);
         int texID = GL11.glGenTextures();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texID);
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT32, width, height, 0, GL11.GL_DEPTH_COMPONENT,
@@ -96,6 +99,7 @@ public class TextureLoader {
         GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, texID, 0);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
         return new FBOTexture(texID, width, height);
     }
 
