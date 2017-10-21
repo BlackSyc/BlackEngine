@@ -78,8 +78,8 @@ public class PipelineManager {
         this.pipeline = new ArrayList<>();
         this.comparator = (x, y)
                 -> Float.compare(
-                        x.getPriority(),
-                        y.getPriority());
+                        y.getPriority(),
+                        x.getPriority());
     }
     //</editor-fold>
 

@@ -112,7 +112,8 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
      * @param shaderProgram The shader program that will be used in this
      * renderer.
      * @param renderPriority A float determining the priority index used to
-     * determine the order of renderers.
+     * determine the order in the pipeline. A higher priority means it will be
+     * rendered earlier in the pipeline.
      */
     public Renderer(S shaderProgram, float renderPriority) {
         this.shaderProgram = shaderProgram;

@@ -40,10 +40,19 @@ public class Processor<S extends ProcessingShaderProgram> implements PipelineEle
 
     private final S shaderProgram;
 
-    public Processor(S shaderProgram){
+    public Processor(S shaderProgram) {
         this(shaderProgram, 1.0f);
     }
-    
+
+    /**
+     * Constructor for creating a new instance of Processor.
+     *
+     * @param shaderProgram The shader program that will be used in this
+     * renderer.
+     * @param priority A float determining the priority index used to determine
+     * the order of the rendering pipeline. A higher priority means it will be
+     * rendered earlier in the pipeline.
+     */
     public Processor(S shaderProgram, float priority) {
         this.shaderProgram = shaderProgram;
         this.priority = priority;

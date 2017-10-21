@@ -47,7 +47,7 @@ import org.lwjgl.util.vector.Vector3f;
  * will be set as the main camera from which the POV renderers will render.
  *
  * On {@link #deactivate() deactivate()}, if this camera was the main camera in
- * the {@link blackengine.rendering.MasterRenderer MasterRenderer}, it will now
+ * the {@link blackengine.rendering.RenderEngine RenderEngine}, it will now
  * be set to null.
  *
  * @author Blackened
@@ -113,7 +113,7 @@ public class CameraComponent extends ComponentBase implements Camera {
      * Returns whether the camera is active.
      *
      * @return True when this camera is the main camera in the
-     * {@link blackengine.rendering.MasterRenderer MasterRenderer}, false
+     * {@link blackengine.rendering.RenderEngine RenderEngine}, false
      * otherwise.
      */
     @Override
@@ -134,7 +134,7 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     /**
      * Activates this camera component by setting the main camera in the
-     * {@link blackengine.rendering.MasterRenderer MasterRenderer} to this and
+     * {@link blackengine.rendering.RenderEngine RenderEngine} to this and
      * setting this active flag to true.
      */
     @Override
@@ -173,7 +173,7 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     /**
      * Deactivates this camera component by setting the main camera in the
-     * {@link blackengine.rendering.MasterRenderer MasterRenderer} to null if
+     * {@link blackengine.rendering.RenderEngine RenderEngine} to null if
      * and only if this camera component was the main camera. Also sets this
      * components active flag to false.
      */

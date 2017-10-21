@@ -34,7 +34,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * This base class extends
- * {@link blackengine.rendering.renderers.MaterialShaderProgram} with some most used
+ * {@link blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram} with some most used
  * implementations of abstract methods such that the projection matrix, view
  * matrix, transform matrix will be loaded into their uniform variables.
  *
