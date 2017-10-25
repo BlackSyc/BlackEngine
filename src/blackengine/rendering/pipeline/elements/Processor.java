@@ -39,6 +39,10 @@ public class Processor<S extends ProcessingShaderProgram> implements PipelineEle
     private boolean enabled = true;
 
     private final S shaderProgram;
+    
+    public S getShaderProgram(){
+        return this.shaderProgram;
+    }
 
     public Processor(S shaderProgram) {
         this(shaderProgram, 1.0f);

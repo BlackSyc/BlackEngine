@@ -41,6 +41,10 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
 
     private boolean enabled = true;
 
+    public S getShaderProgram(){
+        return this.shaderProgram;
+    }
+    
     @Override
     public boolean isEnabled() {
         return enabled;
