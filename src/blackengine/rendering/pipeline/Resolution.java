@@ -21,34 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.pipeline.elements;
-
-import blackengine.rendering.Camera;
-import blackengine.rendering.pipeline.shaderPrograms.ShaderProgramBase;
+package blackengine.rendering.pipeline;
 
 /**
  *
  * @author Blackened
- * @param <S>
  */
-public interface PipelineElement<S extends ShaderProgramBase> {
+public class Resolution {
     
-    public float getPriority();
+    private final int width;
     
-    public void render(Camera camera);
+    private final int height;
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
     
-    public boolean isDestroyed();
     
-    public void destroy();
-    
-    @SuppressWarnings("unchecked")
-    public Class<S> getShaderClass();
-    
-    public void initialize();
-    
-    public void setEnabled(boolean enabled);
-    
-    public boolean isEnabled();
+
+    public Resolution(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
     
     
     

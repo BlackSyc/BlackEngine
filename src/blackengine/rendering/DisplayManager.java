@@ -114,10 +114,6 @@ public class DisplayManager {
 
         GL11.glViewport(0, 0, width, height);
 
-        RenderEngine.getInstance().setDisplayWidth(width);
-        RenderEngine.getInstance().setDisplayHeight(height);
-        RenderEngine.getInstance().createProjectionMatrix(70f, 500f, 0.1f);
-
     }
 
     public void embed(Canvas canvas) {
@@ -142,11 +138,6 @@ public class DisplayManager {
         }
 
         GL11.glViewport(0, 0, width, height);
-
-        RenderEngine.getInstance().setDisplayWidth(width);
-        RenderEngine.getInstance().setDisplayHeight(height);
-        
-        RenderEngine.getInstance().createProjectionMatrix(70f, 500f, 0.1f);
     }
     
     public void destroyDisplay() {

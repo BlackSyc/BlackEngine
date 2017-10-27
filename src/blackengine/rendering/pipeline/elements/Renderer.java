@@ -8,6 +8,7 @@ package blackengine.rendering.pipeline.elements;
 import blackengine.rendering.pipeline.shaderPrograms.Material;
 import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 import blackengine.gameLogic.components.prefab.rendering.RenderComponent;
+import blackengine.rendering.Camera;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
@@ -135,13 +136,15 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
 
     /**
      * Renders all targets using the shader program.
+     * @param camera
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void render() {
+    public void render(Camera camera) {
         if (this.isEnabled()) {
+            
+            this.shaderProgram.start(camera);
             this.shaderProgram.applySettings();
-            this.shaderProgram.start();
             this.shaderProgram.loadFrameUniforms();
             this.getTargets().forEach(x -> {
                 this.shaderProgram.loadTransformUniforms(x.getParent().getTransform());
@@ -150,8 +153,9 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
                 this.shaderProgram.draw(x.getVao());
             });
 
-            this.shaderProgram.stop();
             this.shaderProgram.revertSettings();
+            this.shaderProgram.stop();
+            
         }
     }
 

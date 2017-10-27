@@ -5,7 +5,6 @@
  */
 package blackengine.rendering.pipeline;
 
-import blackengine.rendering.pipeline.elements.PipelineElement;
 import blackengine.rendering.pipeline.map.NullProcessorEntry;
 import blackengine.rendering.pipeline.map.NullRendererEntry;
 import blackengine.rendering.pipeline.map.ProcessorEntry;
@@ -17,7 +16,6 @@ import blackengine.rendering.pipeline.elements.Renderer;
 import blackengine.rendering.pipeline.shaderPrograms.MaterialShaderProgram;
 import blackengine.rendering.pipeline.shaderPrograms.ProcessingShaderProgram;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.stream.Stream;
 
 /**
@@ -39,32 +37,7 @@ public class PipelineManager {
      * All entries containing the processors mapped by the class of the shader
      * they use. Used internally only.
      */
-    private final ArrayList<ProcessorEntry> processorEntries;
-
-    /**
-     * The full sorted pipeline used for rendering containing all processors and
-     * renderers in the order of their priority. Exposed through member
-     * {@link #getPipeline()}.
-     */
-    private final ArrayList<PipelineElement> pipeline;
-
-    /**
-     * The comparator that is used to order the pipeline. Used internally only.
-     */
-    private final Comparator<PipelineElement> comparator;
-    //</editor-fold>
-
-    //<editor-fold desc="Getters & Setters" defaultstate="collapsed">
-    /**
-     * Getter for stream of the rendering pipeline, ordered by their rendering
-     * priority.
-     *
-     * @return An instance of a Stream of pipeline elements that is ordered
-     * according to the rendering priority.
-     */
-    public Stream<PipelineElement> getPipeline() {
-        return this.pipeline.stream();
-    }
+    private final ArrayList<ProcessorEntry> processorEntries;    
     //</editor-fold>
 
     //<editor-fold desc="Constructors" defaultstate="collapsed">
@@ -75,11 +48,6 @@ public class PipelineManager {
     public PipelineManager() {
         this.rendererEntries = new ArrayList<>();
         this.processorEntries = new ArrayList<>();
-        this.pipeline = new ArrayList<>();
-        this.comparator = (x, y)
-                -> Float.compare(
-                        y.getPriority(),
-                        x.getPriority());
     }
     //</editor-fold>
 
@@ -91,7 +59,6 @@ public class PipelineManager {
     public void removeDestroyedPipelineElements() {
         this.rendererEntries.removeIf(x -> x.getRenderer().isDestroyed());
         this.processorEntries.removeIf(x -> x.getProcessor().isDestroyed());
-        this.pipeline.removeIf(x -> x.isDestroyed());
     }
 
     /**
@@ -99,10 +66,10 @@ public class PipelineManager {
      * and clears the reference to them.
      */
     public void destroy() {
-        this.getPipeline().forEach(x -> x.destroy());
+        this.rendererEntries.forEach(x -> x.getRenderer().destroy());
         this.rendererEntries.clear();
+        this.processorEntries.forEach(x -> x.getProcessor().destroy());
         this.processorEntries.clear();
-        this.pipeline.clear();
     }
     //</editor-fold>
 
@@ -132,10 +99,6 @@ public class PipelineManager {
 
         }
 
-        // Add the renderer to the pipeline.
-        this.pipeline.add(renderer);
-        this.pipeline.sort(this.comparator);
-
         // Add the renderer to the internal renderer map as well.
         RendererEntry<S, M> entry = new RendererEntry<>(shaderClass, renderer);
         this.rendererEntries.add(entry);
@@ -154,7 +117,6 @@ public class PipelineManager {
         if (this.containsRendererWith(shaderProgramClass)) {
             this.getRendererWith(shaderProgramClass).destroy();
             this.rendererEntries.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
-            this.pipeline.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
         }
     }
 
@@ -172,7 +134,6 @@ public class PipelineManager {
         if (this.containsRendererWith(shaderProgramClass)) {
             this.getRendererWith(shaderProgramClass).destroy();
             this.rendererEntries.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
-            this.pipeline.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
         }
     }
 
@@ -254,10 +215,6 @@ public class PipelineManager {
             this.destroyProcessorWith(shaderClass);
         }
 
-        // add the processor to the pipeline.
-        this.pipeline.add(processor);
-        this.pipeline.sort(this.comparator);
-
         // Add the processor to the internal processor map as well.
         ProcessorEntry<S> entry = new ProcessorEntry<>(shaderClass, processor);
         this.processorEntries.add(entry);
@@ -277,7 +234,6 @@ public class PipelineManager {
         if (this.containsProcessorWith(shaderProgramClass)) {
             this.getProcessor(shaderProgramClass).destroy();
             this.processorEntries.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
-            this.pipeline.removeIf(x -> x.getShaderClass().equals(shaderProgramClass));
         }
     }
 

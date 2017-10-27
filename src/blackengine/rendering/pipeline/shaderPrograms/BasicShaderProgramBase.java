@@ -64,19 +64,12 @@ public abstract class BasicShaderProgramBase<M extends Material> extends Materia
     }
 
     /**
-     * Loads the projection matrix uniform variable.
-     */
-    @Override
-    public void loadGlobalUniforms() {
-        super.loadUniformMatrix("projectionMatrix", RenderEngine.getInstance().getProjectionMatrix());
-    }
-
-    /**
      * Loads the view matrix uniform variable.
      */
     @Override
     public void loadFrameUniforms() {
-        super.loadUniformMatrix("viewMatrix", RenderEngine.getInstance().getMainCamera().getViewMatrix());
+        super.loadUniformMatrix("projectionMatrix", this.getCamera().getProjectionMatrix());
+        super.loadUniformMatrix("viewMatrix", this.getCamera().getViewMatrix());
     }
 
     /**

@@ -37,9 +37,6 @@ public abstract class ProcessingShaderProgram extends ShaderProgramBase{
     }
 
     @Override
-    public abstract void loadGlobalUniforms();
-
-    @Override
     public abstract void loadFrameUniforms();
 
     @Override

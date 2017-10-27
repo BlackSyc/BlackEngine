@@ -23,6 +23,7 @@
  */
 package blackengine.rendering.pipeline.shaderPrograms;
 
+import blackengine.rendering.Camera;
 import blackengine.rendering.pipeline.shaderPrograms.shaders.FragmentShader;
 import blackengine.rendering.pipeline.shaderPrograms.shaders.VertexShader;
 import blackengine.rendering.pipeline.shaderPrograms.shaders.exceptions.NoSuchAttributeException;
@@ -74,7 +75,13 @@ public abstract class ShaderProgramBase {
      * The fragment shader for this program.
      */
     private final FragmentShader fragmentShader;
+    
+    private Camera camera;
     //</editor-fold>
+    
+    protected final Camera getCamera(){
+        return this.camera;
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Constructors">
     /**
@@ -97,8 +104,10 @@ public abstract class ShaderProgramBase {
     //<editor-fold defaultstate="collapsed" desc="Public methods">
     /**
      * Starts the shader program on the graphics card.
+     * @param camera
      */
-    public void start() {
+    public void start(Camera camera) {
+        this.camera = camera;
         GL20.glUseProgram(this.programId);
     }
 
@@ -107,13 +116,9 @@ public abstract class ShaderProgramBase {
      */
     public void stop() {
         GL20.glUseProgram(0);
+        this.camera = null;
     }
-
-    /**
-     * Gets called after the initialization has taken place, while the shader
-     * program is still running.
-     */
-    public abstract void loadGlobalUniforms();
+    
 
     /**
      * Gets called before any instance of RenderComponent is rendered.
@@ -161,12 +166,11 @@ public abstract class ShaderProgramBase {
 
         this.validate();
 
-        this.start();
+        this.start(null);
         this.uniformLocations.putAll(this.loadUniformLocation(Stream
                 .concat(this.vertexShader.getUniformNames(),
                         this.fragmentShader.getUniformNames())));
 
-        this.loadGlobalUniforms();
         this.stop();
     }
 

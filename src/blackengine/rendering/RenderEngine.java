@@ -23,14 +23,16 @@
  */
 package blackengine.rendering;
 
+import blackengine.gameLogic.components.prefab.CameraComponent;
 import blackengine.openGL.frameBuffer.FrameBufferObject;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
 import blackengine.rendering.pipeline.PipelineManager;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
-import org.lwjgl.util.vector.Matrix4f;
 
 /**
  * Engine singleton for rendering management.
@@ -73,7 +75,9 @@ public class RenderEngine {
     private RenderEngine() {
         this.lights = new ArrayList<>();
         this.fbos = new HashMap<>();
+        this.cameras = new ArrayList<>();
         this.pipelineManager = new PipelineManager();
+        
     }
 
     /**
@@ -85,40 +89,13 @@ public class RenderEngine {
     }
     //</editor-fold>
 
-    //<editor-fold desc="Fields" defaultstate="collapsed">
+    //<editor-fold desc="Pipeline" defaultstate="collapsed">
     /**
      * The pipeline manager that contains the rendering pipeline containing all
      * renderers and processors ordered by their render priority.
      */
     private final PipelineManager pipelineManager;
-
-    /**
-     * The width of the display that will be rendered to.
-     */
-    private int displayWidth;
-
-    /**
-     * The height of the display that will be rendered to.
-     */
-    private int displayHeight;
-
-    /**
-     * The main camera that will be used for rendering.
-     */
-    private Camera mainCamera;
-
-    /**
-     * The projection matrix that will be used for rendering.
-     */
-    private Matrix4f projectionMatrix = new Matrix4f();
-
-    /**
-     * All frame buffer objects mapped to their name.
-     */
-    private final HashMap<String, FrameBufferObject> fbos;
-    //</editor-fold>
-
-    //<editor-fold desc="Getters & Setters" defaultstate="collapsed">
+    
     /**
      * Getter for the pipeline manager containing the pipeline used for
      * rendering and processing.
@@ -128,74 +105,13 @@ public class RenderEngine {
     public PipelineManager getPipelineManager() {
         return this.pipelineManager;
     }
-
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="FBO">
     /**
-     * Getter for the width of the display that will be rendered to.
-     *
-     * @return An integer representing the width of the display that will be
-     * rendered to in pixels.
+     * All frame buffer objects mapped to their name.
      */
-    public int getDisplayWidth() {
-        return displayWidth;
-    }
-
-    /**
-     * Setter for the width of the display that will be rendered to.
-     *
-     * @param displayWidth An integer representing the width of the display that
-     * will be rendered to in pixels.
-     */
-    public void setDisplayWidth(int displayWidth) {
-        this.displayWidth = displayWidth;
-    }
-
-    /**
-     * Getter for the height of the display that will be rendered to.
-     *
-     * @return An integer representing the height of the display that will be
-     * rendered to in pixels.
-     */
-    public int getDisplayHeight() {
-        return displayHeight;
-    }
-
-    /**
-     * Setter for the height of the display that will be rendered to.
-     *
-     * @param displayHeight An integer representing the height of the display
-     * that will be rendered to in pixels.
-     */
-    public void setDisplayHeight(int displayHeight) {
-        this.displayHeight = displayHeight;
-    }
-
-    /**
-     * Getter for the projection matrix.
-     *
-     * @return An instance of Matrix4f.
-     */
-    public Matrix4f getProjectionMatrix() {
-        return projectionMatrix;
-    }
-
-    /**
-     * Getter for the main camera that will be used for rendering.
-     *
-     * @return An implementation of {@link blackengine.rendering.Camera}.
-     */
-    public Camera getMainCamera() {
-        return mainCamera;
-    }
-
-    /**
-     * Setter for the main camera that will be used for rendering.
-     *
-     * @param mainCamera An implementation of
-     * {@link blackengine.rendering.Camera}.
-     */
-    public void setMainCamera(Camera mainCamera) {
-        this.mainCamera = mainCamera;
-    }
+    private final HashMap<String, FrameBufferObject> fbos;
 
     /**
      * Getter for a specific frame buffer object.
@@ -239,35 +155,29 @@ public class RenderEngine {
     //</editor-fold>
 
     //<editor-fold desc="Public methods" defaultstate="collapsed">
-    /**
-     * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
-     * NEAR_PLANE and display size.
-     *
-     * @param fieldOfView
-     * @param nearPlane
-     * @param farPlane
-     */
-    public void createProjectionMatrix(float fieldOfView, float farPlane, float nearPlane) {
-        float aspectRatio = this.displayWidth / this.displayHeight;
-        float y_scale = (float) (1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio;
-        float x_scale = y_scale / aspectRatio;
-        float frustum_length = farPlane - nearPlane;
 
-        this.projectionMatrix = new Matrix4f();
-        this.projectionMatrix.m00 = x_scale;
-        this.projectionMatrix.m11 = y_scale;
-        this.projectionMatrix.m22 = -((farPlane + nearPlane) / frustum_length);
-        this.projectionMatrix.m23 = -1;
-        this.projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
-        this.projectionMatrix.m33 = 0;
-    }
 
     public void render() {
         this.pipelineManager.removeDestroyedPipelineElements();
-        this.pipelineManager.getPipeline().forEach(x -> x.render());
+        this.cameras.forEach(x -> x.render());
     }
     //</editor-fold>
 
+    // <editor-fold  defaultstate="collapsed" desc="Cameras">
+    private final List<CameraComponent> cameras;
+    private static final Comparator<CameraComponent> COMPARATOR = (x,y) -> 
+            Float.compare(y.getPriority(), x.getPriority());
+    
+    public void addCamera(CameraComponent cameraComponent){
+        this.cameras.add(cameraComponent);
+        this.cameras.sort(COMPARATOR);
+    }
+    
+    public void removeCamera(CameraComponent cameraComponent){
+        this.cameras.remove(cameraComponent);
+    }
+    //</editor-fold>
+    
     // <editor-fold  defaultstate="collapsed" desc="Lighting">
     /**
      * A list of all lights that can be used for rendering.

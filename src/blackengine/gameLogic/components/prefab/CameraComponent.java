@@ -26,12 +26,16 @@ package blackengine.gameLogic.components.prefab;
 import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
+import blackengine.openGL.frameBuffer.FrameBufferObject;
 import blackengine.rendering.Camera;
 import blackengine.rendering.RenderEngine;
+import blackengine.rendering.pipeline.CameraSettings;
+import blackengine.rendering.pipeline.Pipeline;
+import blackengine.rendering.pipeline.Resolution;
 import blackengine.toolbox.math.ImmutableVector3;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.BehaviorSubject;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * An implementation of this component can function as a camera that can be used
@@ -56,20 +60,33 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     private Disposable parentTransformSubscription;
 
-    private float pitch;
-
-    private float yaw;
-
-    private float roll;
-
     private ImmutableVector3 position = new ImmutableVector3();
 
     private ImmutableVector3 offset = new ImmutableVector3();
+    
+    private final Pipeline pipeline;
+    
+    private final FrameBufferObject target;
+    
+    private final BehaviorSubject<CameraSettings> settings;
+    
+    private final Disposable settingsSubscription;
+    
+    
+    private final Resolution resolution;
+    
+    private final float priority;
 
     /**
      * The view matrix of this camera.
      */
     protected Matrix4f viewMatrix = new Matrix4f();
+    
+    private Matrix4f projectionMatrix = new Matrix4f();
+
+    public float getPriority() {
+        return priority;
+    }
 
     public ImmutableVector3 getOffset() {
         return offset;
@@ -79,55 +96,28 @@ public class CameraComponent extends ComponentBase implements Camera {
         this.offset = offset;
     }
 
-    /**
-     * Getter for the pitch in degrees.
-     *
-     * @return The pitch of this camera.
-     */
-    @Override
-    public double getPitch() {
-        return this.pitch;
+    public CameraComponent(Resolution resolution, float priority) {
+        this.pipeline = new Pipeline();
+        this.resolution = resolution;
+        this.target = new FrameBufferObject(resolution.getWidth(), resolution.getHeight());
+        this.priority = priority;
+        this.settings = BehaviorSubject.createDefault(CameraSettings.createDefault());
+        this.settingsSubscription = settings.subscribe(x -> this.updateProjectionMatrix());
+        
+        // This is fine, as it is only adding this instance to a collection.
+        RenderEngine.getInstance().addCamera(this);
     }
-
-    /**
-     * Getter for the yaw in degrees.
-     *
-     * @return The yaw of this camera.
-     */
-    @Override
-    public double getYaw() {
-        return this.yaw;
-    }
-
-    /**
-     * Getter for the roll in degrees.
-     *
-     * @return The roll of this camera.
-     */
-    @Override
-    public double getRoll() {
-        return this.roll;
-    }
-
-    /**
-     * Returns whether the camera is active.
-     *
-     * @return True when this camera is the main camera in the
-     * {@link blackengine.rendering.RenderEngine RenderEngine}, false
-     * otherwise.
-     */
-    @Override
-    public boolean isActive() {
-        return RenderEngine.getInstance().getMainCamera() == this;
+    
+    public void render(){
+        this.pipeline.stream().forEach(x -> {
+            x.render(this);
+        });
     }
     
     @Override
     public void setParent(Entity parent){
         if(parent != null){
             this.position = this.offset.add(parent.getTransform().getAbsolutePosition());
-            this.pitch = -parent.getTransform().getAbsoluteEulerRotation().getX();
-            this.yaw = -parent.getTransform().getAbsoluteEulerRotation().getY();
-            this.roll = -parent.getTransform().getAbsoluteEulerRotation().getZ();
         }
         super.setParent(parent);
     }
@@ -142,11 +132,14 @@ public class CameraComponent extends ComponentBase implements Camera {
         this.parentTransformSubscription = this.getParent().getTransform().getObservable()
                 .subscribe(x -> this.onParentTransformChanged(x));
         this.updateViewMatrix();
-        RenderEngine.getInstance().setMainCamera(this);
+        this.updateProjectionMatrix();
+        if(!this.target.isValid()){
+            this.target.createTextureAttachment(this.resolution.getWidth(), this.resolution.getHeight());
+            this.target.createDepthAttachment(this.resolution.getWidth(), this.resolution.getHeight());
+        }
     }
 
     public void onParentTransformChanged(Transform parentTransform) {
-        this.updateRotation(parentTransform.getAbsoluteEulerRotation());
         this.updatePosition(parentTransform.getAbsolutePosition());
         this.updateViewMatrix();
     }
@@ -154,21 +147,22 @@ public class CameraComponent extends ComponentBase implements Camera {
     private void updateViewMatrix() {
         this.viewMatrix = new Matrix4f();
         this.viewMatrix.setIdentity();
-        Matrix4f.rotate((float) Math.toRadians(this.getPitch()), new ImmutableVector3(1, 0, 0).mutable(), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(this.getYaw()), new ImmutableVector3(0, 1, 0).mutable(), this.viewMatrix, this.viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(this.getRoll()), new ImmutableVector3(0, 0, 1).mutable(), this.viewMatrix, this.viewMatrix);
+        
+        // Pitch
+        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getX()), new ImmutableVector3(1, 0, 0).mutable(), this.viewMatrix, this.viewMatrix);
+        
+        // Yaw
+        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getY()), new ImmutableVector3(0, 1, 0).mutable(), this.viewMatrix, this.viewMatrix);
+        
+        // Roll
+        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getZ()), new ImmutableVector3(0, 0, 1).mutable(), this.viewMatrix, this.viewMatrix);
+        
         ImmutableVector3 negativeCameraPos = this.getPosition().negate();
         Matrix4f.translate(negativeCameraPos.mutable(), this.viewMatrix, this.viewMatrix);
     }
 
     private void updatePosition(ImmutableVector3 parentPosition) {
         this.position = this.offset.add(parentPosition);
-    }
-
-    private void updateRotation(ImmutableVector3 eulerRotation) {
-        this.pitch = -eulerRotation.getX();
-        this.yaw = -eulerRotation.getY();
-        this.roll = -eulerRotation.getZ();
     }
 
     /**
@@ -182,8 +176,15 @@ public class CameraComponent extends ComponentBase implements Camera {
         if (this.isActive()) {
             this.parentTransformSubscription.dispose();
             this.parentTransformSubscription = null;
-            RenderEngine.getInstance().setMainCamera(null);
         }
+    }
+    
+    @Override
+    public void destroy(){
+        this.parentTransformSubscription.dispose();
+        this.settingsSubscription.dispose();
+        RenderEngine.getInstance().removeCamera(this);
+        super.destroy();
     }
 
     /**
@@ -198,7 +199,36 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     @Override
+    public Matrix4f getProjectionMatrix() {
+        return projectionMatrix;
+    }
+
+    @Override
     public ImmutableVector3 getPosition() {
         return this.position;
     }
+    
+        /**
+     * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
+     * NEAR_PLANE and display size.
+     *
+     * @param fieldOfView
+     * @param nearPlane
+     * @param farPlane
+     */
+    private void updateProjectionMatrix() {
+        float aspectRatio = this.resolution.getWidth() / this.resolution.getHeight();
+        float y_scale = (float) (1f / Math.tan(Math.toRadians(this.settings.getValue().getFieldOfView() / 2f))) * aspectRatio;
+        float x_scale = y_scale / aspectRatio;
+        float frustum_length = this.settings.getValue().getFarClippingPlane() - this.settings.getValue().getNearClippingPlane();
+
+        this.projectionMatrix = new Matrix4f();
+        this.projectionMatrix.m00 = x_scale;
+        this.projectionMatrix.m11 = y_scale;
+        this.projectionMatrix.m22 = -((this.settings.getValue().getFarClippingPlane() + this.settings.getValue().getNearClippingPlane()) / frustum_length);
+        this.projectionMatrix.m23 = -1;
+        this.projectionMatrix.m32 = -((2 * this.settings.getValue().getNearClippingPlane() * this.settings.getValue().getFarClippingPlane()) / frustum_length);
+        this.projectionMatrix.m33 = 0;
+    }
+    
 }

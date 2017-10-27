@@ -23,6 +23,7 @@
  */
 package blackengine.rendering.pipeline.elements;
 
+import blackengine.rendering.Camera;
 import blackengine.rendering.pipeline.shaderPrograms.ProcessingShaderProgram;
 
 /**
@@ -68,14 +69,14 @@ public class Processor<S extends ProcessingShaderProgram> implements PipelineEle
     }
 
     @Override
-    public void render() {
+    public void render(Camera camera) {
         if (this.isEnabled()) {
+            this.shaderProgram.start(camera);
             this.shaderProgram.applySettings();
-            this.shaderProgram.start();
             this.shaderProgram.loadFrameUniforms();
             this.shaderProgram.process();
-            this.shaderProgram.stop();
             this.shaderProgram.revertSettings();
+            this.shaderProgram.stop();
         }
     }
 

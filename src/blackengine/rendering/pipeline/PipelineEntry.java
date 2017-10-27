@@ -21,34 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.pipeline.elements;
+package blackengine.rendering.pipeline;
 
-import blackengine.rendering.Camera;
-import blackengine.rendering.pipeline.shaderPrograms.ShaderProgramBase;
+import blackengine.rendering.pipeline.elements.PipelineElement;
 
 /**
  *
  * @author Blackened
- * @param <S>
  */
-public interface PipelineElement<S extends ShaderProgramBase> {
+public class PipelineEntry {
     
-    public float getPriority();
+    private final PipelineElement pipelineElement;
     
-    public void render(Camera camera);
-    
-    public boolean isDestroyed();
-    
-    public void destroy();
-    
-    @SuppressWarnings("unchecked")
-    public Class<S> getShaderClass();
-    
-    public void initialize();
-    
-    public void setEnabled(boolean enabled);
-    
-    public boolean isEnabled();
+    private final float priority;
+
+    public PipelineElement getPipelineElement() {
+        return pipelineElement;
+    }
+
+    public float getPriority() {
+        return priority;
+    }
+
+    public PipelineEntry(PipelineElement pipelineElement, float priority) {
+        this.pipelineElement = pipelineElement;
+        this.priority = priority;
+    }
     
     
     

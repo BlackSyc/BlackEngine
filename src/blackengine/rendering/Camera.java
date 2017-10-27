@@ -46,23 +46,8 @@ public interface Camera {
      * {@link blackengine.toolbox.math.ImmutableVector3 ImmutableVector3}.
      */
     public ImmutableVector3 getPosition();
-
-    /**
-     * Getter for the yaw of the camera.
-     * @return A double representing the yaw of the camera in degrees.
-     */
-    public double getYaw();
-
-    /**
-     * Getter for the roll of the camera.
-     * @return A double representing the roll of the camera in degrees.
-     */
-    public double getRoll();
-
-    /**
-     * Getter for the pitch of the camera.
-     * @return A double representing the pitch of the camera in degrees.
-     */
-    public double getPitch();
+    
+    public Matrix4f getProjectionMatrix();
+    
 
 }
