@@ -25,9 +25,11 @@ package blackengine.rendering;
 
 import blackengine.gameLogic.components.prefab.CameraComponent;
 import blackengine.openGL.frameBuffer.FrameBufferObject;
+import blackengine.rendering.exceptions.DuplicateCamereIdentifierException;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
 import blackengine.rendering.pipeline.PipelineManager;
+import blackengine.toolbox.Guard;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -77,7 +79,7 @@ public class RenderEngine {
         this.fbos = new HashMap<>();
         this.cameras = new ArrayList<>();
         this.pipelineManager = new PipelineManager();
-        
+
     }
 
     /**
@@ -95,7 +97,7 @@ public class RenderEngine {
      * renderers and processors ordered by their render priority.
      */
     private final PipelineManager pipelineManager;
-    
+
     /**
      * Getter for the pipeline manager containing the pipeline used for
      * rendering and processing.
@@ -106,7 +108,7 @@ public class RenderEngine {
         return this.pipelineManager;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="FBO">
     /**
      * All frame buffer objects mapped to their name.
@@ -155,29 +157,35 @@ public class RenderEngine {
     //</editor-fold>
 
     //<editor-fold desc="Public methods" defaultstate="collapsed">
-
-
     public void render() {
         this.pipelineManager.removeDestroyedPipelineElements();
-        this.cameras.forEach(x -> x.render());
+        this.cameras.stream()
+                .filter(x -> x.isActive())
+                .forEach(x -> x.render());
     }
     //</editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Cameras">
     private final List<CameraComponent> cameras;
-    private static final Comparator<CameraComponent> COMPARATOR = (x,y) -> 
-            Float.compare(y.getPriority(), x.getPriority());
-    
-    public void addCamera(CameraComponent cameraComponent){
+    private static final Comparator<CameraComponent> COMPARATOR = (x, y)
+            -> Float.compare(y.getPriority(), x.getPriority());
+
+    public void addCamera(CameraComponent cameraComponent) {
+        Guard.notNull(cameraComponent);
+
+        if (this.cameras.stream().anyMatch(x -> x.getIdentifier().equals(cameraComponent.getIdentifier()))) {
+            throw new DuplicateCamereIdentifierException(cameraComponent.getIdentifier());
+        }
+        
         this.cameras.add(cameraComponent);
         this.cameras.sort(COMPARATOR);
     }
-    
-    public void removeCamera(CameraComponent cameraComponent){
+
+    public void removeCamera(CameraComponent cameraComponent) {
         this.cameras.remove(cameraComponent);
     }
     //</editor-fold>
-    
+
     // <editor-fold  defaultstate="collapsed" desc="Lighting">
     /**
      * A list of all lights that can be used for rendering.

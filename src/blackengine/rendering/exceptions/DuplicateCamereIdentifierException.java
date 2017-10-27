@@ -21,29 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.pipeline;
+package blackengine.rendering.exceptions;
 
 /**
  *
  * @author Blackened
  */
-public class Resolution {
-    
-    private final int width;
-    
-    private final int height;
+public class DuplicateCamereIdentifierException extends RuntimeException{
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public Resolution(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public DuplicateCamereIdentifierException(String identifier) {
+        super("A camera with identifier '" + identifier + "' is already present in the RenderEngine.");
     }
     
     

@@ -21,31 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.rendering.pipeline;
+package blackengine.rendering;
+
+import blackengine.openGL.frameBuffer.FrameBufferObject;
+import blackengine.openGL.texture.FBOTexture;
+import blackengine.rendering.pipeline.Resolution;
+import blackengine.toolbox.math.ImmutableVector3;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 /**
  *
  * @author Blackened
  */
-public class Resolution {
-    
-    private final int width;
-    
-    private final int height;
+public class CameraFrameBuffer extends FrameBufferObject {
 
-    public int getWidth() {
-        return width;
+    private final Subject<FBOTexture> colour = PublishSubject.create();
+
+    private final Subject<FBOTexture> depth = PublishSubject.create();
+
+    public Observable<FBOTexture> getColour() {
+        return colour;
     }
 
-    public int getHeight() {
-        return height;
+    public Observable<FBOTexture> getDepth() {
+        return depth;
     }
 
-    public Resolution(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public CameraFrameBuffer(Resolution resolution, ImmutableVector3 clearColour) {
+        super(resolution, clearColour);
     }
-    
-    
-    
+
+    @Override
+    public void stopFrame() {
+        super.stopFrame();
+        if (this.colour.hasObservers()) {
+            this.colour.onNext(super.getColourTexture());
+        }
+        if(this.depth.hasObservers()){
+            this.depth.onNext(super.getDepthTexture());
+        }
+    }
 }

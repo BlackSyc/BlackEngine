@@ -28,6 +28,7 @@ import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.openGL.frameBuffer.FrameBufferObject;
 import blackengine.rendering.Camera;
+import blackengine.rendering.CameraFrameBuffer;
 import blackengine.rendering.RenderEngine;
 import blackengine.rendering.pipeline.CameraSettings;
 import blackengine.rendering.pipeline.Pipeline;
@@ -51,140 +52,57 @@ import org.lwjgl.util.vector.Matrix4f;
  * will be set as the main camera from which the POV renderers will render.
  *
  * On {@link #deactivate() deactivate()}, if this camera was the main camera in
- * the {@link blackengine.rendering.RenderEngine RenderEngine}, it will now
- * be set to null.
+ * the {@link blackengine.rendering.RenderEngine RenderEngine}, it will now be
+ * set to null.
  *
  * @author Blackened
  */
 public class CameraComponent extends ComponentBase implements Camera {
+
+    //<editor-fold defaultstate="collapsed" desc="Fields">
+    private final String identifier;
 
     private Disposable parentTransformSubscription;
 
     private ImmutableVector3 position = new ImmutableVector3();
 
     private ImmutableVector3 offset = new ImmutableVector3();
-    
+
     private final Pipeline pipeline;
-    
-    private final FrameBufferObject target;
-    
+
+    private final CameraFrameBuffer target;
+
     private final BehaviorSubject<CameraSettings> settings;
-    
+
     private final Disposable settingsSubscription;
-    
-    
+
     private final Resolution resolution;
-    
+
     private final float priority;
 
     /**
      * The view matrix of this camera.
      */
     protected Matrix4f viewMatrix = new Matrix4f();
-    
+
     private Matrix4f projectionMatrix = new Matrix4f();
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public String getIdentifier() {
+        return identifier;
+    }
 
     public float getPriority() {
         return priority;
     }
 
-    public ImmutableVector3 getOffset() {
-        return offset;
-    }
-
-    public void setOffset(ImmutableVector3 offset) {
-        this.offset = offset;
-    }
-
-    public CameraComponent(Resolution resolution, float priority) {
-        this.pipeline = new Pipeline();
-        this.resolution = resolution;
-        this.target = new FrameBufferObject(resolution.getWidth(), resolution.getHeight());
-        this.priority = priority;
-        this.settings = BehaviorSubject.createDefault(CameraSettings.createDefault());
-        this.settingsSubscription = settings.subscribe(x -> this.updateProjectionMatrix());
-        
-        // This is fine, as it is only adding this instance to a collection.
-        RenderEngine.getInstance().addCamera(this);
-    }
-    
-    public void render(){
-        this.pipeline.stream().forEach(x -> {
-            x.render(this);
-        });
-    }
-    
     @Override
-    public void setParent(Entity parent){
-        if(parent != null){
+    public void setParent(Entity parent) {
+        if (parent != null) {
             this.position = this.offset.add(parent.getTransform().getAbsolutePosition());
         }
         super.setParent(parent);
-    }
-
-    /**
-     * Activates this camera component by setting the main camera in the
-     * {@link blackengine.rendering.RenderEngine RenderEngine} to this and
-     * setting this active flag to true.
-     */
-    @Override
-    public void onActivate() {
-        this.parentTransformSubscription = this.getParent().getTransform().getObservable()
-                .subscribe(x -> this.onParentTransformChanged(x));
-        this.updateViewMatrix();
-        this.updateProjectionMatrix();
-        if(!this.target.isValid()){
-            this.target.createTextureAttachment(this.resolution.getWidth(), this.resolution.getHeight());
-            this.target.createDepthAttachment(this.resolution.getWidth(), this.resolution.getHeight());
-        }
-    }
-
-    public void onParentTransformChanged(Transform parentTransform) {
-        this.updatePosition(parentTransform.getAbsolutePosition());
-        this.updateViewMatrix();
-    }
-
-    private void updateViewMatrix() {
-        this.viewMatrix = new Matrix4f();
-        this.viewMatrix.setIdentity();
-        
-        // Pitch
-        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getX()), new ImmutableVector3(1, 0, 0).mutable(), this.viewMatrix, this.viewMatrix);
-        
-        // Yaw
-        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getY()), new ImmutableVector3(0, 1, 0).mutable(), this.viewMatrix, this.viewMatrix);
-        
-        // Roll
-        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getZ()), new ImmutableVector3(0, 0, 1).mutable(), this.viewMatrix, this.viewMatrix);
-        
-        ImmutableVector3 negativeCameraPos = this.getPosition().negate();
-        Matrix4f.translate(negativeCameraPos.mutable(), this.viewMatrix, this.viewMatrix);
-    }
-
-    private void updatePosition(ImmutableVector3 parentPosition) {
-        this.position = this.offset.add(parentPosition);
-    }
-
-    /**
-     * Deactivates this camera component by setting the main camera in the
-     * {@link blackengine.rendering.RenderEngine RenderEngine} to null if
-     * and only if this camera component was the main camera. Also sets this
-     * components active flag to false.
-     */
-    @Override
-    public void onDeactivate() {
-        if (this.isActive()) {
-            this.parentTransformSubscription.dispose();
-            this.parentTransformSubscription = null;
-        }
-    }
-    
-    @Override
-    public void destroy(){
-        this.parentTransformSubscription.dispose();
-        this.settingsSubscription.dispose();
-        RenderEngine.getInstance().removeCamera(this);
-        super.destroy();
     }
 
     /**
@@ -207,8 +125,110 @@ public class CameraComponent extends ComponentBase implements Camera {
     public ImmutableVector3 getPosition() {
         return this.position;
     }
-    
-        /**
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Constructors">
+    public CameraComponent(String identifier, ImmutableVector3 offset, Resolution resolution, CameraSettings settings, float priority) {
+        this.identifier = identifier;
+        this.offset = offset;
+        this.pipeline = new Pipeline();
+        this.resolution = resolution;
+        this.target = new CameraFrameBuffer(resolution, new ImmutableVector3());
+        this.priority = priority;
+        this.settings = BehaviorSubject.createDefault(settings);
+        this.settingsSubscription = this.settings.subscribe(x -> this.updateProjectionMatrix());
+
+        // This is fine, as it is only adding this instance to a collection.
+        RenderEngine.getInstance().addCamera(this);
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Public Methods">
+    public void bindFrameBuffer(FrameBufferObject fbo) {
+        this.target.unbind();
+        fbo.bind();
+    }
+
+    public void unbindFrameBuffer(FrameBufferObject fbo) {
+        fbo.unbind();
+        this.target.bind();
+    }
+
+    public void render() {
+        this.pipeline.stream().forEach(x -> {
+            x.render(this);
+        });
+    }
+
+    /**
+     * Deactivates this camera component by setting the main camera in the
+     * {@link blackengine.rendering.RenderEngine RenderEngine} to null if and
+     * only if this camera component was the main camera. Also sets this
+     * components active flag to false.
+     */
+    @Override
+    public void onDeactivate() {
+        if (this.isActive()) {
+            this.parentTransformSubscription.dispose();
+            this.parentTransformSubscription = null;
+        }
+    }
+
+    @Override
+    public void destroy() {
+        this.parentTransformSubscription.dispose();
+        this.settingsSubscription.dispose();
+        RenderEngine.getInstance().removeCamera(this);
+        this.target.destroy();
+        super.destroy();
+    }
+
+    /**
+     * Activates this camera component by setting the main camera in the
+     * {@link blackengine.rendering.RenderEngine RenderEngine} to this and
+     * setting this active flag to true.
+     */
+    @Override
+    public void onActivate() {
+        this.parentTransformSubscription = this.getParent().getTransform().getObservable()
+                .subscribe(x -> this.onParentTransformChanged(x));
+        this.updateViewMatrix();
+        this.updateProjectionMatrix();
+        if (!this.target.isValid()) {
+            this.target.createTextureAttachment(this.resolution);
+            this.target.createDepthTextureAttachment(this.resolution);
+        }
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Private Methods">
+    private void onParentTransformChanged(Transform parentTransform) {
+        this.updatePosition(parentTransform.getAbsolutePosition());
+        this.updateViewMatrix();
+    }
+
+    private void updateViewMatrix() {
+        this.viewMatrix = new Matrix4f();
+        this.viewMatrix.setIdentity();
+
+        // Pitch
+        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getX()), new ImmutableVector3(1, 0, 0).mutable(), this.viewMatrix, this.viewMatrix);
+
+        // Yaw
+        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getY()), new ImmutableVector3(0, 1, 0).mutable(), this.viewMatrix, this.viewMatrix);
+
+        // Roll
+        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getZ()), new ImmutableVector3(0, 0, 1).mutable(), this.viewMatrix, this.viewMatrix);
+
+        ImmutableVector3 negativeCameraPos = this.getPosition().negate();
+        Matrix4f.translate(negativeCameraPos.mutable(), this.viewMatrix, this.viewMatrix);
+    }
+
+    private void updatePosition(ImmutableVector3 parentPosition) {
+        this.position = this.offset.add(parentPosition);
+    }
+
+    /**
      * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
      * NEAR_PLANE and display size.
      *
@@ -230,5 +250,6 @@ public class CameraComponent extends ComponentBase implements Camera {
         this.projectionMatrix.m32 = -((2 * this.settings.getValue().getNearClippingPlane() * this.settings.getValue().getFarClippingPlane()) / frustum_length);
         this.projectionMatrix.m33 = 0;
     }
-    
+    //</editor-fold>
+
 }
