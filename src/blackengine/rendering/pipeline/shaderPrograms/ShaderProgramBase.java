@@ -148,8 +148,7 @@ public abstract class ShaderProgramBase {
 
     /**
      * Initializes the shader program by loading it and its shaders to the
-     * graphics card. Calls the {@link #loadGlobalUniforms()} method when
-     * initialization was successful.
+     * graphics card.
      */
     public final void initialize() {
         if (this.programId != -1) {
