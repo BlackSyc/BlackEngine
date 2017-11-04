@@ -48,7 +48,7 @@ import org.lwjgl.util.vector.Matrix4f;
  * @author Blackened
  */
 public abstract class ShaderProgramBase {
-    
+
     //<editor-fold defaultstate="collapsed" desc="Fields">
     /**
      * The ID of this shader program used for reference with the graphics card.
@@ -74,12 +74,12 @@ public abstract class ShaderProgramBase {
     /**
      * The fragment shader for this program.
      */
-    private final FragmentShader fragmentShader;
-    
+    public final FragmentShader fragmentShader;
+
     private Camera camera;
     //</editor-fold>
-    
-    protected final Camera getCamera(){
+
+    protected final Camera getCamera() {
         return this.camera;
     }
 
@@ -104,6 +104,7 @@ public abstract class ShaderProgramBase {
     //<editor-fold defaultstate="collapsed" desc="Public methods">
     /**
      * Starts the shader program on the graphics card.
+     *
      * @param camera
      */
     public void start(Camera camera) {
@@ -118,7 +119,6 @@ public abstract class ShaderProgramBase {
         GL20.glUseProgram(0);
         this.camera = null;
     }
-    
 
     /**
      * Gets called before any instance of RenderComponent is rendered.
@@ -170,7 +170,17 @@ public abstract class ShaderProgramBase {
                 .concat(this.vertexShader.getUniformNames(),
                         this.fragmentShader.getUniformNames())));
 
+        this.onInitialize();
+        
         this.stop();
+    }
+
+    /**
+     * Is called right after initialization has taken place, while the shader
+     * program is still running.
+     */
+    public void onInitialize() {
+
     }
 
     /**
@@ -300,6 +310,13 @@ public abstract class ShaderProgramBase {
         }
         GL20.glBindAttribLocation(this.programId, location, attributeName);
     }
+
+    /**
+     * An implementation of this method should bind all attributes ('in'
+     * variables) to a specified location using the member
+     * {@link #bindAttribute(java.lang.String, int) bindAttribute(attributeName, location)}.
+     */
+    protected abstract void bindAttributes();
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Private methods">
@@ -314,8 +331,10 @@ public abstract class ShaderProgramBase {
      * Binds the attributes ('in' variables) and validates this program.
      */
     protected void validate() {
+        this.bindAttributes();
         GL20.glLinkProgram(this.programId);
         GL20.glValidateProgram(this.programId);
+
 //        if (GL20.glGetProgrami(this.programId, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) {
 //            throw new ShaderProgramCompileException(this.getClass());
 //        }

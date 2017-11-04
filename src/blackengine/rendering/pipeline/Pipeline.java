@@ -23,6 +23,7 @@
  */
 package blackengine.rendering.pipeline;
 
+import blackengine.rendering.RenderEngine;
 import blackengine.rendering.pipeline.elements.PipelineElement;
 import blackengine.rendering.pipeline.shaderPrograms.ShaderProgramBase;
 import java.util.ArrayList;

@@ -29,11 +29,14 @@ import blackengine.rendering.exceptions.DuplicateCamereIdentifierException;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
 import blackengine.rendering.pipeline.PipelineManager;
+import blackengine.rendering.pipeline.framebuilding.FrameBuilder;
 import blackengine.toolbox.Guard;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -77,8 +80,9 @@ public class RenderEngine {
     private RenderEngine() {
         this.lights = new ArrayList<>();
         this.fbos = new HashMap<>();
-        this.cameras = new ArrayList<>();
+        this.cameras = new HashMap<>();
         this.pipelineManager = new PipelineManager();
+        this.frameBuilder = new FrameBuilder();
 
     }
 
@@ -159,30 +163,51 @@ public class RenderEngine {
     //<editor-fold desc="Public methods" defaultstate="collapsed">
     public void render() {
         this.pipelineManager.removeDestroyedPipelineElements();
-        this.cameras.stream()
+        this.cameras.values().stream()
                 .filter(x -> x.isActive())
                 .forEach(x -> x.render());
+
+        this.frameBuilder.buildFrame();
     }
     //</editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Cameras">
-    private final List<CameraComponent> cameras;
-    private static final Comparator<CameraComponent> COMPARATOR = (x, y)
-            -> Float.compare(y.getPriority(), x.getPriority());
+    private Map<String, CameraComponent> cameras;
 
     public void addCamera(CameraComponent cameraComponent) {
         Guard.notNull(cameraComponent);
 
-        if (this.cameras.stream().anyMatch(x -> x.getIdentifier().equals(cameraComponent.getIdentifier()))) {
+        if (this.cameras.keySet().contains(cameraComponent.getIdentifier())) {
             throw new DuplicateCamereIdentifierException(cameraComponent.getIdentifier());
         }
-        
-        this.cameras.add(cameraComponent);
-        this.cameras.sort(COMPARATOR);
+
+        this.cameras.put(cameraComponent.getIdentifier(), cameraComponent);
+
+        this.cameras = this.cameras.entrySet()
+                .stream()
+                .sorted((x, y) -> Float.compare(x.getValue().getPriority(), y.getValue().getPriority()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    }
+
+    public CameraComponent getCamera(String identifier) {
+        return this.cameras.get(identifier);
     }
 
     public void removeCamera(CameraComponent cameraComponent) {
-        this.cameras.remove(cameraComponent);
+        this.cameras.remove(cameraComponent.getIdentifier());
+    }
+
+    public void removeCamera(String identifier) {
+        this.cameras.remove(identifier);
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Frame Building">
+    private final FrameBuilder frameBuilder;
+
+    public FrameBuilder getFrameBuilder() {
+        return this.frameBuilder;
     }
     //</editor-fold>
 

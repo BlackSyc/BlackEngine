@@ -74,17 +74,4 @@ public abstract class MaterialShaderProgram<M extends Material> extends ShaderPr
      * @param vao The vao that will be drawn.
      */
     public abstract void draw(Vao vao);
-
-    /**
-     * An implementation of this method should bind all attributes ('in'
-     * variables) to a specified location using the member
-     * {@link #bindAttribute(java.lang.String, int) bindAttribute(attributeName, location)}.
-     */
-    protected abstract void bindAttributes();
-
-    @Override
-    protected void validate() {
-        this.bindAttributes();
-        super.validate();
-    }
 }

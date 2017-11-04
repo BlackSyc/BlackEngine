@@ -104,6 +104,10 @@ public class CameraComponent extends ComponentBase implements Camera {
         }
         super.setParent(parent);
     }
+    
+    public Pipeline getPipeline(){
+        return this.pipeline;
+    }
 
     /**
      * Retrieves the view matrix from this camera.
@@ -124,6 +128,10 @@ public class CameraComponent extends ComponentBase implements Camera {
     @Override
     public ImmutableVector3 getPosition() {
         return this.position;
+    }
+    
+    public CameraFrameBuffer getFrameBuffer(){
+        return this.target;
     }
     //</editor-fold>
 
@@ -155,9 +163,11 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
 
     public void render() {
+        this.target.bind();
         this.pipeline.stream().forEach(x -> {
             x.render(this);
         });
+        this.target.unbind();
     }
 
     /**

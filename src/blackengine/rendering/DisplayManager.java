@@ -41,29 +41,13 @@ import org.lwjgl.opengl.PixelFormat;
  */
 public class DisplayManager {
 
-    private final int fpsCap;
-
-    private ImmutableVector3 clearColour = new ImmutableVector3(1, 1, 1);
-
-    public ImmutableVector3 getClearColour() {
-        return clearColour;
-    }
-
-    public void setClearColour(ImmutableVector3 clearColour) {
-        this.clearColour = clearColour;
-    }
-
-    
+    private final int fpsCap;    
     
     public DisplayManager(int fpsCap) {
         this.fpsCap = fpsCap;
     }
 
     public void render() {
-
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(this.clearColour.getX(), this.clearColour.getY(), this.clearColour.getZ(), 1);
-
         RenderEngine.getInstance().render();
 
         this.updateDisplay();
