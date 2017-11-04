@@ -141,7 +141,7 @@ public class CameraComponent extends ComponentBase implements Camera {
         this.offset = offset;
         this.pipeline = new Pipeline();
         this.resolution = resolution;
-        this.target = new CameraFrameBuffer(resolution, new ImmutableVector3());
+        this.target = new CameraFrameBuffer(resolution, new ImmutableVector3(1,1,1));
         this.priority = priority;
         this.settings = BehaviorSubject.createDefault(settings);
         this.settingsSubscription = this.settings.subscribe(x -> this.updateProjectionMatrix());

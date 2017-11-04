@@ -58,6 +58,7 @@ public class FrameBuilder {
     public void addFrameProcessor(FrameProcessor frameProcessor){
         this.frameProcessors.add(frameProcessor);
         this.frameProcessors.sort((x,y) -> Float.compare(y.getPriority(), x.getPriority()));
+        frameProcessor.initialize();
     }    
     
     public void buildFrame(){

@@ -14,9 +14,9 @@ uniform sampler2D textureSampler;
 // The main method that processes each fragment.
 void main(void){
     // Sets the output colour of this fragment to the colour of the texture at the specified texture coordinate.
-    //out_Colour = texture(textureSampler, pass_textureCoords);
+    out_Colour = texture(textureSampler, pass_textureCoords);
 
-    out_Colour = vec4(1,1,1,1);
+    //out_Colour = vec4(1,1,1,1);
 }
 
 
