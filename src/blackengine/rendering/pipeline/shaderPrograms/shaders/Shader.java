@@ -214,7 +214,7 @@ public abstract class Shader {
      * @return A list containing all attribute names.
      */
     private static List<String> extractAttributeNames(String shaderSource) {
-        return Stream.of(shaderSource.split(System.lineSeparator()))
+        return Stream.of(shaderSource.split("\n"))
                 .filter(x -> x.contains("in "))
                 .map(x -> {
                     String[] splitted = x.split(" ");
@@ -237,7 +237,7 @@ public abstract class Shader {
      * source.
      */
     private static List<String> extractUniformNames(String shaderSource) {
-        return Stream.of(shaderSource.split(System.lineSeparator()))
+        return Stream.of(shaderSource.split("\n"))
                 .filter(x -> x.startsWith("uniform"))
                 .map(x -> {
                     String[] stringArray = x.split(" ");

@@ -23,6 +23,8 @@
  */
 package blackengine.rendering.pipeline;
 
+import blackengine.toolbox.math.ImmutableVector3;
+
 /**
  *
  * @author Blackened
@@ -34,6 +36,12 @@ public class CameraSettings {
     private final float nearClippingPlane;
 
     private final float farClippingPlane;
+    
+    private final ImmutableVector3 clearColour;
+
+    public ImmutableVector3 getClearColour() {
+        return clearColour;
+    }
 
     public float getFieldOfView() {
         return fieldOfView;
@@ -47,14 +55,15 @@ public class CameraSettings {
         return farClippingPlane;
     }
 
-    public CameraSettings(float fieldOfView, float nearClippingPlane, float farClippingPlane) {
+    public CameraSettings(float fieldOfView, float nearClippingPlane, float farClippingPlane, ImmutableVector3 clearColour) {
         this.fieldOfView = fieldOfView;
         this.nearClippingPlane = nearClippingPlane;
         this.farClippingPlane = farClippingPlane;
+        this.clearColour = clearColour;
     }
     
     public static CameraSettings createDefault(){
-        return new CameraSettings(70, 0.1f, 500);
+        return new CameraSettings(70, 0.1f, 500, new ImmutableVector3(1,1,1));
     }
 
 }
