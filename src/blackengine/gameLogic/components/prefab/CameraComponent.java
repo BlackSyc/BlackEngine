@@ -36,6 +36,7 @@ import blackengine.rendering.pipeline.Resolution;
 import blackengine.toolbox.math.ImmutableVector3;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
@@ -104,8 +105,8 @@ public class CameraComponent extends ComponentBase implements Camera {
         }
         super.setParent(parent);
     }
-    
-    public Pipeline getPipeline(){
+
+    public Pipeline getPipeline() {
         return this.pipeline;
     }
 
@@ -129,25 +130,22 @@ public class CameraComponent extends ComponentBase implements Camera {
     public ImmutableVector3 getPosition() {
         return this.position;
     }
-    
-    public CameraFrameBuffer getFrameBuffer(){
+
+    public CameraFrameBuffer getFrameBuffer() {
         return this.target;
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Constructors">
-    public CameraComponent(String identifier, ImmutableVector3 offset, Resolution resolution, CameraSettings settings, float priority) {
+    private CameraComponent(String identifier, ImmutableVector3 offset, Resolution resolution, CameraSettings settings, float priority) {
         this.identifier = identifier;
         this.offset = offset;
         this.pipeline = new Pipeline();
         this.resolution = resolution;
-        this.target = new CameraFrameBuffer(resolution, new ImmutableVector3(1,1,1));
+        this.target = new CameraFrameBuffer(resolution, new ImmutableVector3(1, 1, 1));
         this.priority = priority;
         this.settings = BehaviorSubject.createDefault(settings);
         this.settingsSubscription = this.settings.subscribe(x -> this.updateProjectionMatrix());
-
-        // This is fine, as it is only adding this instance to a collection.
-        RenderEngine.getInstance().addCamera(this);
     }
     //</editor-fold>
 
@@ -168,6 +166,8 @@ public class CameraComponent extends ComponentBase implements Camera {
             x.render(this);
         });
         this.target.unbind();
+        GL11.glViewport(0, 0, RenderEngine.getInstance().getFrameResolution().getWidth(), RenderEngine.getInstance().getFrameResolution().getHeight());
+        this.target.stopFrame();
     }
 
     /**
@@ -262,4 +262,21 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
     //</editor-fold>
 
+    public static CameraComponent create(String identifier, ImmutableVector3 offset, Resolution resolution, CameraSettings settings, float priority) {
+        CameraComponent cameraComponent = new CameraComponent(identifier, offset, resolution, settings, priority);
+        RenderEngine.getInstance().addCamera(cameraComponent);
+        return cameraComponent;
+    }
+
+    public static CameraComponent create(String identifier, Resolution resolution, CameraSettings settings, float priority) {
+        CameraComponent cameraComponent = new CameraComponent(identifier, new ImmutableVector3(), resolution, settings, priority);
+        RenderEngine.getInstance().addCamera(cameraComponent);
+        return cameraComponent;
+    }
+
+    public static CameraComponent create(String identifier, Resolution resolution, CameraSettings settings) {
+        CameraComponent cameraComponent = new CameraComponent(identifier, new ImmutableVector3(), resolution, settings, 1.0f);
+        RenderEngine.getInstance().addCamera(cameraComponent);
+        return cameraComponent;
+    }
 }

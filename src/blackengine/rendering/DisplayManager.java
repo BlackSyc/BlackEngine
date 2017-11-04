@@ -23,6 +23,7 @@
  */
 package blackengine.rendering;
 
+import blackengine.rendering.pipeline.Resolution;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.awt.Canvas;
 import java.util.logging.Level;
@@ -75,14 +76,14 @@ public class DisplayManager {
         }
     }
 
-    public void createDisplay(int width, int height, String title, boolean fullScreen) {
+    public void createDisplay(Resolution screenResolution, String title, boolean fullScreen) {
         ContextAttribs attribs = new ContextAttribs(3, 2)
                 .withForwardCompatible(true)
                 .withProfileCore(true);
 
         try {
             if (!fullScreen) {
-                Display.setDisplayMode(new DisplayMode(width, height));
+                Display.setDisplayMode(new DisplayMode(screenResolution.getWidth(), screenResolution.getHeight()));
             }
             Display.create(new PixelFormat().withSamples(8).withDepthBits(24), attribs);
 
@@ -96,13 +97,13 @@ public class DisplayManager {
             Logger.getLogger(DisplayManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        GL11.glViewport(0, 0, width, height);
+        GL11.glViewport(0, 0, screenResolution.getWidth(), screenResolution.getHeight());
+        RenderEngine.getInstance().setFrameResolution(screenResolution);
 
     }
 
     public void embed(Canvas canvas) {
-        int width = canvas.getWidth();
-        int height = canvas.getHeight();
+        Resolution screenResolution = new Resolution(canvas.getWidth(), canvas.getHeight());
 
         ContextAttribs attribs = new ContextAttribs(3, 2)
                 .withForwardCompatible(true)
@@ -110,7 +111,7 @@ public class DisplayManager {
 
         try {
             Display.setParent(canvas);
-            Display.setDisplayMode(new DisplayMode(width, height));
+            Display.setDisplayMode(new DisplayMode(screenResolution.getWidth(), screenResolution.getHeight()));
             Display.create(new PixelFormat().withSamples(8).withDepthBits(24), attribs);
 
             Display.setResizable(true);
@@ -121,7 +122,8 @@ public class DisplayManager {
             Logger.getLogger(DisplayManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        GL11.glViewport(0, 0, width, height);
+        GL11.glViewport(0, 0, screenResolution.getWidth(), screenResolution.getHeight());
+        RenderEngine.getInstance().setFrameResolution(screenResolution);
     }
     
     public void destroyDisplay() {

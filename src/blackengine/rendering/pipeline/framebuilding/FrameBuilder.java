@@ -23,6 +23,7 @@
  */
 package blackengine.rendering.pipeline.framebuilding;
 
+import blackengine.rendering.RenderEngine;
 import blackengine.rendering.pipeline.shaderPrograms.ProcessingShaderProgram;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class FrameBuilder {
         
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glClearColor(this.clearColour.getX(), this.clearColour.getY(), this.clearColour.getZ(), 1);
+        
         
         this.frameProcessors.stream()
                 .filter(x -> x.isEnabled())

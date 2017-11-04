@@ -29,6 +29,7 @@ import blackengine.rendering.exceptions.DuplicateCamereIdentifierException;
 import blackengine.rendering.exceptions.RenderEngineNotCreatedException;
 import blackengine.rendering.lighting.Light;
 import blackengine.rendering.pipeline.PipelineManager;
+import blackengine.rendering.pipeline.Resolution;
 import blackengine.rendering.pipeline.framebuilding.FrameBuilder;
 import blackengine.toolbox.Guard;
 import java.util.ArrayList;
@@ -205,10 +206,22 @@ public class RenderEngine {
 
     //<editor-fold defaultstate="collapsed" desc="Frame Building">
     private final FrameBuilder frameBuilder;
+    
+    private Resolution frameResolution;
+    
+    public void setFrameResolution(Resolution frameResolution){
+        this.frameResolution = frameResolution;
+    }
+    
+    public Resolution getFrameResolution(){
+        return this.frameResolution;
+    }
 
     public FrameBuilder getFrameBuilder() {
         return this.frameBuilder;
     }
+    
+    
     //</editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Lighting">
