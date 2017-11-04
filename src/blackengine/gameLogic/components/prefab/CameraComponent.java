@@ -145,13 +145,13 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     public void render() {
         this.target.bind();
-        
+
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(this.settings.getValue().getClearColour().getX(), 
-                this.settings.getValue().getClearColour().getY(), 
-                this.settings.getValue().getClearColour().getZ(), 
+        GL11.glClearColor(this.settings.getValue().getClearColour().getX(),
+                this.settings.getValue().getClearColour().getY(),
+                this.settings.getValue().getClearColour().getZ(),
                 1);
-        
+
         this.pipeline.stream().forEach(x -> {
             x.render(this);
         });
@@ -168,10 +168,6 @@ public class CameraComponent extends ComponentBase implements Camera {
      */
     @Override
     public void onDeactivate() {
-        if (this.isActive()) {
-            this.parentTransformSubscription.dispose();
-            this.parentTransformSubscription = null;
-        }
         RenderEngine.getInstance().removeCamera(this);
     }
 
@@ -224,7 +220,6 @@ public class CameraComponent extends ComponentBase implements Camera {
         ImmutableVector3 negativeCameraPos = transform.getAbsolutePosition().negate();
         Matrix4f.translate(negativeCameraPos.mutable(), this.viewMatrix, this.viewMatrix);
     }
-
 
     /**
      * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
