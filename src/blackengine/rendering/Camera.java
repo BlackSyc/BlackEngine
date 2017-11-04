@@ -23,7 +23,6 @@
  */
 package blackengine.rendering;
 
-import blackengine.toolbox.math.ImmutableVector3;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
@@ -39,13 +38,6 @@ public interface Camera {
      */
     public Matrix4f getViewMatrix();
 
-    /**
-     * Getter for the position of the camera.
-     *
-     * @return An instance of
-     * {@link blackengine.toolbox.math.ImmutableVector3 ImmutableVector3}.
-     */
-    public ImmutableVector3 getPosition();
     
     public Matrix4f getProjectionMatrix();
     

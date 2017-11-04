@@ -65,10 +65,6 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     private Disposable parentTransformSubscription;
 
-    private ImmutableVector3 position = new ImmutableVector3();
-
-    private ImmutableVector3 offset = new ImmutableVector3();
-
     private final Pipeline pipeline;
 
     private final CameraFrameBuffer target;
@@ -98,14 +94,6 @@ public class CameraComponent extends ComponentBase implements Camera {
         return priority;
     }
 
-    @Override
-    public void setParent(Entity parent) {
-        if (parent != null) {
-            this.position = this.offset.add(parent.getTransform().getAbsolutePosition());
-        }
-        super.setParent(parent);
-    }
-
     public Pipeline getPipeline() {
         return this.pipeline;
     }
@@ -126,20 +114,14 @@ public class CameraComponent extends ComponentBase implements Camera {
         return projectionMatrix;
     }
 
-    @Override
-    public ImmutableVector3 getPosition() {
-        return this.position;
-    }
-
     public CameraFrameBuffer getFrameBuffer() {
         return this.target;
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Constructors">
-    private CameraComponent(String identifier, ImmutableVector3 offset, Resolution resolution, CameraSettings settings, float priority) {
+    private CameraComponent(String identifier, Resolution resolution, CameraSettings settings, float priority) {
         this.identifier = identifier;
-        this.offset = offset;
         this.pipeline = new Pipeline();
         this.resolution = resolution;
         this.target = new CameraFrameBuffer(resolution, new ImmutableVector3(1, 1, 1));
@@ -202,7 +184,7 @@ public class CameraComponent extends ComponentBase implements Camera {
     public void onActivate() {
         this.parentTransformSubscription = this.getParent().getTransform().getObservable()
                 .subscribe(x -> this.onParentTransformChanged(x));
-        this.updateViewMatrix();
+        this.updateViewMatrix(new Transform());
         this.updateProjectionMatrix();
         if (!this.target.isValid()) {
             this.target.createTextureAttachment(this.resolution);
@@ -213,30 +195,26 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     //<editor-fold defaultstate="collapsed" desc="Private Methods">
     private void onParentTransformChanged(Transform parentTransform) {
-        this.updatePosition(parentTransform.getAbsolutePosition());
-        this.updateViewMatrix();
+        this.updateViewMatrix(parentTransform);
     }
 
-    private void updateViewMatrix() {
+    private void updateViewMatrix(Transform transform) {
         this.viewMatrix = new Matrix4f();
         this.viewMatrix.setIdentity();
 
         // Pitch
-        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getX()), new ImmutableVector3(1, 0, 0).mutable(), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(-transform.getAbsoluteEulerRotation().getX()), new ImmutableVector3(1, 0, 0).mutable(), this.viewMatrix, this.viewMatrix);
 
         // Yaw
-        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getY()), new ImmutableVector3(0, 1, 0).mutable(), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(-transform.getAbsoluteEulerRotation().getY()), new ImmutableVector3(0, 1, 0).mutable(), this.viewMatrix, this.viewMatrix);
 
         // Roll
-        Matrix4f.rotate((float) Math.toRadians(-this.getParent().getTransform().getAbsoluteEulerRotation().getZ()), new ImmutableVector3(0, 0, 1).mutable(), this.viewMatrix, this.viewMatrix);
+        Matrix4f.rotate((float) Math.toRadians(-transform.getAbsoluteEulerRotation().getZ()), new ImmutableVector3(0, 0, 1).mutable(), this.viewMatrix, this.viewMatrix);
 
-        ImmutableVector3 negativeCameraPos = this.getPosition().negate();
+        ImmutableVector3 negativeCameraPos = transform.getAbsolutePosition().negate();
         Matrix4f.translate(negativeCameraPos.mutable(), this.viewMatrix, this.viewMatrix);
     }
 
-    private void updatePosition(ImmutableVector3 parentPosition) {
-        this.position = this.offset.add(parentPosition);
-    }
 
     /**
      * Creates a new projection matrix in accordance with the FOV, FAR_PLANE,
@@ -262,20 +240,14 @@ public class CameraComponent extends ComponentBase implements Camera {
     }
     //</editor-fold>
 
-    public static CameraComponent create(String identifier, ImmutableVector3 offset, Resolution resolution, CameraSettings settings, float priority) {
-        CameraComponent cameraComponent = new CameraComponent(identifier, offset, resolution, settings, priority);
-        RenderEngine.getInstance().addCamera(cameraComponent);
-        return cameraComponent;
-    }
-
     public static CameraComponent create(String identifier, Resolution resolution, CameraSettings settings, float priority) {
-        CameraComponent cameraComponent = new CameraComponent(identifier, new ImmutableVector3(), resolution, settings, priority);
+        CameraComponent cameraComponent = new CameraComponent(identifier, resolution, settings, priority);
         RenderEngine.getInstance().addCamera(cameraComponent);
         return cameraComponent;
     }
 
     public static CameraComponent create(String identifier, Resolution resolution, CameraSettings settings) {
-        CameraComponent cameraComponent = new CameraComponent(identifier, new ImmutableVector3(), resolution, settings, 1.0f);
+        CameraComponent cameraComponent = new CameraComponent(identifier, resolution, settings, 1.0f);
         RenderEngine.getInstance().addCamera(cameraComponent);
         return cameraComponent;
     }
