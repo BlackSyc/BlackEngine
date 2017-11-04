@@ -172,6 +172,7 @@ public class CameraComponent extends ComponentBase implements Camera {
             this.parentTransformSubscription.dispose();
             this.parentTransformSubscription = null;
         }
+        RenderEngine.getInstance().removeCamera(this);
     }
 
     @Override
@@ -198,6 +199,7 @@ public class CameraComponent extends ComponentBase implements Camera {
             this.target.createTextureAttachment(this.resolution);
             this.target.createDepthTextureAttachment(this.resolution);
         }
+        RenderEngine.getInstance().addCamera(this);
     }
     //</editor-fold>
 
@@ -250,13 +252,11 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     public static CameraComponent create(String identifier, Resolution resolution, CameraSettings settings, float priority) {
         CameraComponent cameraComponent = new CameraComponent(identifier, resolution, settings, priority);
-        RenderEngine.getInstance().addCamera(cameraComponent);
         return cameraComponent;
     }
 
     public static CameraComponent create(String identifier, Resolution resolution, CameraSettings settings) {
         CameraComponent cameraComponent = new CameraComponent(identifier, resolution, settings, 1.0f);
-        RenderEngine.getInstance().addCamera(cameraComponent);
         return cameraComponent;
     }
 }
