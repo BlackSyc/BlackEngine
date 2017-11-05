@@ -63,9 +63,9 @@ public class FrameBuilder {
     }    
     
     public void buildFrame(){
-        
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glClearColor(this.clearColour.getX(), this.clearColour.getY(), this.clearColour.getZ(), 1);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        
         
         
         this.frameProcessors.stream()

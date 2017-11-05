@@ -23,7 +23,6 @@
  */
 package blackengine.gameLogic.components.prefab;
 
-import blackengine.gameLogic.Entity;
 import blackengine.gameLogic.Transform;
 import blackengine.gameLogic.components.base.ComponentBase;
 import blackengine.openGL.frameBuffer.FrameBufferObject;
@@ -36,8 +35,10 @@ import blackengine.rendering.pipeline.Resolution;
 import blackengine.toolbox.math.ImmutableVector3;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
+import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
+import static org.lwjgl.opengl.GL11.GL_COLOR;
+import static org.lwjgl.opengl.GL30.glClearBuffer;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
@@ -145,12 +146,13 @@ public class CameraComponent extends ComponentBase implements Camera {
 
     public void render() {
         this.target.bind();
-
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        
         GL11.glClearColor(this.settings.getValue().getClearColour().getX(),
                 this.settings.getValue().getClearColour().getY(),
                 this.settings.getValue().getClearColour().getZ(),
                 1);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
 
         this.pipeline.stream().forEach(x -> {
             x.render(this);
