@@ -23,12 +23,9 @@
  */
 package blackengine.rendering.pipeline.framebuilding;
 
-import blackengine.rendering.RenderEngine;
-import blackengine.rendering.pipeline.shaderPrograms.ProcessingShaderProgram;
 import blackengine.toolbox.math.ImmutableVector3;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -48,8 +45,6 @@ public class FrameBuilder {
     public void setClearColour(ImmutableVector3 clearColour) {
         this.clearColour = clearColour;
     }
-    
-    
 
     public FrameBuilder() {
         this.frameProcessors = new ArrayList<>();

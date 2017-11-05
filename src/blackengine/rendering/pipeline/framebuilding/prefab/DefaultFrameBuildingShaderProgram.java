@@ -101,9 +101,8 @@ public class DefaultFrameBuildingShaderProgram extends ProcessingShaderProgram {
 
     @Override
     public void onInitialize() {
-        //Transform transform = new Transform(new ImmutableVector3(-1f, -1f, 0), new ImmutableVector3(), new ImmutableVector3(2f, 2f, 1));
-        //super.loadUniformMatrix("transformationMatrix", transform.createTransformationMatrix());
-        super.loadUniformMatrix("transformationMatrix", new Transform().createTransformationMatrix());
+        Transform transform = new Transform(new ImmutableVector3(-1f, -1f, 0), new ImmutableVector3(), new ImmutableVector3(2f, 2f, 1));
+        super.loadUniformMatrix("transformationMatrix", transform.createTransformationMatrix());
     }
 
     @Override
