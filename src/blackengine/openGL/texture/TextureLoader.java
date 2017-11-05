@@ -31,7 +31,11 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 import blackengine.rendering.RenderEngine;
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL32;
 
 public class TextureLoader {
@@ -101,6 +105,30 @@ public class TextureLoader {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
         return new FBOTexture(texID, width, height);
+    }
+    
+    public static BufferedImage getImage(Texture texture){
+        // Bind framebuffer texture
+        texture.bindToUnit(GL13.GL_TEXTURE0);
+
+        GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+
+        int width = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+        int height = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+
+        IntBuffer textureBuffer = BufferUtils.createIntBuffer(width * height);
+        GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
+
+        int[] texture_array = new int[width * height];
+        textureBuffer.get(texture_array);
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        image.setRGB(0, 0, width, height, texture_array, 0, width);
+        
+        texture.unbind();
+        
+        return image;
     }
 
 }
