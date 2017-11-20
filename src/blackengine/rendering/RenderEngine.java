@@ -31,11 +31,11 @@ import blackengine.rendering.lighting.Light;
 import blackengine.rendering.pipeline.PipelineManager;
 import blackengine.rendering.pipeline.Resolution;
 import blackengine.rendering.pipeline.framebuilding.FrameBuilder;
-import blackengine.toolbox.Guard;
+import blackengine.toolbox.guard.Guard;
+import blackengine.toolbox.guard.UncheckedGuard;
+import blackengine.toolbox.guard.exceptions.InvalidArgumentException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -175,8 +175,8 @@ public class RenderEngine {
     // <editor-fold  defaultstate="collapsed" desc="Cameras">
     private Map<String, CameraComponent> cameras;
 
-    public void addCamera(CameraComponent cameraComponent) {
-        Guard.notNull(cameraComponent);
+    public void addCamera(CameraComponent cameraComponent){
+        Guard.unchecked.notNull(cameraComponent);
 
         if (this.cameras.keySet().contains(cameraComponent.getIdentifier())) {
             throw new DuplicateCamereIdentifierException(cameraComponent.getIdentifier());
