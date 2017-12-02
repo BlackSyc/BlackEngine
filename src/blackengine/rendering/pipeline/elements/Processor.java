@@ -27,24 +27,51 @@ import blackengine.rendering.Camera;
 import blackengine.rendering.pipeline.shaderPrograms.ProcessingShaderProgram;
 
 /**
+ * An instance of this class will process the rendered image.
  *
  * @author Blackened
  * @param <S>
  */
 public class Processor<S extends ProcessingShaderProgram> implements PipelineElement<S> {
 
+    /**
+     * The priority of this processor. A higher priority means its render method
+     * will be called earlier in the pipeline.
+     */
     private final float priority;
 
+    /**
+     * Flags whether this processor was destroyed.
+     */
     private boolean destroyed = false;
 
+    /**
+     * Flags whether this processor is enabled.
+     */
     private boolean enabled = true;
 
+    /**
+     * The shader program that is being used to process the rendered image.
+     */
     private final S shaderProgram;
-    
-    public S getShaderProgram(){
+
+    /**
+     * Getter for the shader program of this processor.
+     *
+     * @return The shader program that is being used to process the rendered
+     * image.
+     */
+    public S getShaderProgram() {
         return this.shaderProgram;
     }
 
+    /**
+     * Default constructor for creating a new instance of Processor. The
+     * priority of this processor will be defaulted to 1.0f.
+     *
+     * @param shaderProgram The shader program that will be used to process the
+     * rendered image.
+     */
     public Processor(S shaderProgram) {
         this(shaderProgram, 1.0f);
     }

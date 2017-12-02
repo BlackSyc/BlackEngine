@@ -13,6 +13,9 @@ import java.util.HashSet;
 import java.util.stream.Stream;
 
 /**
+ * An instance of this class will render RenderComponents with a specified
+ * material, given that the instance was added to a pipeline and has a shader
+ * program compatible with this material.
  *
  * @author Blackened
  * @param <S>
@@ -40,12 +43,19 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
      */
     private boolean destroyed = false;
 
+    /**
+     * Flags whether this instance of renderer was enabled.
+     */
     private boolean enabled = true;
 
-    public S getShaderProgram(){
+    /**
+     * Getter for the shader program this renderer is using.
+     * @return The shader program that this renderer is using.
+     */
+    public S getShaderProgram() {
         return this.shaderProgram;
     }
-    
+
     @Override
     public boolean isEnabled() {
         return enabled;
@@ -136,13 +146,14 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
 
     /**
      * Renders all targets using the shader program.
+     *
      * @param camera
      */
     @SuppressWarnings("unchecked")
     @Override
     public void render(Camera camera) {
         if (this.isEnabled()) {
-            
+
             this.shaderProgram.start(camera);
             this.shaderProgram.applySettings();
             this.shaderProgram.loadFrameUniforms();
@@ -155,7 +166,7 @@ public class Renderer<S extends MaterialShaderProgram, M extends Material<S>> im
 
             this.shaderProgram.revertSettings();
             this.shaderProgram.stop();
-            
+
         }
     }
 
