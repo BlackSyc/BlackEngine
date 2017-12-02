@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 /**
- * Contains all renderers in an ordered fashion, and mapped by the class of the
- * shader they use.
+ * Contains all renderers and processors mapped by the class of the shader
+ * program they use.
  *
  * @author Blackened
  */
@@ -29,21 +29,20 @@ public class PipelineManager {
     //<editor-fold desc="Fields" defaultstate="collapsed">
     /**
      * All entries containing the renderers mapped by the class of the shader
-     * they use. Used internally only.
+     * program they use.
      */
     private final ArrayList<RendererEntry> rendererEntries;
 
     /**
      * All entries containing the processors mapped by the class of the shader
-     * they use. Used internally only.
+     * they use.
      */
-    private final ArrayList<ProcessorEntry> processorEntries;    
+    private final ArrayList<ProcessorEntry> processorEntries;
     //</editor-fold>
 
     //<editor-fold desc="Constructors" defaultstate="collapsed">
     /**
-     * Default constructor for creating a new instance of RendererMap. Creates a
-     * default comparator that uses the Float.compare method.
+     * Default constructor for creating a new instance of PipelineManager.
      */
     public PipelineManager() {
         this.rendererEntries = new ArrayList<>();
@@ -62,8 +61,8 @@ public class PipelineManager {
     }
 
     /**
-     * Calls the destroy method on each of the renderers this instance contains,
-     * and clears the reference to them.
+     * Calls the destroy method on each of the renderers and processors this
+     * instance contains, and clears the reference to them.
      */
     public void destroy() {
         this.rendererEntries.forEach(x -> x.getRenderer().destroy());
@@ -102,7 +101,7 @@ public class PipelineManager {
         // Add the renderer to the internal renderer map as well.
         RendererEntry<S, M> entry = new RendererEntry<>(shaderClass, renderer);
         this.rendererEntries.add(entry);
-        
+
         renderer.initialize();
     }
 
@@ -218,7 +217,7 @@ public class PipelineManager {
         // Add the processor to the internal processor map as well.
         ProcessorEntry<S> entry = new ProcessorEntry<>(shaderClass, processor);
         this.processorEntries.add(entry);
-        
+
         processor.initialize();
     }
 

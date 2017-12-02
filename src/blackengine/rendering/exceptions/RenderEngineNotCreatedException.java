@@ -24,6 +24,8 @@
 package blackengine.rendering.exceptions;
 
 /**
+ * This exception is thrown when the render engine was referenced, but it had
+ * not been created yet.
  *
  * @author Blackened
  */

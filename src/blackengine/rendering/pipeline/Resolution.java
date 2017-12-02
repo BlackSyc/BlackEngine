@@ -24,28 +24,46 @@
 package blackengine.rendering.pipeline;
 
 /**
+ * Represents a resolution used for frame buffer objects, cameras and displays.
  *
  * @author Blackened
  */
 public class Resolution {
-    
+
+    /**
+     * The width of the resolution.
+     */
     private final int width;
-    
+
+    /**
+     * The height of the resolution.
+     */
     private final int height;
 
+    /**
+     * Getter for the width of the resolution.
+     * @return An integer representing the width of the resolution.
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Getter for the height of the resolution.
+     * @return An integer representing the height of the resolution.
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Default constructor for creating a new instance of Resolution.
+     * @param width The width of the resolution.
+     * @param height The height of the resolution.
+     */
     public Resolution(int width, int height) {
         this.width = width;
         this.height = height;
     }
-    
-    
-    
+
 }

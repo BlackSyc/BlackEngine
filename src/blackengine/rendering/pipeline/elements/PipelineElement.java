@@ -27,29 +27,74 @@ import blackengine.rendering.Camera;
 import blackengine.rendering.pipeline.shaderPrograms.ShaderProgramBase;
 
 /**
+ * This interface defines the methods for an element of the pipeline that can be
+ * used for rendering and processing.
  *
  * @author Blackened
  * @param <S>
  */
 public interface PipelineElement<S extends ShaderProgramBase> {
-    
+
+    /**
+     * Retrieves the priority that is assigned to this element. A higher
+     * priority means its render method will be called prior to other elements
+     * with a lower priority.
+     *
+     * @return A float representing the priority of this pipeline element.
+     */
     public float getPriority();
-    
+
+    /**
+     * An implementation of this method should render or process to the
+     * presented Camera instance.
+     *
+     * @param camera An instance of Camera.
+     */
     public void render(Camera camera);
-    
+
+    /**
+     * Determines whether this element was flagged for destruction.
+     *
+     * @return True if this elements 'destroyed' flag is true, false otherwise.
+     */
     public boolean isDestroyed();
-    
+
+    /**
+     * An implementation of this method should destroy all its referenced
+     * properties and set its 'destroyed' flag to true.
+     */
     public void destroy();
-    
+
+    /**
+     * An implementation of this method should return the class of the shader
+     * program that is used in this element.
+     *
+     * @return The class of shader program that is used in this pipeline
+     * element.
+     */
     @SuppressWarnings("unchecked")
     public Class<S> getShaderClass();
-    
+
+    /**
+     * An implementation of this method should handle all initialization needed
+     * for this pipeline element to be able to render.
+     */
     public void initialize();
-    
+
+    /**
+     * An implementation of this setter should set its enabled flag according to
+     * the presented boolean value.
+     *
+     * @param enabled The value the 'enabled' flag will be set to.
+     */
     public void setEnabled(boolean enabled);
-    
+
+    /**
+     * An implementation of this getter should return the value represented in
+     * the 'enabled' property flag.
+     *
+     * @return True when this pipeline element is enabled, false otherwise.
+     */
     public boolean isEnabled();
-    
-    
-    
+
 }

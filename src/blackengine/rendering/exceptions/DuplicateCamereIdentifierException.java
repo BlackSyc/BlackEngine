@@ -24,15 +24,15 @@
 package blackengine.rendering.exceptions;
 
 /**
+ * This exception is thrown when a camera is being added with an identifier that
+ * is already present in the render engine.
  *
  * @author Blackened
  */
-public class DuplicateCamereIdentifierException extends RuntimeException{
+public class DuplicateCamereIdentifierException extends RuntimeException {
 
     public DuplicateCamereIdentifierException(String identifier) {
         super("A camera with identifier '" + identifier + "' is already present in the RenderEngine.");
     }
-    
-    
-    
+
 }
