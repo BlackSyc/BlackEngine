@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package blackengine.toolbox;
+package blackengine.toolbox.guard;
 
 /**
  *
@@ -29,14 +29,8 @@ package blackengine.toolbox;
  */
 public class Guard {
     
-    public static void notNull(Object obj){
-        notNull(obj, "Argument can not be null.");
-    }
+    public static final CheckedGuard checked = new CheckedGuard();
     
-    public static void notNull(Object obj, String message){
-        if(obj == null){
-            throw new IllegalArgumentException(message);
-        }
-    }
+    public static final UncheckedGuard unchecked = new UncheckedGuard();
     
 }
